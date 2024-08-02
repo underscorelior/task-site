@@ -3,15 +3,27 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from './button';
 import { IoCreateOutline } from 'react-icons/io5';
 import { RiEditLine } from 'react-icons/ri';
+
+import { Label } from './label';
+import { Input } from './input';
 import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetFooter,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from './sheet';
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from './dialog';
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from './select';
 
 const tags = Array.from({ length: 60 }).map(
 	(_, i, a) => `v1.2.000000000000-beta.${a.length - i}`,
@@ -19,7 +31,7 @@ const tags = Array.from({ length: 60 }).map(
 
 export function CreateSelect() {
 	return (
-		<ScrollArea className="h-[40vh] w-full rounded-md border">
+		<ScrollArea className="h-[35vh] w-full rounded-md border">
 			<div className="p-4">
 				{tags.map((tag) => (
 					<>
@@ -29,22 +41,84 @@ export function CreateSelect() {
 							<p className="w-[70%] truncate overflow-ellipsis text-sm">
 								{tag}
 							</p>
-							<Sheet>
-								<SheetTrigger>
+							<Dialog>
+								<DialogTrigger>
 									<Button size={'iconsm'} variant={'outline'}>
 										{/* TODO: LEFT SHEET */}
 										<RiEditLine />
 									</Button>
-								</SheetTrigger>
-								<SheetContent side={'left'}>
-									<SheetHeader>
-										<SheetTitle></SheetTitle>
-										<SheetDescription></SheetDescription>
-									</SheetHeader>
-									<div>Content</div>
-									<SheetFooter></SheetFooter>
-								</SheetContent>
-							</Sheet>
+								</DialogTrigger>
+								<DialogContent className="w-[40%]">
+									<DialogHeader>
+										<DialogTitle className="text-xl">
+											Editing {'name'}
+										</DialogTitle>
+										<DialogDescription></DialogDescription>
+									</DialogHeader>
+									<div>
+										<Label className="text-base font-medium" htmlFor="name">
+											Name
+										</Label>
+										<Input id="name" defaultValue={'name'} className="mb-4" />
+
+										<Label className="text-base font-medium" htmlFor="desc">
+											Description
+										</Label>
+										<Input
+											id="desc"
+											defaultValue={'description'}
+											className="mb-4"
+										/>
+
+										<Label className="text-base font-medium" htmlFor="vp">
+											# of VPs
+										</Label>
+										<Input
+											id="vp"
+											defaultValue={0}
+											className="mb-4 w-[25%]"
+											type="number"
+										/>
+
+										<Label className="text-base font-medium" htmlFor="type">
+											Type
+										</Label>
+										<div
+											className="mb-4 flex flex-row items-center gap-4"
+											id="type">
+											<Button size={'sm'}>Single</Button>
+											<Button variant={'outline'} size={'sm'}>
+												Multi
+											</Button>
+										</div>
+
+										<Label className="text-base font-medium" id="category">
+											Category
+										</Label>
+										<Select>
+											<SelectTrigger className="w-[40%]">
+												<SelectValue placeholder="Select a category" />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>Category</SelectLabel>
+													<SelectItem value="health">Health</SelectItem>
+													<SelectItem value="normal">Become Normal</SelectItem>
+													<SelectItem value="cool">POV: Cool</SelectItem>
+													<SelectItem value="productivity">
+														Productivity
+													</SelectItem>
+													<SelectItem value="insane">INSANE</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+									</div>
+									<DialogFooter>
+										<Button variant={'outline'}>Cancel</Button>
+										<Button>Submit</Button>
+									</DialogFooter>
+								</DialogContent>
+							</Dialog>
 						</div>
 						<Separator className="my-2 w-[85%]" />
 					</>

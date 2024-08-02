@@ -26,12 +26,14 @@ export default function Sidebar() {
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value="user" className="w-full">
-				<Card side={'left'}>
+				<Card
+					side={'left'}
+					className="flex h-full min-h-[55vh] w-full flex-col justify-between">
 					<CardHeader>
 						<CardTitle>User</CardTitle>
 						<CardDescription></CardDescription>
 					</CardHeader>
-					<CardContent>
+					<CardContent className="">
 						<Label htmlFor="name">Name</Label>
 						<Input defaultValue={'Name'} id="name" className="mb-6" />
 						<Label htmlFor="pfp">Profile Picture</Label>
@@ -46,7 +48,9 @@ export default function Sidebar() {
 				</Card>
 			</TabsContent>
 			<TabsContent value="task" className="w-full">
-				<Card side={'left'}>
+				<Card
+					side={'left'}
+					className="flex h-full min-h-[55vh] w-full flex-col justify-between">
 					<CardHeader>
 						<CardTitle>Tasks</CardTitle>
 						<CardDescription></CardDescription>
