@@ -1,15 +1,27 @@
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
-export default function LeaderboardUser() {
+export default function LeaderboardUser({
+	name,
+	avatar,
+	points,
+	index,
+}: {
+	name: string;
+	avatar: string;
+	points: number;
+	index: number;
+}) {
 	return (
-		<div>
-			<h1>#.</h1>
+		<div className="flex flex-row items-center gap-2">
+			<h1 className="font-mono text-2xl font-semibold">{index}.</h1>
 			<Avatar>
-				<AvatarImage />
-				<AvatarFallback>Name here</AvatarFallback>
+				<AvatarImage alt={name} src={avatar} />
+				<AvatarFallback>{name}</AvatarFallback>
 			</Avatar>
-			<h2>Name here</h2>
-			<p>Point Value</p>
+			<div className="flex flex-col">
+				<h2 className="text-xl font-semibold">{name}</h2>
+				<p className="text-secondary-foreground font-mono">{points}</p>
+			</div>
 		</div>
 	);
 }
