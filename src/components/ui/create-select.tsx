@@ -83,9 +83,12 @@ export function CreateSelect() {
 											Type
 										</Label>
 										<div
-											className="mb-4 flex flex-row items-center gap-4"
+											className="mb-4 flex flex-row items-center gap-2"
 											id="type">
 											<Button size={'sm'}>Single</Button>
+											<Button size={'sm'} variant={'outline'}>
+												Daily
+											</Button>
 											<Button variant={'outline'} size={'sm'}>
 												Multi
 											</Button>
@@ -163,8 +166,11 @@ export function CreateSelect() {
 							<Label className="text-base font-medium" htmlFor="type">
 								Type
 							</Label>
-							<div className="mb-4 flex flex-row items-center gap-4" id="type">
+							<div className="mb-4 flex flex-row items-center gap-2" id="type">
 								<Button size={'sm'}>Single</Button>
+								<Button size={'sm'} variant={'outline'}>
+									Daily
+								</Button>
 								<Button variant={'outline'} size={'sm'}>
 									Multi
 								</Button>
