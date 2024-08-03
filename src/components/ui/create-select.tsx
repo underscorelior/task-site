@@ -24,6 +24,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from './select';
+import { ToggleGroup, ToggleGroupItem } from './toggle-group';
 
 const tags = Array.from({ length: 60 }).map(
 	(_, i, a) => `v1.2.000000000000-beta.${a.length - i}`,
@@ -85,13 +86,11 @@ export function CreateSelect() {
 										<div
 											className="mb-4 flex flex-row items-center gap-2"
 											id="type">
-											<Button size={'sm'}>Single</Button>
-											<Button size={'sm'} variant={'outline'}>
-												Daily
-											</Button>
-											<Button variant={'outline'} size={'sm'}>
-												Multi
-											</Button>
+											<ToggleGroup type="single" defaultValue="single">
+												<ToggleGroupItem value="single">Single</ToggleGroupItem>
+												<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
+												<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
+											</ToggleGroup>
 										</div>
 
 										<Label className="text-base font-medium" id="category">
@@ -167,13 +166,11 @@ export function CreateSelect() {
 								Type
 							</Label>
 							<div className="mb-4 flex flex-row items-center gap-2" id="type">
-								<Button size={'sm'}>Single</Button>
-								<Button size={'sm'} variant={'outline'}>
-									Daily
-								</Button>
-								<Button variant={'outline'} size={'sm'}>
-									Multi
-								</Button>
+								<ToggleGroup type="single" defaultValue="single">
+									<ToggleGroupItem value="single">Single</ToggleGroupItem>
+									<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
+									<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
+								</ToggleGroup>
 							</div>
 
 							<Label className="text-base font-medium" id="category">

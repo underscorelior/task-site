@@ -17,6 +17,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from './ui/select';
+import { ScrollArea } from './ui/scroll-area';
+import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
+import Task from './task';
 
 export default function Submit() {
 	const [type, setType] = useState<string>('');
@@ -45,6 +48,8 @@ export default function Submit() {
 					</SelectContent>
 				</Select>
 				{type == 'single' ? (
+					<Single />
+				) : type == 'daily' ? (
 					<>
 						<Label className="text-lg font-medium" id="category">
 							Category
@@ -65,8 +70,6 @@ export default function Submit() {
 							</SelectContent>
 						</Select>
 					</>
-				) : type == 'daily' ? (
-					<></>
 				) : type == 'multi' ? (
 					<></>
 				) : (
@@ -75,5 +78,41 @@ export default function Submit() {
 			</CardContent>
 			<CardFooter></CardFooter>
 		</Card>
+	);
+}
+
+function Single() {
+	return (
+		<>
+			<ScrollArea className="h-[35vh] w-full rounded-md border">
+				<ToggleGroup
+					type="single"
+					variant="ghost"
+					size={'ghost'}
+					className="flex w-full flex-col gap-y-4">
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+					<ToggleGroupItem value="aaa" className="w-full">
+						<Task />
+					</ToggleGroupItem>
+				</ToggleGroup>
+			</ScrollArea>
+		</>
 	);
 }
