@@ -44,7 +44,6 @@ export function CreateSelect() {
 							<Dialog>
 								<DialogTrigger>
 									<Button size={'iconsm'} variant={'outline'}>
-										{/* TODO: LEFT SHEET */}
 										<RiEditLine />
 									</Button>
 								</DialogTrigger>
@@ -95,7 +94,7 @@ export function CreateSelect() {
 										<Label className="text-base font-medium" id="category">
 											Category
 										</Label>
-										<Select>
+										<Select defaultValue="health">
 											<SelectTrigger className="w-[40%]">
 												<SelectValue placeholder="Select a category" />
 											</SelectTrigger>
@@ -123,11 +122,79 @@ export function CreateSelect() {
 						<Separator className="my-2 w-[85%]" />
 					</>
 				))}
-				<Button
-					variant={'link'}
-					className="m-0 flex h-min flex-row items-center gap-2 p-0">
-					<IoCreateOutline /> Create new task
-				</Button>
+				<Dialog>
+					<DialogTrigger>
+						<Button
+							variant={'link'}
+							className="m-0 flex h-min flex-row items-center gap-2 p-0">
+							<IoCreateOutline /> Create new task
+						</Button>
+					</DialogTrigger>
+					<DialogContent className="w-[40%]">
+						<DialogHeader>
+							<DialogTitle className="text-xl">Create A New Task</DialogTitle>
+							<DialogDescription></DialogDescription>
+						</DialogHeader>
+						<div>
+							<Label className="text-base font-medium" htmlFor="name">
+								Name
+							</Label>
+							<Input id="name" placeholder="Task Name" className="mb-4" />
+
+							<Label className="text-base font-medium" htmlFor="desc">
+								Description
+							</Label>
+							<Input
+								id="desc"
+								placeholder="Task Description"
+								className="mb-4"
+							/>
+
+							<Label className="text-base font-medium" htmlFor="vp">
+								# of VPs
+							</Label>
+							<Input
+								id="vp"
+								placeholder="Task VP Worth"
+								className="mb-4 w-[25%]"
+								type="number"
+							/>
+
+							<Label className="text-base font-medium" htmlFor="type">
+								Type
+							</Label>
+							<div className="mb-4 flex flex-row items-center gap-4" id="type">
+								<Button size={'sm'}>Single</Button>
+								<Button variant={'outline'} size={'sm'}>
+									Multi
+								</Button>
+							</div>
+
+							<Label className="text-base font-medium" id="category">
+								Category
+							</Label>
+							<Select>
+								<SelectTrigger className="w-[40%]">
+									<SelectValue placeholder="Select a category" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>Category</SelectLabel>
+										<SelectItem value="health">Health</SelectItem>
+										<SelectItem value="normal">Become Normal</SelectItem>
+										<SelectItem value="cool">POV: Cool</SelectItem>
+										<SelectItem value="productivity">Productivity</SelectItem>
+										<SelectItem value="insane">INSANE</SelectItem>
+									</SelectGroup>
+								</SelectContent>
+							</Select>
+						</div>
+						<DialogFooter>
+							<Button variant={'outline'}>Cancel</Button>
+							<Button>Submit</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
 			</div>
 		</ScrollArea>
 	);

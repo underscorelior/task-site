@@ -28,7 +28,7 @@ export default function Sidebar() {
 			<TabsContent value="user" className="w-full">
 				<Card
 					side={'left'}
-					className="flex h-full min-h-[55vh] w-full flex-col justify-between">
+					className="flex h-full min-h-[55vh] w-full flex-col">
 					<CardHeader>
 						<CardTitle>User</CardTitle>
 						<CardDescription></CardDescription>
@@ -39,7 +39,7 @@ export default function Sidebar() {
 						<Label htmlFor="pfp">Profile Picture</Label>
 						<Input id="pfp" type="file" />
 					</CardContent>
-					<CardFooter>
+					<CardFooter className="mt-auto">
 						{/* TODO: Make it popup with a thing saying "saving" */}
 						<Button variant={'outline'} className="ml-auto">
 							Save
