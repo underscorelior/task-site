@@ -38,8 +38,8 @@ export function CreateSelect() {
 					<>
 						<div
 							key={tag}
-							className="flex w-[85%] flex-row items-center justify-between">
-							<p className="w-[70%] truncate overflow-ellipsis text-sm">
+							className="flex flex-row items-center justify-between">
+							<p className="w-[70%] min-w-[70%] truncate overflow-ellipsis text-sm">
 								{tag}
 							</p>
 							<Dialog>
@@ -121,7 +121,7 @@ export function CreateSelect() {
 								</DialogContent>
 							</Dialog>
 						</div>
-						<Separator className="my-2 w-[85%]" />
+						<Separator className="my-2" />
 					</>
 				))}
 				<Dialog>

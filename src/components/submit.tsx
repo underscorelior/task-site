@@ -17,7 +17,7 @@ import {
 	SelectValue,
 } from './ui/select';
 import { ScrollArea } from './ui/scroll-area';
-import Task from './task';
+import Task, { DailyTask } from './task';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 
@@ -49,6 +49,8 @@ export default function Submit() {
 				{type == 'single' ? (
 					<Single />
 				) : type == 'daily' ? (
+					<></>
+				) : type == 'multi' ? (
 					<>
 						<Label className="text-lg font-medium" id="category">
 							Category
@@ -69,8 +71,6 @@ export default function Submit() {
 							</SelectContent>
 						</Select>
 					</>
-				) : type == 'multi' ? (
-					<></>
 				) : (
 					<></>
 				)}
@@ -133,7 +133,6 @@ function Single() {
 			<Label htmlFor="tasks" className="text-lg font-medium">
 				Tasks
 			</Label>
-
 			<ScrollArea
 				className="mb-4 mt-1 h-[30vh] w-full rounded-md border"
 				id="tasks">
@@ -150,8 +149,47 @@ function Single() {
 			<Textarea
 				id="info"
 				placeholder="Put a bit more info about your task completion"
-				className="mt-1 resize-none"
+				className="mt-1 h-max resize-none"
 			/>
+		</>
+	);
+}
+
+function Daily() {
+	const [selTasks, setSelTasks] = useState<Task[]>([]);
+	const tasks: Task[] = [
+		{
+			name: '',
+			type: 'daily',
+			points: 0,
+			category: '',
+		},
+		{
+			name: '',
+			type: 'daily',
+			points: 0,
+			category: '',
+		},
+	];
+
+	return (
+		<>
+			<Label htmlFor="tasks" className="text-lg font-medium">
+				Tasks
+			</Label>
+			<ScrollArea
+				className="mb-4 mt-1 h-[30vh] w-full rounded-md border"
+				id="tasks">
+				<div className="my-3 flex flex-col gap-3">
+					{tasks.map((task) => (
+						<DailyTask
+							task={task}
+							selTasks={selTasks}
+							setSelTasks={setSelTasks}
+						/>
+					))}
+				</div>
+			</ScrollArea>
 		</>
 	);
 }
