@@ -1,6 +1,6 @@
 import { Button } from './ui/button';
 
-export default function Task({
+export function SingleTask({
 	task,
 	selected,
 	setSelected,
@@ -14,12 +14,10 @@ export default function Task({
 			variant={task.name != selected?.name ? 'outline' : 'selected'}
 			className="mx-auto w-[95%] border px-6 py-2 text-start"
 			onClick={() => setSelected(task)}>
-			<div className="grid w-full grid-cols-[45%,5%,35%,5%,10%] items-center justify-between gap-2">
+			<div className="grid w-full grid-cols-[45%,35%,10%] items-center justify-between gap-[5%]">
 				<h1 className="truncate overflow-ellipsis">{task.name}</h1>
-				<p className="col-start-3 truncate overflow-ellipsis">
-					{task.category}
-				</p>
-				<p className="col-start-5">{task.points}</p>
+				<p className="truncate overflow-ellipsis">{task.category}</p>
+				<p>{task.points}</p>
 			</div>
 		</Button>
 	);
@@ -37,28 +35,25 @@ export function DailyTask({
 	return (
 		<Button
 			variant={
-				selTasks.find((tsk) => task.name == tsk.name) ? 'outline' : 'selected'
+				!selTasks.some((tsk) => task.name === tsk.name) ? 'outline' : 'selected'
 			}
 			className="mx-auto w-[95%] border px-6 py-2 text-start"
 			onClick={() => {
-				let out = selTasks;
-				if (selTasks.find((tsk) => task.name == tsk.name)) {
-					out.push(task);
-					return out;
+				let out;
+				if (!selTasks.some((tsk) => task.name === tsk.name)) {
+					out = [...selTasks, task];
+				} else {
+					out = selTasks.filter((tsk) => task.name !== tsk.name);
 				}
 
-				out = selTasks.filter((tsk) => {
-					return tsk.name !== task.name;
-				});
-
+				console.log(out);
 				setSelTasks(out);
 			}}>
-			<div className="grid w-full grid-cols-[45%,5%,35%,5%,10%] items-center justify-between gap-2">
+			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">
 				<h1 className="truncate overflow-ellipsis">{task.name}</h1>
-				<p className="col-start-3 truncate overflow-ellipsis">
-					{task.category}
-				</p>
-				<p className="col-start-5">{task.points}</p>
+				<p className="truncate overflow-ellipsis">{task.category}</p>
+				<p>{task.points}</p>
+				<p>{task.amount}</p>
 			</div>
 		</Button>
 	);

@@ -17,10 +17,10 @@ import Submit from './components/submit';
 export function App() {
 	return (
 		<main className="grid min-h-screen w-full grid-cols-[20%,55%,25%] items-center justify-center gap-x-4 overflow-x-hidden">
-			<section className="w-full">
+			<section className="w-full max-w-lg">
 				<Sidebar />
 			</section>
-			<section className="w-full">
+			<section className="mx-auto w-full max-w-4xl">
 				<Tabs defaultValue="table">
 					<TabsList className="w-[33.33%]">
 						<TabsTrigger value="table" className="w-full">
@@ -58,7 +58,7 @@ export function App() {
 					</TabsContent>
 				</Tabs>
 			</section>
-			<section className="col-start-3 flex h-full w-full items-center justify-center">
+			<section className="col-start-3 ml-auto flex h-full w-full max-w-sm items-center justify-center">
 				<Leaderboard />
 			</section>
 		</main>

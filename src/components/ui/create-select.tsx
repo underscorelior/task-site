@@ -1,3 +1,9 @@
+// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Button } from './button';
@@ -8,6 +14,7 @@ import { Label } from './label';
 import { Input } from './input';
 import {
 	Dialog,
+	DialogClose,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
@@ -86,7 +93,10 @@ export function CreateSelect() {
 										<div
 											className="mb-4 flex flex-row items-center gap-2"
 											id="type">
-											<ToggleGroup type="single" defaultValue="single">
+											<ToggleGroup
+												type="single"
+												defaultValue="single"
+												variant={'outline'}>
 												<ToggleGroupItem value="single">Single</ToggleGroupItem>
 												<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
 												<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
@@ -115,7 +125,9 @@ export function CreateSelect() {
 										</Select>
 									</div>
 									<DialogFooter>
-										<Button variant={'outline'}>Cancel</Button>
+										<DialogClose>
+											<Button variant={'outline'}>Cancel</Button>
+										</DialogClose>
 										<Button>Submit</Button>
 									</DialogFooter>
 								</DialogContent>
@@ -166,7 +178,10 @@ export function CreateSelect() {
 								Type
 							</Label>
 							<div className="mb-4 flex flex-row items-center gap-2" id="type">
-								<ToggleGroup type="single" defaultValue="single">
+								<ToggleGroup
+									type="single"
+									defaultValue="single"
+									variant={'outline'}>
 									<ToggleGroupItem value="single">Single</ToggleGroupItem>
 									<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
 									<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
@@ -193,7 +208,9 @@ export function CreateSelect() {
 							</Select>
 						</div>
 						<DialogFooter>
-							<Button variant={'outline'}>Cancel</Button>
+							<DialogClose>
+								<Button variant={'outline'}>Cancel</Button>
+							</DialogClose>
 							<Button>Submit</Button>
 						</DialogFooter>
 					</DialogContent>
