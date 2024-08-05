@@ -6,7 +6,6 @@ import Sidebar from './components/sidebar';
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -17,11 +16,11 @@ import { TaskTable } from './components/table';
 
 export function App() {
 	return (
-		<main className="grid min-h-screen w-full grid-cols-[20%,55%,25%] items-center justify-center gap-x-4 overflow-x-hidden">
+		<main className="grid min-h-screen w-full grid-cols-[20%,65%,15%] items-center justify-center gap-x-2 overflow-x-hidden">
 			<section className="w-full max-w-lg">
 				<Sidebar />
 			</section>
-			<section className="mx-auto w-full max-w-4xl">
+			<section className="mx-auto w-full max-w-5xl">
 				<Tabs defaultValue="table">
 					<TabsList className="w-[33.33%]">
 						<TabsTrigger value="table" className="w-full">
@@ -41,10 +40,9 @@ export function App() {
 						<Submit />
 					</TabsContent>
 					<TabsContent value="verify">
-						<Card className="h-[75vh]">
+						<Card className="h-[80vh]">
 							<CardHeader>
-								<CardTitle>Verify</CardTitle>
-								<CardDescription></CardDescription>
+								<CardTitle className="text-3xl">Verify</CardTitle>
 							</CardHeader>
 							<CardContent></CardContent>
 							<CardFooter></CardFooter>

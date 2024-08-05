@@ -20,7 +20,6 @@ import { ScrollArea } from './ui/scroll-area';
 import { SingleTask, DailyTask, MultiTask } from './task';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
-import { HiPlus, HiMinus } from 'react-icons/hi2';
 import { Input } from './ui/input';
 
 export default function Submit() {
@@ -72,44 +71,38 @@ function Single() {
 			name: "Talk with someone you haven't talked to for 5+ years",
 			type: 'single',
 			points: 2,
-			category: 'Become Normal',
+			category: 'normal',
 		},
 		{
 			name: 'Go to prom',
 			type: 'single',
 			points: 5,
-			category: 'Become Normal',
+			category: 'normal',
 		},
 		{
 			name: "Go on a date (needs proof, can't be with other participants, must be IRL, must be romantic, must be over 1 hour, must be with preferred gender)",
 			type: 'single',
 			points: 5,
-			category: 'Become Normal',
+			category: 'normal',
 		},
 		{
 			name: "Eat something which you haven't ate before",
 			type: 'single',
 			points: 1,
-			category: 'Become Normal',
+			category: 'normal',
 		},
 		{
 			name: "Go to someplace far away (10+ miles) which you haven't gone before",
 			type: 'single',
 			points: 1,
-			category: 'Become Normal',
+			category: 'normal',
 		},
 		{
 			name: '',
 			type: 'single',
 			points: 0,
-			category: '',
+			category: 'health',
 		},
-		// {
-		// 	name: '',
-		// 	type: 'single',
-		// 	points: 0,
-		// 	category: '',
-		// },
 	];
 	return (
 		<>
@@ -156,60 +149,51 @@ function Daily() {
 			name: 'Go to sleep before 1:30 AM',
 			type: 'daily',
 			points: 2,
-			category: 'Health',
+			category: 'health',
 			amount: 3,
 		},
 		{
 			name: 'Drink 6 glasses of water every day (although 8 is better)',
 			type: 'daily',
 			points: 4,
-			category: 'Health',
+			category: 'health',
 			amount: 3,
 		},
 		{
 			name: 'Have at least 6 hours of sleep that night (obviously only one point a day)',
 			type: 'daily',
 			points: 2,
-			category: 'Health',
+			category: 'health',
 			amount: 3,
 		},
 		{
 			name: 'Watch the news (max of one point per day)',
 			type: 'daily',
 			points: 1,
-			category: 'Become Normal',
+			category: 'normal',
 			amount: 3,
 		},
 		{
 			name: 'Go a day without video games (Does not conflict with the Play Among Us task unless you play more than 1 round of Among Us)',
 			type: 'daily',
 			points: 2,
-			category: 'Productivity',
+			category: 'productivity',
 			amount: 2,
 		},
 		{
-			name: 'Be productive for 5 hours after school on a schoolday, 10 hours on a non-schoolday',
+			name: 'Be productive for 5 hours after school on a school day, 10 hours on a non-school day',
 			type: 'daily',
 			points: 3,
-			category: 'Productivity',
+			category: 'productivity',
 			amount: 3,
 		},
-
 		{
 			name: '',
 			type: 'daily',
 			points: 0,
-			category: '',
+			category: 'insane',
 			amount: 4,
 		},
-		// {
-		// 	name: '',
-		// 	type: 'daily',
-		// 	points: 0,
-		// 	category: '',
-		// amount: 0,
-
-		// },
 	];
 
 	return (
@@ -260,51 +244,44 @@ function Multi() {
 			name: 'Exercise for an hour (one point per hour, PE does not count)',
 			type: 'multi',
 			points: 5,
-			category: 'Health',
+			category: 'health',
 			amount: 5,
 		},
 		{
-			name: "Go outside for an hour (one point per hour, school doesnt count, you can't be inside a building)",
+			name: "Go outside for an hour (one point per hour, school doesn't count, you can't be inside a building)",
 			type: 'multi',
 			points: 3,
-			category: 'Health',
+			category: 'health',
 			amount: 14,
 		},
 		{
 			name: 'Meditate for at least 20 minutes (one point per 20 minutes)',
 			type: 'multi',
 			points: 1,
-			category: 'Health',
+			category: 'health',
 			amount: 0,
 		},
 		{
 			name: 'Do a T-25 video (fitness video)',
 			type: 'multi',
 			points: 1,
-			category: 'Health',
+			category: 'health',
 			amount: 0,
 		},
 		{
 			name: 'Times homework was late (one point for each late assignment, least points win)',
 			type: 'multi',
 			points: 3,
-			category: 'Productivity',
+			category: 'productivity',
 			amount: 0,
 		},
 		{
 			name: "Read a book that was not assigned in school (must finish book. can't be a children's book/manga 200 page minimum)",
 			type: 'multi',
 			points: 2,
-			category: 'Productivity',
+			category: 'productivity',
 			amount: 0,
 		},
-		// {
-		// 	name: '',
-		// 	type: 'multi',
-		// 	points: 0,
-		// 	category: '',
-		// 	amount: 0,
-		// },
 	];
 
 	return (

@@ -1,8 +1,9 @@
 interface Task {
 	name: string;
+	// description?: string;
 	type: 'daily' | 'multi' | 'single';
 	points: number;
-	category: string; // TODO: maybe set this to be a list of set strings
+	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
 	amount?: number;
 	users?: { name: string; amount: number }[];
 }

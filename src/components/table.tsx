@@ -11,6 +11,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table';
 import { ArrowUpDown, ChevronDown } from 'lucide-react';
+import { MdCheck, MdClear } from 'react-icons/md';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -31,7 +32,6 @@ import {
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -39,6 +39,8 @@ import {
 
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useState } from 'react';
+import { data } from '@/lib/test';
+import { convertCategory } from '@/lib/utils';
 
 interface Task {
 	name: string;
@@ -51,150 +53,12 @@ interface Task {
 
 const users = ['Steve Jobs', 'Lior', 'Human', 'Name', 'Empty'];
 
-function user(): { name: string; amount: number }[] {
-	return users.map((user) => {
-		return { name: user, amount: Math.floor(Math.random() * 100) };
-	});
-}
-
-const data: Task[] = [
-	{
-		name: 'Exercise for an hour (one point per hour, PE does not count)',
-		type: 'multi',
-		points: 5,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: "Go outside for an hour (one point per hour, school doesn't count, you can't be inside a building)",
-		type: 'multi',
-		points: 3,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: 'Meditate for at least 20 minutes (one point per 20 minutes)',
-		type: 'multi',
-		points: 1,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: 'Do a T-25 video (fitness video)',
-		type: 'multi',
-		points: 1,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: 'Times homework was late (one point for each late assignment, least points win)',
-		type: 'multi',
-		points: 3,
-		category: 'Productivity',
-		users: user(),
-	},
-	{
-		name: "Read a book that was not assigned in school (must finish book. can't be a children's book/manga 200 page minimum)",
-		type: 'multi',
-		points: 2,
-		category: 'Productivity',
-		users: user(),
-	},
-	{
-		name: 'Go to sleep before 1:30 AM',
-		type: 'daily',
-		points: 2,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: 'Drink 6 glasses of water every day (although 8 is better)',
-		type: 'daily',
-		points: 4,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: 'Have at least 6 hours of sleep that night (obviously only one point a day)',
-		type: 'daily',
-		points: 2,
-		category: 'Health',
-		users: user(),
-	},
-	{
-		name: 'Watch the news (max of one point per day)',
-		type: 'daily',
-		points: 1,
-		category: 'Become Normal',
-		users: user(),
-	},
-	{
-		name: 'Go a day without video games (Does not conflict with the Play Among Us task unless you play more than 1 round of Among Us)',
-		type: 'daily',
-		points: 2,
-		category: 'Productivity',
-		users: user(),
-	},
-	{
-		name: 'Be productive for 5 hours after school on a school day, 10 hours on non-school days',
-		type: 'daily',
-		points: 3,
-		category: 'Productivity',
-		users: user(),
-	},
-	{
-		name: "Talk with someone you haven't talked to for 5+ years",
-		type: 'single',
-		points: 2,
-		category: 'Become Normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
-	},
-	{
-		name: 'Go to prom',
-		type: 'single',
-		points: 5,
-		category: 'Become Normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
-	},
-	{
-		name: "Go on a date (needs proof, can't be with other participants, must be IRL, must be romantic, must be over 1 hour, must be with preferred gender)",
-		type: 'single',
-		points: 5,
-		category: 'Become Normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
-	},
-	{
-		name: "Eat something which you haven't ate before",
-		type: 'single',
-		points: 1,
-		category: 'Become Normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
-	},
-	{
-		name: "Go to someplace far away (10+ miles) which you haven't gone before",
-		type: 'single',
-		points: 1,
-		category: 'Become Normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
-	},
-];
-
 const baseColumns: ColumnDef<Task>[] = [
 	{
 		accessorKey: 'name',
 		enableHiding: false,
 		header: 'Task',
-		cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>,
+		cell: ({ row }) => <div>{row.getValue('name')}</div>,
 	},
 	{
 		accessorKey: 'category',
@@ -210,28 +74,39 @@ const baseColumns: ColumnDef<Task>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div>{row.getValue('category')}</div>,
+		cell: ({ row }) => <div>{convertCategory(row.getValue('category'))}</div>,
 	},
 	{
 		accessorKey: 'points',
 		enableHiding: false,
-		header: () => <div className="text-right">Amount</div>,
-		cell: ({ row }) => (
-			<div className="text-right font-medium">{row.getValue('points')}</div>
-		),
+		header: () => <div>VPs</div>,
+		cell: ({ row }) => <div>{row.getValue('points')}</div>,
 	},
 ];
 
-const userColumns: ColumnDef<Task>[] = users.map((user, index) => ({
-	accessorFn: (row) => {
+const userColumns: ColumnDef<Task>[] = users.map((user) => ({
+	accessorFn: (row): [number, string] => {
 		const userAmount = row.users?.find((u) => u.name === user)?.amount;
-		return userAmount !== undefined ? userAmount : '';
+		return [userAmount !== undefined ? userAmount : 0, row.type];
 	},
-	id: `user_${index + 1}`,
-	header: user,
-	cell: ({ getValue }) => (
-		<div className="capitalize">{getValue() as string}</div>
-	),
+	id: user,
+	header: () => <div className="w-max">{user}</div>,
+	cell: ({ getValue }) => {
+		const value = getValue() as [number, string];
+		return (
+			<div className="flex items-end justify-end">
+				{value[1] === 'single' ? (
+					value[0] ? (
+						<MdCheck className="size-4" />
+					) : (
+						<MdClear className="size-4" />
+					)
+				) : (
+					value[0]
+				)}
+			</div>
+		);
+	},
 }));
 
 const columns: ColumnDef<Task>[] = [...baseColumns, ...userColumns];
@@ -273,8 +148,7 @@ export function TaskTable() {
 	return (
 		<Card className="flex h-[80vh] flex-col">
 			<CardHeader>
-				<CardTitle>Table</CardTitle>
-				<CardDescription></CardDescription>
+				<CardTitle className="text-3xl">Table</CardTitle>
 			</CardHeader>
 			<CardContent className="flex flex-col justify-start">
 				<div className="flex items-center py-4">
@@ -333,6 +207,7 @@ export function TaskTable() {
 							))}
 						</TableHeader>
 						<TableBody>
+							{/* TODO: Add a card onto the task name to display description and type of task (single/daily/multi) */}
 							{table.getRowModel().rows?.length ? (
 								table.getRowModel().rows.map((row) => (
 									<TableRow
