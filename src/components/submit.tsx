@@ -17,9 +17,11 @@ import {
 	SelectValue,
 } from './ui/select';
 import { ScrollArea } from './ui/scroll-area';
-import { SingleTask, DailyTask } from './task';
+import { SingleTask, DailyTask, MultiTask } from './task';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
+import { HiPlus, HiMinus } from 'react-icons/hi2';
+import { Input } from './ui/input';
 
 export default function Submit() {
 	const [type, setType] = useState<string>('');
@@ -51,26 +53,7 @@ export default function Submit() {
 				) : type == 'daily' ? (
 					<Daily />
 				) : type == 'multi' ? (
-					<>
-						<Label className="text-lg font-medium" id="category">
-							Category
-						</Label>
-						<Select defaultValue="health">
-							<SelectTrigger className="mt-1 w-[40%]" id="category">
-								<SelectValue placeholder="Select a category" />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectGroup>
-									<SelectLabel>Category</SelectLabel>
-									<SelectItem value="health">Health</SelectItem>
-									<SelectItem value="normal">Become Normal</SelectItem>
-									<SelectItem value="cool">POV: Cool</SelectItem>
-									<SelectItem value="productivity">Productivity</SelectItem>
-									<SelectItem value="insane">INSANE</SelectItem>
-								</SelectGroup>
-							</SelectContent>
-						</Select>
-					</>
+					<Multi />
 				) : (
 					<></>
 				)}
@@ -264,6 +247,116 @@ function Daily() {
 				placeholder="Put a bit more info about your task completion"
 				className="mt-1 h-max resize-none"
 			/>
+		</>
+	);
+}
+
+function Multi() {
+	const [selected, setSelected] = useState<Task | null>(null);
+	const [increment, setIncrement] = useState<number>(1);
+
+	const tasks: Task[] = [
+		{
+			name: 'Exercise for an hour (one point per hour, PE does not count)',
+			type: 'multi',
+			points: 5,
+			category: 'Health',
+			amount: 5,
+		},
+		{
+			name: "Go outside for an hour (one point per hour, school doesnt count, you can't be inside a building)",
+			type: 'multi',
+			points: 3,
+			category: 'Health',
+			amount: 14,
+		},
+		{
+			name: 'Meditate for at least 20 minutes (one point per 20 minutes)',
+			type: 'multi',
+			points: 1,
+			category: 'Health',
+			amount: 0,
+		},
+		{
+			name: 'Do a T-25 video (fitness video)',
+			type: 'multi',
+			points: 1,
+			category: 'Health',
+			amount: 0,
+		},
+		{
+			name: 'Times homework was late (one point for each late assignment, least points win)',
+			type: 'multi',
+			points: 3,
+			category: 'Productivity',
+			amount: 0,
+		},
+		{
+			name: "Read a book that was not assigned in school (must finish book. can't be a children's book/manga 200 page minimum)",
+			type: 'multi',
+			points: 2,
+			category: 'Productivity',
+			amount: 0,
+		},
+		// {
+		// 	name: '',
+		// 	type: 'multi',
+		// 	points: 0,
+		// 	category: '',
+		// 	amount: 0,
+		// },
+	];
+
+	return (
+		<>
+			<Label htmlFor="tasks" className="text-lg font-medium">
+				Tasks
+			</Label>
+			<div className="mb-4 mt-1 flex h-[30vh] flex-col">
+				<div className="grid w-full grid-cols-[40%,25%,10%,10%] gap-[5%] rounded-t-md border-x border-t px-[5%] py-2 text-lg font-medium">
+					<h3>Name</h3>
+					<h3>Category</h3>
+					<h3>Points</h3>
+					<h3>#</h3>
+				</div>
+				<ScrollArea
+					className="h-full w-full rounded-b-md border border-t-2"
+					id="tasks">
+					<div className="my-3 flex flex-col gap-3">
+						{tasks.map((task) => (
+							<MultiTask
+								task={task}
+								selected={selected}
+								setSelected={setSelected}
+							/>
+						))}
+					</div>
+				</ScrollArea>
+			</div>
+			<div className="grid grid-cols-[75%,20%] gap-[5%]">
+				<Label htmlFor="info" className="text-lg font-medium">
+					More info
+				</Label>
+				<Textarea
+					id="info"
+					placeholder="Put a bit more info about your task completion"
+					className="row-start-2 mt-1 h-max resize-none"
+				/>
+
+				<Label htmlFor="increment" className="text-lg font-medium">
+					Increment
+				</Label>
+				<Input
+					defaultValue={increment}
+					className="mb-4 mt-1"
+					type="number"
+					onChange={(e) => {
+						setIncrement(+e.target.value);
+						console.log(+e.target.value);
+					}}
+					min={1}
+				/>
+			</div>
 		</>
 	);
 }

@@ -58,3 +58,27 @@ export function DailyTask({
 		</Button>
 	);
 }
+
+export function MultiTask({
+	task,
+	selected,
+	setSelected,
+}: {
+	task: Task;
+	selected: Task | null;
+	setSelected: (t: Task | null) => void;
+}) {
+	return (
+		<Button
+			variant={task.name != selected?.name ? 'outline' : 'selected'}
+			className="mx-auto w-[95%] border px-6 py-2 text-start"
+			onClick={() => setSelected(task)}>
+			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">
+				<h1 className="truncate overflow-ellipsis">{task.name}</h1>
+				<p className="truncate overflow-ellipsis">{task.category}</p>
+				<p>{task.points}</p>
+				<p>{task.amount}</p>
+			</div>
+		</Button>
+	);
+}
