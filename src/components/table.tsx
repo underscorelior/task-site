@@ -1,5 +1,3 @@
-'use client';
-
 import {
 	ColumnDef,
 	ColumnFiltersState,
@@ -12,16 +10,13 @@ import {
 	getSortedRowModel,
 	useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, ChevronDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
@@ -45,112 +40,161 @@ import {
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useState } from 'react';
 
-const data: Payment[] = [
+interface Task {
+	name: string;
+	type: 'daily' | 'multi' | 'single';
+	points: number;
+	category: string;
+	amount?: number;
+	users?: { name: string; amount: number }[];
+}
+
+const users = ['Steve Jobs', 'Lior', 'Human', 'Name', 'Empty'];
+
+function user(): { name: string; amount: number }[] {
+	return users.map((user) => {
+		return { name: user, amount: Math.floor(Math.random() * 100) };
+	});
+}
+
+const data: Task[] = [
 	{
-		id: 'm5gr84i9',
-		amount: 316,
-		status: 'success',
-		email: 'ken99@yahoo.com',
+		name: 'Exercise for an hour (one point per hour, PE does not count)',
+		type: 'multi',
+		points: 5,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: '3u1reuv4',
-		amount: 242,
-		status: 'success',
-		email: 'Abe45@gmail.com',
+		name: "Go outside for an hour (one point per hour, school doesn't count, you can't be inside a building)",
+		type: 'multi',
+		points: 3,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: 'derv1ws0',
-		amount: 837,
-		status: 'processing',
-		email: 'Monserrat44@gmail.com',
+		name: 'Meditate for at least 20 minutes (one point per 20 minutes)',
+		type: 'multi',
+		points: 1,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: '5kma53ae',
-		amount: 874,
-		status: 'success',
-		email: 'Silas22@gmail.com',
+		name: 'Do a T-25 video (fitness video)',
+		type: 'multi',
+		points: 1,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: 'bhqecj4p',
-		amount: 721,
-		status: 'failed',
-		email: 'carmella@hotmail.com',
+		name: 'Times homework was late (one point for each late assignment, least points win)',
+		type: 'multi',
+		points: 3,
+		category: 'Productivity',
+		users: user(),
 	},
 	{
-		id: 'm5gr84i9',
-		amount: 316,
-		status: 'success',
-		email: 'ken99@yahoo.com',
+		name: "Read a book that was not assigned in school (must finish book. can't be a children's book/manga 200 page minimum)",
+		type: 'multi',
+		points: 2,
+		category: 'Productivity',
+		users: user(),
 	},
 	{
-		id: '3u1reuv4',
-		amount: 242,
-		status: 'success',
-		email: 'Abe45@gmail.com',
+		name: 'Go to sleep before 1:30 AM',
+		type: 'daily',
+		points: 2,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: 'derv1ws0',
-		amount: 837,
-		status: 'processing',
-		email: 'Monserrat44@gmail.com',
+		name: 'Drink 6 glasses of water every day (although 8 is better)',
+		type: 'daily',
+		points: 4,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: '5kma53ae',
-		amount: 874,
-		status: 'success',
-		email: 'Silas22@gmail.com',
+		name: 'Have at least 6 hours of sleep that night (obviously only one point a day)',
+		type: 'daily',
+		points: 2,
+		category: 'Health',
+		users: user(),
 	},
 	{
-		id: 'bhqecj4p',
-		amount: 721,
-		status: 'failed',
-		email: 'carmella@hotmail.com',
+		name: 'Watch the news (max of one point per day)',
+		type: 'daily',
+		points: 1,
+		category: 'Become Normal',
+		users: user(),
 	},
 	{
-		id: 'm5gr84i9',
-		amount: 316,
-		status: 'success',
-		email: 'ken99@yahoo.com',
+		name: 'Go a day without video games (Does not conflict with the Play Among Us task unless you play more than 1 round of Among Us)',
+		type: 'daily',
+		points: 2,
+		category: 'Productivity',
+		users: user(),
 	},
 	{
-		id: '3u1reuv4',
-		amount: 242,
-		status: 'success',
-		email: 'Abe45@gmail.com',
+		name: 'Be productive for 5 hours after school on a school day, 10 hours on non-school days',
+		type: 'daily',
+		points: 3,
+		category: 'Productivity',
+		users: user(),
 	},
 	{
-		id: 'derv1ws0',
-		amount: 837,
-		status: 'processing',
-		email: 'Monserrat44@gmail.com',
+		name: "Talk with someone you haven't talked to for 5+ years",
+		type: 'single',
+		points: 2,
+		category: 'Become Normal',
+		users: users.map((user) => {
+			return { name: user, amount: Math.floor(Math.random() * 2) };
+		}),
 	},
 	{
-		id: '5kma53ae',
-		amount: 874,
-		status: 'success',
-		email: 'Silas22@gmail.com',
+		name: 'Go to prom',
+		type: 'single',
+		points: 5,
+		category: 'Become Normal',
+		users: users.map((user) => {
+			return { name: user, amount: Math.floor(Math.random() * 2) };
+		}),
 	},
 	{
-		id: 'bhqecj4p',
-		amount: 721,
-		status: 'failed',
-		email: 'carmella@hotmail.com',
+		name: "Go on a date (needs proof, can't be with other participants, must be IRL, must be romantic, must be over 1 hour, must be with preferred gender)",
+		type: 'single',
+		points: 5,
+		category: 'Become Normal',
+		users: users.map((user) => {
+			return { name: user, amount: Math.floor(Math.random() * 2) };
+		}),
+	},
+	{
+		name: "Eat something which you haven't ate before",
+		type: 'single',
+		points: 1,
+		category: 'Become Normal',
+		users: users.map((user) => {
+			return { name: user, amount: Math.floor(Math.random() * 2) };
+		}),
+	},
+	{
+		name: "Go to someplace far away (10+ miles) which you haven't gone before",
+		type: 'single',
+		points: 1,
+		category: 'Become Normal',
+		users: users.map((user) => {
+			return { name: user, amount: Math.floor(Math.random() * 2) };
+		}),
 	},
 ];
 
-export type Payment = {
-	id: string;
-	amount: number;
-	status: 'pending' | 'processing' | 'success' | 'failed';
-	email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+const baseColumns: ColumnDef<Task>[] = [
 	{
-		accessorKey: 'task',
+		accessorKey: 'name',
 		enableHiding: false,
 		header: 'Task',
-		cell: ({ row }) => <div className="capitalize">{row.getValue('task')}</div>,
+		cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>,
 	},
 	{
 		accessorKey: 'category',
@@ -159,86 +203,38 @@ export const columns: ColumnDef<Payment>[] = [
 			return (
 				<Button
 					variant="ghost"
-					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+					className="text-start">
 					Category
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			);
 		},
-		cell: ({ row }) => (
-			<div className="lowercase">{row.getValue('category')}</div>
-		),
+		cell: ({ row }) => <div>{row.getValue('category')}</div>,
 	},
 	{
-		accessorKey: 'amount',
+		accessorKey: 'points',
 		enableHiding: false,
 		header: () => <div className="text-right">Amount</div>,
-		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue('amount'));
-
-			// Format the amount as a dollar amount
-			const formatted = new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: 'USD',
-			}).format(amount);
-
-			return <div className="text-right font-medium">{formatted}</div>;
-		},
+		cell: ({ row }) => (
+			<div className="text-right font-medium">{row.getValue('points')}</div>
+		),
 	},
-	{
-		id: 'user_1',
-		header: 'Steve Jobs',
-		cell: ({ row }) => <div className="capitalize">Steve Jobs</div>,
-	},
-	{
-		id: 'user_2',
-		header: 'Lior',
-		cell: ({ row }) => <div className="capitalize">Lior</div>,
-	},
-	{
-		id: 'user_3',
-		header: 'Human',
-		cell: ({ row }) => <div className="capitalize">Human</div>,
-	},
-	{
-		id: 'user_4',
-		header: 'Name',
-		cell: ({ row }) => <div className="capitalize">Name</div>,
-	},
-	{
-		id: 'user_5',
-		header: 'Empty',
-		cell: ({ row }) => <div className="capitalize">Empty</div>,
-	},
-	// {
-	// 	id: 'actions',
-	// 	enableHiding: false,
-	// 	cell: ({ row }) => {
-	// 		const payment = row.original;
-
-	// 		return (
-	// 			<DropdownMenu>
-	// 				<DropdownMenuTrigger asChild>
-	// 					<Button variant="ghost" className="h-8 w-8 p-0">
-	// 						<span className="sr-only">Open menu</span>
-	// 						<MoreHorizontal className="h-4 w-4" />
-	// 					</Button>
-	// 				</DropdownMenuTrigger>
-	// 				<DropdownMenuContent align="end">
-	// 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
-	// 					<DropdownMenuItem
-	// 						onClick={() => navigator.clipboard.writeText(payment.id)}>
-	// 						Copy payment ID
-	// 					</DropdownMenuItem>
-	// 					<DropdownMenuSeparator />
-	// 					<DropdownMenuItem>View customer</DropdownMenuItem>
-	// 					<DropdownMenuItem>View payment details</DropdownMenuItem>
-	// 				</DropdownMenuContent>
-	// 			</DropdownMenu>
-	// 		);
-	// 	},
-	// },
 ];
+
+const userColumns: ColumnDef<Task>[] = users.map((user, index) => ({
+	accessorFn: (row) => {
+		const userAmount = row.users?.find((u) => u.name === user)?.amount;
+		return userAmount !== undefined ? userAmount : '';
+	},
+	id: `user_${index + 1}`,
+	header: user,
+	cell: ({ getValue }) => (
+		<div className="capitalize">{getValue() as string}</div>
+	),
+}));
+
+const columns: ColumnDef<Task>[] = [...baseColumns, ...userColumns];
 
 export function TaskTable() {
 	const size = useWindowSize();
@@ -266,8 +262,8 @@ export function TaskTable() {
 		},
 		initialState: {
 			pagination: {
-				pageSize: Math.round(
-					((size.height || window.innerHeight) * 0.8 - 186) / 60,
+				pageSize: Math.floor(
+					((size.height || window.innerHeight) * 0.8 - 282) / 53,
 				),
 				pageIndex: 0,
 			},
@@ -277,11 +273,7 @@ export function TaskTable() {
 	return (
 		<Card className="flex h-[80vh] flex-col">
 			<CardHeader>
-				<CardTitle>
-					Verify {size.height} {window.innerHeight}{' '}
-					{Math.round(((size.height || window.innerHeight) * 0.8 - 186) / 60)}{' '}
-					{((size.height || window.innerHeight) * 0.8 - 186) / 60}
-				</CardTitle>
+				<CardTitle>Table</CardTitle>
 				<CardDescription></CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col justify-start">
