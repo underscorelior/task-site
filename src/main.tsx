@@ -13,6 +13,7 @@ import {
 } from './components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import Submit from './components/submit';
+import { TaskTable } from './components/table';
 
 export function App() {
 	return (
@@ -34,14 +35,7 @@ export function App() {
 						</TabsTrigger>
 					</TabsList>
 					<TabsContent value="table">
-						<Card className="h-[75vh]">
-							<CardHeader>
-								<CardTitle>Table</CardTitle>
-								<CardDescription></CardDescription>
-							</CardHeader>
-							<CardContent></CardContent>
-							<CardFooter></CardFooter>
-						</Card>
+						<TaskTable />
 					</TabsContent>
 					<TabsContent value="submit">
 						<Submit />
