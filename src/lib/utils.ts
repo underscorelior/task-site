@@ -16,3 +16,14 @@ const categoryIDs = {
 export function convertCategory(category: Task['category']): string {
 	return categoryIDs[category];
 }
+
+const typeIDs = {
+	single: 'One-time Task',
+	multi: 'Task',
+	daily: 'Daily Task',
+	weekly: 'Weekly Task',
+};
+
+export function convertType(type: Task['type']): string {
+	return typeIDs[type];
+}
