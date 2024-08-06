@@ -1,11 +1,10 @@
 type Task = {
 	name: string;
-	description?: string;
+	description: string;
 	type: 'daily' | 'multi' | 'single' | 'weekly';
 	points: number;
 	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
-	amount?: number;
-	users?: { name: string; amount: number }[];
+	users: { name: string; amount: number }[];
 };
 
 interface User {

@@ -1,11 +1,21 @@
-import { convertCategory, convertType } from '@/lib/utils';
+import { cn, convertCategory, convertType } from '@/lib/utils';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 import { Separator } from './ui/separator';
 
-export default function TaskHoverCard({ task }: { task: Task }) {
+export default function TaskHoverCard({
+	task,
+	className,
+}: {
+	task: Task;
+	className?: string;
+}) {
 	return (
 		<HoverCard>
-			<HoverCardTrigger className="truncate overflow-ellipsis font-medium underline-offset-4 hover:underline">
+			<HoverCardTrigger
+				className={cn(
+					'w-min truncate overflow-ellipsis font-medium underline-offset-4 hover:underline',
+					className,
+				)}>
 				{task.name}
 			</HoverCardTrigger>
 			<HoverCardContent className="flex w-auto max-w-sm flex-col gap-2">

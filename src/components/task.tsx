@@ -1,7 +1,5 @@
-import { convertCategory, convertType } from '@/lib/utils';
+import { convertCategory } from '@/lib/utils';
 import { Button } from './ui/button';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
-import { Separator } from './ui/separator';
 import TaskHoverCard from './task-hover';
 
 export function SingleTask({
@@ -20,10 +18,10 @@ export function SingleTask({
 			onClick={() => setSelected(task)}>
 			<div className="grid w-full grid-cols-[45%,35%,10%] items-center justify-between gap-[5%]">
 				<TaskHoverCard task={task} />
-				<p className="truncate overflow-ellipsis">
+				<p className="truncate overflow-ellipsis font-normal">
 					{convertCategory(task.category)}
 				</p>
-				<p>{task.points}</p>
+				<p className="font-mono">{task.points}</p>
 			</div>
 		</Button>
 	);
@@ -56,11 +54,11 @@ export function DailyTask({
 			}}>
 			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">
 				<TaskHoverCard task={task} />
-				<p className="truncate overflow-ellipsis">
+				<p className="truncate overflow-ellipsis font-normal">
 					{convertCategory(task.category)}
 				</p>
-				<p>{task.points}</p>
-				<p>{task.amount}</p>
+				<p className="font-mono">{task.points}</p>
+				<p className="font-mono">{task.users[0].amount}</p>
 			</div>
 		</Button>
 	);
@@ -82,11 +80,11 @@ export function MultiTask({
 			onClick={() => setSelected(task)}>
 			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">
 				<TaskHoverCard task={task} />
-				<p className="truncate overflow-ellipsis">
+				<p className="truncate overflow-ellipsis font-normal">
 					{convertCategory(task.category)}
 				</p>
-				<p>{task.points}</p>
-				<p>{task.amount}</p>
+				<p className="font-mono">{task.points}</p>
+				<p className="font-mono">{task.amount}</p>
 			</div>
 		</Button>
 	);

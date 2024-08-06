@@ -203,7 +203,7 @@ function Multi({
 					</div>
 				</ScrollArea>
 			</div>
-			<div className="grid grid-cols-[75%,20%] gap-[5%]">
+			<div className="grid grid-cols-[75%,20%] gap-x-[5%]">
 				<Label htmlFor="info" className="text-lg font-medium">
 					More info
 				</Label>

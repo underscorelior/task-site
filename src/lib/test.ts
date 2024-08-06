@@ -59,6 +59,7 @@ export const data: Task[] = [
 	},
 	{
 		name: 'Go to sleep before 1:30 AM',
+		description: '',
 		type: 'daily',
 		points: 2,
 		category: 'health',
@@ -108,6 +109,7 @@ export const data: Task[] = [
 	},
 	{
 		name: "Talk with someone you haven't talked to for 5+ years",
+		description: '',
 		type: 'single',
 		points: 2,
 		category: 'normal',
@@ -117,6 +119,7 @@ export const data: Task[] = [
 	},
 	{
 		name: 'Go to prom',
+		description: '',
 		type: 'single',
 		points: 5,
 		category: 'normal',
@@ -137,6 +140,7 @@ export const data: Task[] = [
 	},
 	{
 		name: "Eat something which you haven't ate before",
+		description: '',
 		type: 'single',
 		points: 1,
 		category: 'normal',

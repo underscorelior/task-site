@@ -1,9 +1,3 @@
-// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-// TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Button } from './button';
@@ -33,19 +27,19 @@ import {
 } from './select';
 import { ToggleGroup, ToggleGroupItem } from './toggle-group';
 import { data } from '@/lib/test';
+import TaskHoverCard from '../task-hover';
+import { Textarea } from './textarea';
 
 export function CreateSelect() {
 	return (
-		<ScrollArea className="h-[35vh] rounded-md border" type="scroll">
+		<ScrollArea className="h-[35vh] rounded-md border">
 			<div className="p-4">
 				{data.map((task, idx) => (
 					<>
 						<div
 							key={idx}
-							className="flex w-full flex-row items-center justify-between gap-4">
-							<p className="max-w-[70%] truncate overflow-ellipsis text-sm">
-								{task.name}
-							</p>
+							className="flex flex-row items-center justify-between gap-4">
+							<TaskHoverCard task={task} className="text-sm font-normal" />
 							<TaskDialog task={task} />
 						</div>
 						<Separator className="my-2" />
@@ -73,31 +67,43 @@ function TaskDialog({ task }: { task?: Task }) {
 					</Button>
 				)}
 			</DialogTrigger>
-			<DialogContent className="w-[40%]">
+			<DialogContent className="h-max w-[40%]">
 				<DialogHeader>
-					<DialogTitle className="text-xl">
-						{task ? `Editing ${task.name}` : 'Create A New Task'}
+					<DialogTitle className="text-2xl">
+						{task ? `Editing "${task.name}"` : 'Create A New Task'}
 					</DialogTitle>
 					<DialogDescription></DialogDescription>
 				</DialogHeader>
-				<div>
+				<div className="h-full">
 					<Label className="text-base font-medium" htmlFor="name">
 						Name
 					</Label>
-					<Input id="name" defaultValue={'name'} className="mb-4" />
+					<Input
+						id="name"
+						defaultValue={task ? task.name : ''}
+						placeholder="Task Name"
+						className="mb-4"
+						aria-rowcount={2}
+					/>
 
 					<Label className="text-base font-medium" htmlFor="desc">
 						Description
 					</Label>
-					<Input id="desc" defaultValue={'description'} className="mb-4" />
+					<Textarea
+						id="desc"
+						defaultValue={task ? task.description : ''}
+						placeholder="Task Description"
+						className="mb-4 h-auto resize-none"
+					/>
 
 					<Label className="text-base font-medium" htmlFor="vp">
 						# of VPs
 					</Label>
 					<Input
 						id="vp"
-						defaultValue={0}
-						className="mb-4 w-[25%]"
+						defaultValue={task && task.points}
+						placeholder="Task VP Worth"
+						className="mb-4 w-[30%]"
 						type="number"
 					/>
 
@@ -107,7 +113,7 @@ function TaskDialog({ task }: { task?: Task }) {
 					<div className="mb-4 flex flex-row items-center gap-2" id="type">
 						<ToggleGroup
 							type="single"
-							defaultValue="single"
+							defaultValue={task ? task.type : ''} // TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
 							variant={'outline'}>
 							<ToggleGroupItem value="single">Single</ToggleGroupItem>
 							<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
@@ -118,7 +124,7 @@ function TaskDialog({ task }: { task?: Task }) {
 					<Label className="text-base font-medium" id="category">
 						Category
 					</Label>
-					<Select defaultValue="health">
+					<Select defaultValue={task ? task.category : ''}>
 						<SelectTrigger className="w-[40%]">
 							<SelectValue placeholder="Select a category" />
 						</SelectTrigger>
