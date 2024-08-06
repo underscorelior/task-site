@@ -24,29 +24,13 @@ const allowCors = (fn) => async (req, res) => {
 	return await fn(req, res);
 };
 
-// TODO: Make it so that duplicate names wont be possible
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, pfp } = req.query;
+		let { name, pfp, uuid } = req.query;
 
 		if (Array.isArray(name) || Array.isArray(pfp)) {
-			throw 'We ran into an error when creating this account, please try again.';
+			throw 'We ran into an error when modifying this account, please try again.';
 		}
-
-		if (!name) {
-			return res
-				.status(400)
-				.json({ message: 'Missing name in query parameters' });
-		}
-
-		const { data, error } = await supabase
-			.from('users')
-			.insert({ name, pfp })
-			.select();
-
-		if (error) throw error;
-
-		if (data) return res.status(200).json(data);
 	} catch (error) {
 		return res.status(500).json({
 			message: 'An error occurred while processing the request',

@@ -25,9 +25,10 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
+import { Toaster } from 'react-hot-toast';
 
 export default function App() {
-	const [hasCode, setHasCode] = useState<boolean>(false);
+	const [hasCode, setHasCode] = useState<boolean>(true);
 
 	useEffect(() => {
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
@@ -39,6 +40,7 @@ export default function App() {
 
 	return (
 		<main className="grid min-h-screen w-full grid-cols-[22.5%,61%,16.5%] items-center justify-center gap-x-4 overflow-x-hidden">
+			<Toaster />
 			{!hasCode && <CodeDialog setHasCode={setHasCode} />}
 			<section className="w-full max-w-sm">
 				<Sidebar hasCode={hasCode} />

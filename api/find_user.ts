@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Database } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
+import { serialize } from 'v8';
 
 const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
@@ -24,29 +25,30 @@ const allowCors = (fn) => async (req, res) => {
 	return await fn(req, res);
 };
 
-// TODO: Make it so that duplicate names wont be possible
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, pfp } = req.query;
+		let { uuid } = req.query;
 
-		if (Array.isArray(name) || Array.isArray(pfp)) {
-			throw 'We ran into an error when creating this account, please try again.';
-		}
-
-		if (!name) {
+		if (!uuid) {
 			return res
 				.status(400)
-				.json({ message: 'Missing name in query parameters' });
+				.json({ message: 'Missing uuid in query parameters' });
 		}
 
-		const { data, error } = await supabase
-			.from('users')
-			.insert({ name, pfp })
-			.select();
+		const { data, error } = await supabase.from('users').select();
 
 		if (error) throw error;
 
-		if (data) return res.status(200).json(data);
+		if (data.some((user) => user.id == uuid))
+			return res.status(200).json(
+				data.find((user) => {
+					if (user.id == uuid) return user;
+				}),
+			);
+		else
+			return res
+				.status(404)
+				.json({ message: `User with UUID ${uuid} not found` });
 	} catch (error) {
 		return res.status(500).json({
 			message: 'An error occurred while processing the request',
