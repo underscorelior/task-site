@@ -239,8 +239,8 @@ export function TaskTable() {
 													width: cell.column.columnDef.size,
 													maxWidth: cell.column.columnDef.size,
 													overflow: 'hidden',
-													'text-overflow': 'ellipsis',
-													'white-space': 'nowrap',
+													textOverflow: 'ellipsis',
+													whiteSpace: 'nowrap',
 												}}>
 												{flexRender(
 													cell.column.columnDef.cell,

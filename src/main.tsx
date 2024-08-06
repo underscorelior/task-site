@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import Submit from './components/submit';
 import { TaskTable } from './components/table';
 
-export function App() {
+export default function App() {
 	return (
 		<main className="grid min-h-screen w-full grid-cols-[22.5%,61%,16.5%] items-center justify-center gap-x-4 overflow-x-hidden">
 			<section className="w-full max-w-sm">

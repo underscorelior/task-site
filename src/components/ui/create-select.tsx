@@ -113,7 +113,7 @@ function TaskDialog({ task }: { task?: Task }) {
 					<div className="mb-4 flex flex-row items-center gap-2" id="type">
 						<ToggleGroup
 							type="single"
-							defaultValue={task ? task.type : ''} // TODO: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+							defaultValue={task ? task.type : ''} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
 							variant={'outline'}>
 							<ToggleGroupItem value="single">Single</ToggleGroupItem>
 							<ToggleGroupItem value="daily">Daily</ToggleGroupItem>

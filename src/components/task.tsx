@@ -84,7 +84,7 @@ export function MultiTask({
 					{convertCategory(task.category)}
 				</p>
 				<p className="font-mono">{task.points}</p>
-				<p className="font-mono">{task.amount}</p>
+				<p className="font-mono">{task.users[0].amount}</p>
 			</div>
 		</Button>
 	);

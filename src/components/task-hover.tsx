@@ -31,7 +31,7 @@ export default function TaskHoverCard({
 
 				<Separator className="h-[2px]" />
 
-				<div className="whitespace-normal text-[0.9375rem]">
+				<div className="whitespace-normal text-[0.9375rem] font-[450]">
 					{task.description}
 				</div>
 				<div>Category: {convertCategory(task.category)}</div>
