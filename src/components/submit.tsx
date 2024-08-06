@@ -25,6 +25,8 @@ import { data } from '@/lib/test';
 
 export default function Submit() {
 	const [type, setType] = useState<string>('');
+	const [selTasks, setSelTasks] = useState<Task[]>([]);
+	const [selected, setSelected] = useState<Task | null>(null);
 
 	return (
 		<Card className="flex h-[80vh] flex-col">
@@ -35,7 +37,12 @@ export default function Submit() {
 				<Label className="text-lg font-medium" id="type">
 					Type
 				</Label>
-				<Select onValueChange={setType}>
+				<Select
+					onValueChange={(s) => {
+						setType(s);
+						setSelTasks([]);
+						setSelected(null);
+					}}>
 					<SelectTrigger className="mb-4 mt-1 w-[40%]" id="type">
 						<SelectValue placeholder="Select a type" />
 					</SelectTrigger>
@@ -49,24 +56,29 @@ export default function Submit() {
 					</SelectContent>
 				</Select>
 				{type == 'single' ? (
-					<Single />
+					<Single selected={selected} setSelected={setSelected} />
 				) : type == 'daily' ? (
-					<Daily />
+					<Daily selTasks={selTasks} setSelTasks={setSelTasks} />
 				) : type == 'multi' ? (
-					<Multi />
+					<Multi selected={selected} setSelected={setSelected} />
 				) : (
 					<></>
 				)}
 			</CardContent>
 			<CardFooter className="ml-auto mt-auto">
-				<Button>Submit</Button>
+				<Button disabled={selected === null || !selTasks}>Submit</Button>
 			</CardFooter>
 		</Card>
 	);
 }
 
-function Single() {
-	const [selected, setSelected] = useState<Task | null>(null);
+function Single({
+	selected,
+	setSelected,
+}: {
+	selected: Task | null;
+	setSelected: (task: Task | null) => void;
+}) {
 	const tasks: Task[] = data.filter((task) => task.type === 'single');
 	return (
 		<>
@@ -80,7 +92,7 @@ function Single() {
 					<h3>Points</h3>
 				</div>
 				<ScrollArea
-					className="w-full rounded-b-md border border-t-2"
+					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
 					<div className="my-3 flex flex-col gap-3">
 						{tasks.map((task) => (
@@ -106,8 +118,13 @@ function Single() {
 	);
 }
 
-function Daily() {
-	const [selTasks, setSelTasks] = useState<Task[]>([]);
+function Daily({
+	selTasks,
+	setSelTasks,
+}: {
+	selTasks: Task[];
+	setSelTasks: (tasks: Task[]) => void;
+}) {
 	const tasks: Task[] = data.filter((task) => task.type === 'daily');
 
 	return (
@@ -149,8 +166,13 @@ function Daily() {
 	);
 }
 
-function Multi() {
-	const [selected, setSelected] = useState<Task | null>(null);
+function Multi({
+	selected,
+	setSelected,
+}: {
+	selected: Task | null;
+	setSelected: (task: Task | null) => void;
+}) {
 	const [increment, setIncrement] = useState<number>(1);
 
 	const tasks: Task[] = data.filter((task) => task.type == 'multi');

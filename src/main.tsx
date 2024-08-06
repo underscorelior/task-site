@@ -17,10 +17,10 @@ import { TaskTable } from './components/table';
 export function App() {
 	return (
 		<main className="grid min-h-screen w-full grid-cols-[21%,62.5%,16.5%] items-center justify-center gap-x-4 overflow-x-hidden">
-			<section className="w-full max-w-lg">
+			<section className="w-full max-w-sm">
 				<Sidebar />
 			</section>
-			<section className="mx-auto w-full max-w-5xl">
+			<section className="mx-auto w-full max-w-7xl">
 				<Tabs defaultValue="table">
 					<TabsList className="w-[33.33%]">
 						<TabsTrigger value="table" className="w-full">

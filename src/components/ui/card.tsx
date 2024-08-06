@@ -3,19 +3,22 @@ import * as React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-const cardVariants = cva('bg-card text-card-foreground shadow-sm', {
-	variants: {
-		side: {
-			// Side of screen
-			left: 'rounded-r-lg border-r border-t border-b',
-			right: 'rounded-l-lg border-t border-b border-l',
-			center: 'rounded-lg border',
+const cardVariants = cva(
+	'bg-card text-card-foreground shadow-sm outline-none ring-0 focus-within:outline-none focus-within:ring-0 focus:outline-none focus:ring-0 active:outline-none active:ring-0 focus-visible:outline-none focus-visible:ring-0',
+	{
+		variants: {
+			side: {
+				// Side of screen
+				left: 'rounded-r-lg border-r border-t border-b',
+				right: 'rounded-l-lg border-t border-b border-l',
+				center: 'rounded-lg border',
+			},
+		},
+		defaultVariants: {
+			side: 'center',
 		},
 	},
-	defaultVariants: {
-		side: 'center',
-	},
-});
+);
 
 export interface CardProps
 	extends React.HTMLAttributes<HTMLDivElement>,
@@ -38,7 +41,7 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<div
 		ref={ref}
-		className={cn('flex flex-col space-y-1.5 p-6 ring-0', className)}
+		className={cn('flex flex-col space-y-1.5 p-6', className)}
 		{...props}
 	/>
 ));
