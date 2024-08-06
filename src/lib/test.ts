@@ -145,7 +145,9 @@ export const data: Task[] = [
 		}),
 	},
 	{
-		name: "Go to someplace far away (10+ miles) which you haven't gone before",
+		name: 'Go to someplace new far away',
+		description:
+			"Must be over 10 miles away from home, must be somewhere where you haven't been before",
 		type: 'single',
 		points: 1,
 		category: 'normal',

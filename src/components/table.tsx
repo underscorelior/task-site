@@ -48,12 +48,13 @@ import { convertCategory, convertType } from '@/lib/utils';
 import { Separator } from './ui/separator';
 
 const users = ['Steve Jobs', 'Lior', 'Human', 'Name', 'Empty'];
-
 const baseColumns: ColumnDef<Task>[] = [
 	{
+		accessorKey: 'name',
 		accessorFn: (
 			row,
 		): [string, string, Task['category'], Task['type'], number] => {
+			console.log([row.name, row.description]);
 			return [
 				row.name,
 				row.description || '',
@@ -64,6 +65,7 @@ const baseColumns: ColumnDef<Task>[] = [
 		},
 		enableHiding: false,
 		header: 'Task',
+		size: 15,
 		cell: ({ getValue }) => {
 			const value = getValue() as [
 				string,
@@ -72,22 +74,22 @@ const baseColumns: ColumnDef<Task>[] = [
 				Task['type'],
 				number,
 			];
+			console.log(value);
 			return (
 				<HoverCard>
-					{/* TODO: FIGURE OUT HOW TO GET THE OVERFLOW TO BECOME ELLIPSIS */}
-					<HoverCardTrigger className="text-primary truncate overflow-ellipsis font-medium underline-offset-4 hover:underline">
+					<HoverCardTrigger className="max-w-full truncate overflow-ellipsis font-medium underline-offset-4 hover:underline">
 						{value[0]}
 					</HoverCardTrigger>
-					<HoverCardContent className="flex w-auto flex-col gap-2">
+					<HoverCardContent className="flex w-auto max-w-sm flex-col gap-2">
 						<div className="flex h-full min-h-full w-full flex-row justify-between gap-4">
 							<div className="text-base font-medium">{value[0]}</div>
-							<Separator orientation="vertical" />
-							<div className="font-mono text-base font-medium">
+							<Separator orientation="vertical" className="ml-auto w-0.5" />
+							<div className="text-center font-mono text-base">
 								{value[4]} VP{value[4] != 1 && 's'}
 							</div>
 						</div>
 						<Separator className="h-[2px]" />
-						<div className="text-base">{value[1]}</div>
+						<div className="whitespace-normal text-base">{value[1]}</div>
 						<div>Category: {convertCategory(value[2])}</div>
 						<div className="text-sm font-light">{convertType(value[3])}</div>
 					</HoverCardContent>
@@ -100,7 +102,6 @@ const baseColumns: ColumnDef<Task>[] = [
 		enableHiding: false,
 		header: ({ column }) => {
 			return (
-				// TODO: LEFT JUSTIFY THE BUTTON TEXT
 				<Button
 					size={'no'}
 					variant="ghost"
@@ -111,7 +112,12 @@ const baseColumns: ColumnDef<Task>[] = [
 				</Button>
 			);
 		},
-		cell: ({ row }) => <div>{convertCategory(row.getValue('category'))}</div>,
+		size: 9,
+		cell: ({ row }) => (
+			<div className="overflow-hidden truncate">
+				{convertCategory(row.getValue('category'))}
+			</div>
+		),
 	},
 	{
 		accessorKey: 'points',
@@ -126,7 +132,10 @@ const baseColumns: ColumnDef<Task>[] = [
 				<ArrowUpDown className="ml-2 h-4 w-4" />
 			</Button>
 		),
-		cell: ({ row }) => <div>{row.getValue('points')}</div>,
+		size: 5,
+		cell: ({ row }) => (
+			<div className="text-end font-mono">{row.getValue('points')}</div>
+		),
 	},
 ];
 
@@ -136,7 +145,10 @@ const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 		return [userAmount !== undefined ? userAmount : 0, row.type];
 	},
 	id: user,
-	header: () => <div className="w-max">{user}</div>,
+	header: () => (
+		<div className="ml-auto max-w-max truncate overflow-ellipsis">{user}</div>
+	),
+	size: 6,
 	cell: ({ getValue }) => {
 		const value = getValue() as [number, Task['type']];
 		return (
@@ -239,7 +251,12 @@ export function TaskTable() {
 								<TableRow key={headerGroup.id}>
 									{headerGroup.headers.map((header) => {
 										return (
-											<TableHead key={header.id}>
+											<TableHead
+												key={header.id}
+												style={{
+													minWidth: header.column.columnDef.size,
+													maxWidth: header.column.columnDef.size,
+												}}>
 												{header.isPlaceholder
 													? null
 													: flexRender(
@@ -253,14 +270,21 @@ export function TaskTable() {
 							))}
 						</TableHeader>
 						<TableBody>
-							{/* TODO: Add a card onto the task name to display description and type of task (single/daily/multi) */}
 							{table.getRowModel().rows?.length ? (
 								table.getRowModel().rows.map((row) => (
 									<TableRow
 										key={row.id}
 										data-state={row.getIsSelected() && 'selected'}>
 										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id}>
+											<TableCell
+												key={cell.id}
+												style={{
+													minWidth: cell.column.columnDef.size + 'vw',
+													maxWidth: cell.column.columnDef.size + 'vw',
+													overflow: 'hidden',
+													'text-overflow': 'ellipsis',
+													'white-space': 'nowrap',
+												}}>
 												{flexRender(
 													cell.column.columnDef.cell,
 													cell.getContext(),

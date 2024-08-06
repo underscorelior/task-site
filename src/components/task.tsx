@@ -46,7 +46,6 @@ export function DailyTask({
 					out = selTasks.filter((tsk) => task.name !== tsk.name);
 				}
 
-				console.log(out);
 				setSelTasks(out);
 			}}>
 			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">

@@ -16,7 +16,7 @@ import { TaskTable } from './components/table';
 
 export function App() {
 	return (
-		<main className="grid min-h-screen w-full grid-cols-[20%,65%,15%] items-center justify-center gap-x-2 overflow-x-hidden">
+		<main className="grid min-h-screen w-full grid-cols-[21%,62.5%,16.5%] items-center justify-center gap-x-4 overflow-x-hidden">
 			<section className="w-full max-w-lg">
 				<Sidebar />
 			</section>
