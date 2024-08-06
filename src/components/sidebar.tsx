@@ -8,14 +8,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from './ui/card';
-import { CreateSelect } from './ui/create-select';
+import { CreateSelect } from './create-select';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import toast from 'react-hot-toast';
 import {
 	AlertDialog,
-	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
 	AlertDialogDescription,
@@ -25,13 +24,22 @@ import {
 	AlertDialogTrigger,
 } from './ui/alert-dialog';
 
-export default function Sidebar({ hasCode }: { hasCode: boolean }) {
+export default function Sidebar({
+	hasCode,
+	hasUser,
+	setHasUser,
+}: {
+	hasCode: boolean;
+	hasUser: boolean;
+	setHasUser: (b: boolean) => void;
+}) {
 	const [user, setUser] = useState<User>();
-	const [hasUser, setHasUser] = useState<boolean>(false);
+	const [showCreate, setShowCreate] = useState<boolean>(false);
 
 	useEffect(() => {
 		async function fetchUser() {
-			if (hasCode)
+			console.log(hasUser);
+			if (hasCode) {
 				if (localStorage.getItem('user_uuid')) {
 					const res = await fetch(
 						`/api/find_user?uuid=${localStorage.getItem('user_uuid')}`,
@@ -41,17 +49,19 @@ export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 					);
 
 					const out = await res.json();
-
-					if (out.status == 200) {
-						setUser(out);
+					console.log(out, res.status);
+					if (res.status == 200) {
+						setUser(out as User);
 						setHasUser(true);
 					} else {
 						toast.error(out.message);
-						setHasUser(false);
+						setShowCreate(true);
 					}
 				} else {
-					setHasUser(false);
+					setShowCreate(true);
 				}
+			}
+			console.table({ user, showCreate, hasCode, hasUser });
 		}
 		fetchUser();
 	}, []);
@@ -64,15 +74,22 @@ export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 				<TabsTrigger value="user" className="w-full">
 					User
 				</TabsTrigger>
-				<TabsTrigger value="task" className="w-full" disabled={!hasCode}>
+				<TabsTrigger
+					value="task"
+					className="w-full"
+					disabled={!hasCode || !hasUser}>
 					Task
 				</TabsTrigger>
 			</TabsList>
 			<TabsContent value="user" className="w-full">
+				<button
+					onClick={() => console.table({ user, showCreate, hasCode, hasUser })}>
+					AAA
+				</button>
 				<Card
 					side={'left'}
 					className="flex h-full min-h-[55vh] w-full flex-col">
-					{hasUser ? (
+					{!hasUser && !showCreate && (!user || user) ? (
 						<>
 							<CardHeader>
 								<CardTitle>User</CardTitle>
@@ -85,13 +102,13 @@ export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 									placeholder="Enter your username"
 									id="name"
 									className="mb-6"
-									disabled={!hasCode}
+									disabled={!hasCode || !hasUser}
 								/>
 								<Label htmlFor="pfp">Profile Picture</Label>
 								<Input
 									id="pfp"
 									placeholder="Paste an image link here"
-									disabled={!hasCode}
+									disabled={!hasCode || !hasUser}
 								/>
 							</CardContent>
 							<CardFooter className="mt-auto">
@@ -99,13 +116,17 @@ export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 								<Button
 									variant={'outline'}
 									className="ml-auto"
-									disabled={!hasCode}>
+									disabled={!hasCode || !hasUser}>
 									Save
 								</Button>
 							</CardFooter>
 						</>
 					) : (
-						<CreateUser setHasUser={setHasUser} setUser={setUser} />
+						<CreateUser
+							setHasUser={setHasUser}
+							setUser={setUser}
+							setShowCreate={setShowCreate}
+						/>
 					)}
 				</Card>
 			</TabsContent>
@@ -122,7 +143,10 @@ export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 					</CardContent>
 					<CardFooter>
 						{/* TODO: Make it popup with a thing saying "saving" */}
-						<Button variant={'outline'} className="ml-auto" disabled={!hasCode}>
+						<Button
+							variant={'outline'}
+							className="ml-auto"
+							disabled={!hasCode || !hasUser}>
 							Save
 						</Button>
 					</CardFooter>
@@ -135,27 +159,36 @@ export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 function CreateUser({
 	setHasUser,
 	setUser,
+	setShowCreate,
 }: {
 	setHasUser: (b: boolean) => void;
 	setUser: (u: User) => void;
+	setShowCreate: (b: boolean) => void;
 }) {
 	const [name, setName] = useState<string>('');
 	const [pfp, setPfp] = useState<string>('');
 
 	async function submit() {
-		const res = await fetch(`/api/create_user?name=${name}&pfp=${pfp}`, {
+		let re = fetch(`/api/create_user?name=${name}&pfp=${pfp}`, {
 			method: 'POST',
 		});
 
-		const out = await res.json();
-		console.log(out);
+		toast.promise(re, {
+			loading: 'Loading...',
+			success: 'Request completed',
+			error: 'We ran into an error when creating your account',
+		});
 
-		if (out.status == 200) {
+		const res = await re;
+		const out = ((await res.json()) as [User])[0];
+
+		if (res.status == 200) {
 			setUser(out);
 			setHasUser(true);
-			console.log(out + ' BBB');
+			setShowCreate(true);
+			localStorage.setItem('user_uuid', out.id);
 		} else {
-			toast.error(out.message);
+			toast.error((await res.json()).message);
 			setHasUser(false);
 		}
 	}

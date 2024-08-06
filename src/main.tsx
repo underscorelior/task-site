@@ -28,7 +28,8 @@ import { Button } from './components/ui/button';
 import { Toaster } from 'react-hot-toast';
 
 export default function App() {
-	const [hasCode, setHasCode] = useState<boolean>(true);
+	const [hasCode, setHasCode] = useState<boolean>(false);
+	const [hasUser, setHasUser] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
@@ -43,7 +44,7 @@ export default function App() {
 			<Toaster />
 			{!hasCode && <CodeDialog setHasCode={setHasCode} />}
 			<section className="w-full max-w-sm">
-				<Sidebar hasCode={hasCode} />
+				<Sidebar hasCode={hasCode} hasUser={hasUser} setHasUser={setHasUser} />
 			</section>
 			<section className="mx-auto w-full max-w-7xl">
 				<Tabs defaultValue="table">
@@ -51,10 +52,16 @@ export default function App() {
 						<TabsTrigger value="table" className="w-full">
 							Table
 						</TabsTrigger>
-						<TabsTrigger value="submit" className="w-full" disabled={!hasCode}>
+						<TabsTrigger
+							value="submit"
+							className="w-full"
+							disabled={!hasCode || !hasUser}>
 							Submit
 						</TabsTrigger>
-						<TabsTrigger value="verify" className="w-full" disabled={!hasCode}>
+						<TabsTrigger
+							value="verify"
+							className="w-full"
+							disabled={!hasCode || !hasUser}>
 							Verify
 						</TabsTrigger>
 					</TabsList>

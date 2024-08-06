@@ -1,11 +1,11 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Button } from './button';
+import { Button } from './ui/button';
 import { IoCreateOutline } from 'react-icons/io5';
 import { RiEditLine } from 'react-icons/ri';
 
-import { Label } from './label';
-import { Input } from './input';
+import { Label } from './ui/label';
+import { Input } from './ui/input';
 import {
 	Dialog,
 	DialogClose,
@@ -15,7 +15,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from './dialog';
+} from './ui/dialog';
 import {
 	Select,
 	SelectContent,
@@ -24,11 +24,11 @@ import {
 	SelectLabel,
 	SelectTrigger,
 	SelectValue,
-} from './select';
-import { ToggleGroup, ToggleGroupItem } from './toggle-group';
+} from './ui/select';
+import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
 import { data } from '@/lib/test';
-import TaskHoverCard from '../task-hover';
-import { Textarea } from './textarea';
+import TaskHoverCard from './task-hover';
+import { Textarea } from './ui/textarea';
 
 export function CreateSelect() {
 	return (
