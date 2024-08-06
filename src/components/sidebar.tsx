@@ -12,7 +12,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 
-export default function Sidebar() {
+export default function Sidebar({ hasCode }: { hasCode: boolean }) {
 	return (
 		<Tabs
 			className="flex w-full flex-col items-center justify-center pl-2"
@@ -21,7 +21,7 @@ export default function Sidebar() {
 				<TabsTrigger value="user" className="w-full">
 					User
 				</TabsTrigger>
-				<TabsTrigger value="task" className="w-full">
+				<TabsTrigger value="task" className="w-full" disabled={!hasCode}>
 					Task
 				</TabsTrigger>
 			</TabsList>
@@ -33,15 +33,20 @@ export default function Sidebar() {
 						<CardTitle>User</CardTitle>
 						<CardDescription></CardDescription>
 					</CardHeader>
-					<CardContent className="">
+					<CardContent className={`${!hasCode && 'text-muted-foreground'}`}>
 						<Label htmlFor="name">Name</Label>
-						<Input defaultValue={'Name'} id="name" className="mb-6" />
+						<Input
+							defaultValue={'Name'}
+							id="name"
+							className="mb-6"
+							disabled={!hasCode}
+						/>
 						<Label htmlFor="pfp">Profile Picture</Label>
-						<Input id="pfp" type="file" />
+						<Input id="pfp" type="file" disabled={!hasCode} />
 					</CardContent>
 					<CardFooter className="mt-auto">
 						{/* TODO: Make it popup with a thing saying "saving" */}
-						<Button variant={'outline'} className="ml-auto">
+						<Button variant={'outline'} className="ml-auto" disabled={!hasCode}>
 							Save
 						</Button>
 					</CardFooter>
@@ -60,7 +65,7 @@ export default function Sidebar() {
 					</CardContent>
 					<CardFooter>
 						{/* TODO: Make it popup with a thing saying "saving" */}
-						<Button variant={'outline'} className="ml-auto">
+						<Button variant={'outline'} className="ml-auto" disabled={!hasCode}>
 							Save
 						</Button>
 					</CardFooter>

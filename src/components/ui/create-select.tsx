@@ -33,7 +33,7 @@ import { Textarea } from './textarea';
 export function CreateSelect() {
 	return (
 		<ScrollArea className="h-[35vh] rounded-md border">
-			<div className="p-4">
+			<div className="px-4 py-2">
 				{data.map((task, idx) => (
 					<>
 						<div
