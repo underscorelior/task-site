@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from './ui/button';
 import {
 	Card,
@@ -20,14 +20,14 @@ export default function Sidebar({
 	setUser,
 }: {
 	hasCode: boolean;
-	user: User;
-	setUser: (u: User) => void;
+	user: User | null;
+	setUser: (u: User | null) => void;
 }) {
 	const [avatar, setAvatar] = useState<string>('');
 
 	async function updateUser() {
 		const re = fetch(
-			`/api/update_user?name=${user.name.toLowerCase()}&avatar=${avatar}`,
+			`/api/update_user?name=${user?.name.toLowerCase()}&avatar=${avatar}`,
 			{
 				method: 'POST',
 			},
@@ -40,6 +40,9 @@ export default function Sidebar({
 		});
 
 		const res = await re;
+
+		if (res.status == 200) setUser((await res.json()) as User);
+		else toast.error(`We ran into an error, ${(await res.json()).message}`);
 	}
 
 	return (
@@ -50,7 +53,10 @@ export default function Sidebar({
 				<TabsTrigger value="user" className="w-full">
 					User
 				</TabsTrigger>
-				<TabsTrigger value="task" className="w-full" disabled={!hasCode}>
+				<TabsTrigger
+					value="task"
+					className="w-full"
+					disabled={!hasCode || user == null}>
 					Task
 				</TabsTrigger>
 			</TabsList>
@@ -66,23 +72,22 @@ export default function Sidebar({
 						<Label htmlFor="name">Name</Label>
 						<Input
 							value={
-								hasCode
-									? user
-										? user.name
-										: localStorage.getItem('username') || ''
-									: ''
+								hasCode && user
+									? user.name
+									: localStorage.getItem('username') || ''
 							}
 							placeholder="Loading user information..."
 							id="name"
 							className="mb-6 capitalize"
 							readOnly
+							disabled={!hasCode}
 						/>
-						<Label htmlFor="avatar">Profile Picture</Label>
+						<Label htmlFor="avatar">User Avatar</Label>
 						<Input
 							id="avatar"
 							placeholder="Paste an image link here"
 							onChange={(evt) => setAvatar(evt.target.value)}
-							disabled={!hasCode || avatar == user.avatar}
+							disabled={!hasCode && avatar == null}
 						/>
 					</CardContent>
 					<CardFooter className="mt-auto">
@@ -91,7 +96,7 @@ export default function Sidebar({
 							className="ml-auto"
 							disabled={!hasCode}
 							onClick={async () => {
-								if (hasCode) {
+								if ((hasCode && user) || avatar === user?.avatar) {
 									await updateUser();
 								}
 							}}>

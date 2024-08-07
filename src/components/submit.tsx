@@ -23,7 +23,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { data } from '@/lib/test';
 
-export default function Submit() {
+export default function Submit({ user }: { user: User }) {
 	const [type, setType] = useState<string>('');
 	const [selTasks, setSelTasks] = useState<Task[]>([]);
 	const [selected, setSelected] = useState<Task | null>(null);
@@ -56,11 +56,11 @@ export default function Submit() {
 					</SelectContent>
 				</Select>
 				{type == 'single' ? (
-					<Single selected={selected} setSelected={setSelected} />
+					<Single selected={selected} setSelected={setSelected} user={user} />
 				) : type == 'daily' ? (
-					<Daily selTasks={selTasks} setSelTasks={setSelTasks} />
+					<Daily selTasks={selTasks} setSelTasks={setSelTasks} user={user} />
 				) : type == 'multi' ? (
-					<Multi selected={selected} setSelected={setSelected} />
+					<Multi selected={selected} setSelected={setSelected} user={user} />
 				) : (
 					<></>
 				)}
@@ -73,9 +73,11 @@ export default function Submit() {
 }
 
 function Single({
+	user,
 	selected,
 	setSelected,
 }: {
+	user: User;
 	selected: Task | null;
 	setSelected: (task: Task | null) => void;
 }) {
@@ -95,13 +97,16 @@ function Single({
 					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
 					<div className="my-3 flex flex-col gap-3">
-						{tasks.map((task) => (
-							<SingleTask
-								task={task}
-								selected={selected}
-								setSelected={setSelected}
-							/>
-						))}
+						{tasks
+							.filter((task) => task.scores[user.name] == 0)
+							.map((task, idx) => (
+								<SingleTask
+									key={idx}
+									task={task}
+									selected={selected}
+									setSelected={setSelected}
+								/>
+							))}
 					</div>
 				</ScrollArea>
 			</div>
@@ -119,9 +124,11 @@ function Single({
 }
 
 function Daily({
+	user,
 	selTasks,
 	setSelTasks,
 }: {
+	user: User;
 	selTasks: Task[];
 	setSelTasks: (tasks: Task[]) => void;
 }) {
@@ -143,8 +150,10 @@ function Daily({
 					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
 					<div className="my-3 flex flex-col gap-3">
-						{tasks.map((task) => (
+						{tasks.map((task, idx) => (
 							<DailyTask
+								key={idx}
+								user={user}
 								task={task}
 								selTasks={selTasks}
 								setSelTasks={setSelTasks}
@@ -167,9 +176,12 @@ function Daily({
 }
 
 function Multi({
+	user,
+
 	selected,
 	setSelected,
 }: {
+	user: User;
 	selected: Task | null;
 	setSelected: (task: Task | null) => void;
 }) {
@@ -193,8 +205,10 @@ function Multi({
 					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
 					<div className="my-3 flex flex-col gap-3">
-						{tasks.map((task) => (
+						{tasks.map((task, idx) => (
 							<MultiTask
+								key={idx}
+								user={user}
 								task={task}
 								selected={selected}
 								setSelected={setSelected}

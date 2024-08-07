@@ -41,14 +41,8 @@ import {
 } from './ui/card';
 import { convertCategory } from '@/lib/utils';
 import TaskHoverCard from './task-hover';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from './ui/tooltip';
 
-const users = ['Steve Jobs', 'Lior', 'Human', 'Name', 'Empty'];
+const users = ['steve jobs', 'lior', 'human', 'name', 'empty'];
 const baseColumns: ColumnDef<Task>[] = [
 	{
 		accessorKey: 'name',
@@ -103,12 +97,14 @@ const baseColumns: ColumnDef<Task>[] = [
 
 const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 	accessorFn: (row): [number, Task['type']] => {
-		const userAmount = row.users?.find((u) => u.name === user)?.amount;
+		const userAmount = row.scores[user];
 		return [userAmount !== undefined ? userAmount : 0, row.type];
 	},
 	id: user,
 	header: () => (
-		<div className="mx-auto max-w-max truncate overflow-ellipsis">{user}</div>
+		<div className="mx-auto max-w-max truncate overflow-ellipsis capitalize">
+			{user}
+		</div>
 	),
 	size: 50,
 	cell: ({ getValue }) => {

@@ -28,10 +28,12 @@ export function SingleTask({
 }
 
 export function DailyTask({
+	user,
 	task,
 	selTasks,
 	setSelTasks,
 }: {
+	user: User;
 	task: Task;
 	selTasks: Task[];
 	setSelTasks: (t: Task[]) => void;
@@ -58,17 +60,19 @@ export function DailyTask({
 					{convertCategory(task.category)}
 				</p>
 				<p className="font-mono">{task.points}</p>
-				<p className="font-mono">{task.users[0].amount}</p>
+				<p className="font-mono">{task.scores[user.name]}</p>
 			</div>
 		</Button>
 	);
 }
 
 export function MultiTask({
+	user,
 	task,
 	selected,
 	setSelected,
 }: {
+	user: User;
 	task: Task;
 	selected: Task | null;
 	setSelected: (t: Task | null) => void;
@@ -84,7 +88,7 @@ export function MultiTask({
 					{convertCategory(task.category)}
 				</p>
 				<p className="font-mono">{task.points}</p>
-				<p className="font-mono">{task.users[0].amount}</p>
+				<p className="font-mono">{task.scores[user.name]}</p>
 			</div>
 		</Button>
 	);

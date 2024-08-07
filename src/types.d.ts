@@ -5,9 +5,7 @@ type Task = {
 	type: 'daily' | 'multi' | 'single' | 'weekly';
 	points: number;
 	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
-	users: { name: string; amount: number }[]; // TODO: Remove
-	scores?: {
-		// TODO: Make it required later
+	scores: {
 		[name: string]: number;
 	};
 };
@@ -15,5 +13,12 @@ type Task = {
 interface User {
 	name: string;
 	avatar: string;
-	points: number; // FIXME: Calculate this later or not at all?
+	score?: number; // FIXME: Calculate this later or not at all?
 }
+
+type Leaderboard = {
+	[name: string]: {
+		avatar: string;
+		score: number;
+	};
+};

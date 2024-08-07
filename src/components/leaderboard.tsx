@@ -9,36 +9,70 @@ import {
 } from './ui/card';
 
 export default function Leaderboard() {
-	const users: User[] = [
-		{
-			name: 'Name',
-			points: 14,
+	const users: Leaderboard = {
+		name: {
 			avatar: 'https://cdn.discordapp.com/embed/avatars/0.png',
+			score: 14,
 		},
-		{
-			name: 'Steve Jobs',
-			points: 7000000000,
+		'steve jobs': {
 			avatar:
 				'https://cdn.vox-cdn.com/thumbor/yIoKynT0Jl-zE7yWwzmW2fy04xc=/0x0:706x644/1400x1400/filters:focal(353x322:354x323)/cdn.vox-cdn.com/uploads/chorus_asset/file/13874040/stevejobs.1419962539.png',
+			score: 7000000000,
 		},
-		{
-			name: 'Lior',
-			points: 53,
+		lior: {
 			avatar:
 				'https://cdn.discordapp.com/avatars/454356237614841870/99ce4376815e1338e64745135a5d7930.webp?size=160',
+			score: 53,
 		},
-		{
-			name: 'Empty',
-			points: 0,
+		empty: {
 			avatar: '',
+			score: 0,
 		},
-		{
-			name: 'Human',
-			points: 50,
+		human: {
 			avatar:
 				'https://www.whitehouse.gov/wp-content/uploads/2024/07/P20240724AS-1343.jpg?w=750&h=500&crop=1',
+			score: 50,
 		},
-	];
+		// {
+		// 	name: 'Name',
+		// 	points: 14,
+		// 	avatar: 'https://cdn.discordapp.com/embed/avatars/0.png',
+		// },
+		// {
+		// 	name: 'Steve Jobs',
+		// 	points: 7000000000,
+		// 	avatar:
+		// 		'https://cdn.vox-cdn.com/thumbor/yIoKynT0Jl-zE7yWwzmW2fy04xc=/0x0:706x644/1400x1400/filters:focal(353x322:354x323)/cdn.vox-cdn.com/uploads/chorus_asset/file/13874040/stevejobs.1419962539.png',
+		// },
+		// {
+		// 	name: 'Lior',
+		// 	points: 53,
+		// 	avatar:
+		// 		'https://cdn.discordapp.com/avatars/454356237614841870/99ce4376815e1338e64745135a5d7930.webp?size=160',
+		// },
+		// {
+		// 	name: 'Empty',
+		// 	points: 0,
+		// 	avatar: '',
+		// },
+		// {
+		// 	name: 'Human',
+		// 	points: 50,
+		// 	avatar:
+		// 		'https://www.whitehouse.gov/wp-content/uploads/2024/07/P20240724AS-1343.jpg?w=750&h=500&crop=1',
+		// },
+	};
+
+	function convertToLBUsers(): User[] {
+		const LBUsers: User[] = [];
+
+		for (const [name, user] of Object.entries(users)) {
+			LBUsers.push({ name, ...user });
+		}
+
+		return LBUsers.sort((a, b) => (b.score || 0) - (a.score || 0));
+	}
+
 	return (
 		<Card className="w-full" side={'right'}>
 			<CardHeader>
@@ -46,11 +80,9 @@ export default function Leaderboard() {
 				<CardDescription></CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-2">
-				{users
-					.sort((a, b) => b.points - a.points)
-					.map((user, idx) => {
-						return <LeaderboardUser {...user} index={idx + 1} key={idx} />;
-					})}
+				{convertToLBUsers().map((user, idx) => {
+					return <LeaderboardUser {...user} index={idx + 1} key={idx} />;
+				})}
 			</CardContent>
 			<CardFooter>
 				<h6 className="ml-auto font-mono text-xs font-light text-stone-400">

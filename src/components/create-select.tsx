@@ -35,15 +35,13 @@ export function CreateSelect() {
 		<ScrollArea className="h-[27.5vh] rounded-md border">
 			<div className="px-4 py-2">
 				{data.map((task, idx) => (
-					<>
-						<div
-							key={idx}
-							className="flex flex-row items-center justify-between gap-4">
+					<div key={idx}>
+						<div className="flex flex-row items-center justify-between gap-4">
 							<TaskHoverCard task={task} className="text-sm font-normal" />
 							<TaskDialog task={task} />
 						</div>
 						<Separator className="my-2" />
-					</>
+					</div>
 				))}
 				<TaskDialog />
 			</div>
@@ -57,15 +55,12 @@ function TaskDialog({ task }: { task?: Task }) {
 			<DialogTrigger>
 				{task ? (
 					<Button size={'iconsm'} variant={'outline'}>
-						{/* disabled={!hasCode || !hasUser}> */}{' '}
-						{/* TODO: MAKE THIS WORK */}
 						<RiEditLine />
 					</Button>
 				) : (
 					<Button
 						variant={'link'}
 						className="m-0 flex h-min flex-row items-center gap-2 p-0">
-						{/*  disabled={!hasCode || !hasUser}> */}
 						<IoCreateOutline /> Create new task
 					</Button>
 				)}

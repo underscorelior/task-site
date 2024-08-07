@@ -1,9 +1,11 @@
-const users = ['Steve Jobs', 'Lior', 'Human', 'Name', 'Empty'];
+const users = ['steve jobs', 'lior', 'human', 'name', 'empty'];
 
-function user(): { name: string; amount: number }[] {
-	return users.map((user) => {
-		return { name: user, amount: Math.floor(Math.random() * 100) };
+function user(single = false): Task['scores'] {
+	const out: Task['scores'] = {};
+	users.forEach((user) => {
+		out[user] = Math.floor(Math.random() * (single ? 2 : 100));
 	});
+	return out;
 }
 
 export const data: Task[] = [
@@ -13,7 +15,7 @@ export const data: Task[] = [
 		type: 'multi',
 		points: 5,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Go outside for an hour',
@@ -22,7 +24,7 @@ export const data: Task[] = [
 		type: 'multi',
 		points: 3,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Meditate for at least 20 minutes',
@@ -30,7 +32,7 @@ export const data: Task[] = [
 		type: 'multi',
 		points: 1,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Do a T-25 video',
@@ -38,7 +40,7 @@ export const data: Task[] = [
 		type: 'multi',
 		points: 1,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Times homework was late',
@@ -46,7 +48,7 @@ export const data: Task[] = [
 		type: 'multi',
 		points: 3,
 		category: 'productivity',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Read a book that was not assigned in school',
@@ -55,7 +57,7 @@ export const data: Task[] = [
 		type: 'multi',
 		points: 2,
 		category: 'productivity',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Go to sleep before 1:30 AM',
@@ -63,7 +65,7 @@ export const data: Task[] = [
 		type: 'daily',
 		points: 2,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Drink 6 glasses of water every day',
@@ -71,7 +73,7 @@ export const data: Task[] = [
 		type: 'daily',
 		points: 4,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Have at least 6 hours of sleep that night',
@@ -79,7 +81,7 @@ export const data: Task[] = [
 		type: 'daily',
 		points: 2,
 		category: 'health',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Watch the news',
@@ -87,7 +89,7 @@ export const data: Task[] = [
 		type: 'daily',
 		points: 1,
 		category: 'normal',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Go a day without video games',
@@ -96,7 +98,7 @@ export const data: Task[] = [
 		type: 'daily',
 		points: 2,
 		category: 'productivity',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: 'Be productive',
@@ -105,7 +107,7 @@ export const data: Task[] = [
 		type: 'daily',
 		points: 3,
 		category: 'productivity',
-		users: user(),
+		scores: user(),
 	},
 	{
 		name: "Talk with someone you haven't talked to for 5+ years",
@@ -113,9 +115,7 @@ export const data: Task[] = [
 		type: 'single',
 		points: 2,
 		category: 'normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
+		scores: user(true),
 	},
 	{
 		name: 'Go to prom',
@@ -123,9 +123,7 @@ export const data: Task[] = [
 		type: 'single',
 		points: 5,
 		category: 'normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
+		scores: user(true),
 	},
 	{
 		name: 'Go on a date',
@@ -134,9 +132,7 @@ export const data: Task[] = [
 		type: 'single',
 		points: 5,
 		category: 'normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
+		scores: user(true),
 	},
 	{
 		name: "Eat something which you haven't ate before",
@@ -144,9 +140,7 @@ export const data: Task[] = [
 		type: 'single',
 		points: 1,
 		category: 'normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
+		scores: user(true),
 	},
 	{
 		name: 'Go to someplace new far away',
@@ -155,8 +149,6 @@ export const data: Task[] = [
 		type: 'single',
 		points: 1,
 		category: 'normal',
-		users: users.map((user) => {
-			return { name: user, amount: Math.floor(Math.random() * 2) };
-		}),
+		scores: user(true),
 	},
 ];

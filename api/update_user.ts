@@ -33,21 +33,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 				.status(400)
 				.json({ message: 'Missing name in query parameters' });
 		}
+
 		if (Array.isArray(name)) {
 			return res
 				.status(400)
 				.json({ message: 'Cannot have an array for the name parameter' });
 		}
 
-		if (!avatar) {
+		if (!avatar || Array.isArray(avatar)) {
 			return res
 				.status(400)
 				.json({ message: 'Avatar missing, nothing to update' });
 		}
+
 		const { data, error } = await supabase
 			.from('users')
-			.update({ name })
-			.eq('avatar', avatar)
+			.update({ avatar: avatar.split('?')[0] })
+			.eq('name', name)
 			.select();
 
 		if (error) throw error;

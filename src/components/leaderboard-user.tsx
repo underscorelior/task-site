@@ -3,12 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 export default function LeaderboardUser({
 	name,
 	avatar,
-	points,
+	score = 0,
 	index,
 }: {
 	name: string;
 	avatar: string;
-	points: number;
+	score?: number;
 	index: number;
 }) {
 	return (
@@ -19,10 +19,8 @@ export default function LeaderboardUser({
 				<AvatarFallback>{name}</AvatarFallback>
 			</Avatar>
 			<div className="flex flex-col">
-				<h2 className="-mb-1 text-lg font-semibold">{name}</h2>
-				<p className="text-secondary-foreground font-mono text-base">
-					{points}
-				</p>
+				<h2 className="-mb-1 text-lg font-semibold capitalize">{name}</h2>
+				<p className="text-secondary-foreground font-mono text-base">{score}</p>
 			</div>
 		</div>
 	);

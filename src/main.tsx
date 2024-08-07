@@ -32,7 +32,7 @@ import { Label } from './components/ui/label';
 
 export default function App() {
 	const [hasCode, setHasCode] = useState<boolean>(true);
-	const [user, setUser] = useState<User>();
+	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
 		async function fetchUser() {
@@ -45,8 +45,13 @@ export default function App() {
 				success: '',
 				error: '',
 			});
-			setUser((await (await re).json()) as User);
+
+			const res = await re;
+
+			if (res.status == 200) setUser((await res.json()) as User);
+			else toast.error(`We ran into an error, ${(await res.json()).message}`);
 		}
+
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
 			setHasCode(false);
 		} else {
@@ -68,10 +73,16 @@ export default function App() {
 						<TabsTrigger value="table" className="w-full">
 							Table
 						</TabsTrigger>
-						<TabsTrigger value="submit" className="w-full" disabled={!hasCode}>
+						<TabsTrigger
+							value="submit"
+							className="w-full"
+							disabled={!hasCode || user == null}>
 							Submit
 						</TabsTrigger>
-						<TabsTrigger value="verify" className="w-full" disabled={!hasCode}>
+						<TabsTrigger
+							value="verify"
+							className="w-full"
+							disabled={!hasCode || user == null}>
 							Verify
 						</TabsTrigger>
 					</TabsList>
@@ -79,7 +90,7 @@ export default function App() {
 						<TaskTable />
 					</TabsContent>
 					<TabsContent value="submit">
-						<Submit />
+						<Submit user={user as User} />
 					</TabsContent>
 					<TabsContent value="verify">
 						<Card className="h-[80vh]">
