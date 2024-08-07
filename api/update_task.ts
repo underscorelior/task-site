@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Database } from '../database.types';
+import { Database, Json } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient<Database>(
@@ -26,30 +26,41 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, avatar } = req.query;
+		let { id, data: task } = req.query;
 
-		if (!name) {
+		if (!id) {
 			return res
 				.status(400)
-				.json({ message: 'Missing name in query parameters' });
+				.json({ message: 'Missing id in query parameters' });
 		}
 
-		if (Array.isArray(name)) {
+		if (!task) {
 			return res
 				.status(400)
-				.json({ message: 'Cannot have an array for the name parameter' });
+				.json({ message: 'Missing task in query parameters' });
 		}
 
-		if (!avatar || Array.isArray(avatar)) {
-			return res
-				.status(400)
-				.json({ message: 'Avatar missing, nothing to update' });
+		if (Array.isArray(task)) {
+			return res.status(400).json({ message: 'Invalid task' });
 		}
 
 		const { data, error } = await supabase
-			.from('users')
-			.update({ avatar })
-			.eq('name', name)
+			.from('tasks')
+			.update(
+				// JSON.parse(
+				task as unknown as {
+					category: string;
+					description: string;
+					id: number;
+					lower: boolean | null;
+					name: string | null;
+					points: number;
+					scores: Json;
+					type: string;
+				},
+				// ),
+			)
+			.eq('id', id)
 			.select();
 
 		if (error) throw error;

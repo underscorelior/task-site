@@ -16,7 +16,7 @@ export default function LeaderboardUser({
 		<div className="flex flex-row items-center gap-2">
 			<h1 className="font-mono text-xl font-semibold">{index}.</h1>
 			<Avatar>
-				<AvatarImage alt={name} src={avatar} />
+				<AvatarImage alt={name} src={avatar} className="object-cover" />
 				<AvatarFallback className="capitalize">{name}</AvatarFallback>
 			</Avatar>
 			<div className="flex flex-col">

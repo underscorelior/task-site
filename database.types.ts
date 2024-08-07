@@ -14,6 +14,7 @@ export type Database = {
 					category: string;
 					description: string;
 					id: number;
+					lower: boolean | null;
 					name: string | null;
 					points: number;
 					scores: Json;
@@ -23,6 +24,7 @@ export type Database = {
 					category?: string;
 					description?: string;
 					id?: number;
+					lower?: boolean | null;
 					name?: string | null;
 					points?: number;
 					scores?: Json;
@@ -32,6 +34,7 @@ export type Database = {
 					category?: string;
 					description?: string;
 					id?: number;
+					lower?: boolean | null;
 					name?: string | null;
 					points?: number;
 					scores?: Json;

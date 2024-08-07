@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Database } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '../database.types';
 
 type Leaderboard = {
 	[name: string]: {
@@ -78,7 +78,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 				}
 			});
 		} else return res.status(404).json({ message: 'No tasks found' });
-		console.log(out);
+
 		return res.status(200).json(out);
 	} catch (error) {
 		return res.status(500).json({

@@ -87,7 +87,7 @@ export default function Sidebar({
 							id="avatar"
 							placeholder="Paste an image link here"
 							onChange={(evt) => setAvatar(evt.target.value)}
-							disabled={!hasCode && avatar == null}
+							disabled={!hasCode || avatar == null}
 						/>
 					</CardContent>
 					<CardFooter className="mt-auto">
@@ -96,7 +96,7 @@ export default function Sidebar({
 							className="ml-auto"
 							disabled={!hasCode}
 							onClick={async () => {
-								if ((hasCode && user) || avatar === user?.avatar) {
+								if (hasCode && user) {
 									await updateUser();
 								}
 							}}>
