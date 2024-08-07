@@ -1,4 +1,15 @@
-const users = ['steve jobs', 'lior', 'human', 'name', 'empty'];
+const users = ['luke', 'lior', 'ishaan', 'soham', 'sam'];
+type Task = {
+	id?: number; // TODO: Make it required later
+	name: string;
+	description: string;
+	type: 'daily' | 'multi' | 'single' | 'weekly';
+	points: number;
+	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
+	scores: {
+		[name: string]: number;
+	};
+};
 
 function user(single = false): Task['scores'] {
 	const out: Task['scores'] = {};

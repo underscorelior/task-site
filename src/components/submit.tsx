@@ -21,7 +21,7 @@ import { SingleTask, DailyTask, MultiTask } from './task';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { data } from '@/lib/test';
+import { data } from '@/lib/test.js';
 
 export default function Submit({ user }: { user: User }) {
 	const [type, setType] = useState<string>('');

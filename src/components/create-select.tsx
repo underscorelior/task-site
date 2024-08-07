@@ -26,7 +26,7 @@ import {
 	SelectValue,
 } from './ui/select';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
-import { data } from '@/lib/test';
+import { data } from '@/lib/test.js';
 import TaskHoverCard from './task-hover';
 import { Textarea } from './ui/textarea';
 

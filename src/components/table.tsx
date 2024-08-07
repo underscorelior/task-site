@@ -29,7 +29,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { data } from '@/lib/test';
+import { data } from '@/lib/test.js';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useState } from 'react';
 import {
@@ -42,7 +42,7 @@ import {
 import { convertCategory } from '@/lib/utils';
 import TaskHoverCard from './task-hover';
 
-const users = ['steve jobs', 'lior', 'human', 'name', 'empty'];
+const users = ['luke', 'lior', 'ishaan', 'soham', 'sam'];
 const baseColumns: ColumnDef<Task>[] = [
 	{
 		accessorKey: 'name',
