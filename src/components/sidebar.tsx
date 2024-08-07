@@ -16,79 +16,31 @@ import toast from 'react-hot-toast';
 
 export default function Sidebar({
 	hasCode,
-	setHasUser,
+	user,
+	setUser,
 }: {
 	hasCode: boolean;
-	setHasUser: (b: boolean) => void;
+	user: User;
+	setUser: (u: User) => void;
 }) {
-	const [user, setUser] = useState<User>();
-	const [name, setName] = useState<string>('');
-	const [pfp, setPfp] = useState<string>('');
+	const [avatar, setAvatar] = useState<string>('');
 
-	async function createAccount() {
-		let re = fetch(`/api/create_user?name=${name}&pfp=${pfp}`, {
-			method: 'POST',
-		});
+	async function updateUser() {
+		const re = fetch(
+			`/api/update_user?name=${user.name.toLowerCase()}&avatar=${avatar}`,
+			{
+				method: 'POST',
+			},
+		);
 
 		toast.promise(re, {
-			loading: 'Loading...',
-			success: 'Request completed',
-			error: 'We ran into an error when creating your account',
+			loading: 'Loading',
+			success: '',
+			error: '',
 		});
 
 		const res = await re;
-		const out = ((await res.json()) as [User])[0];
-
-		if (res.status == 200) {
-			setUser(out);
-			setHasUser(true);
-			localStorage.setItem('username', out.name);
-		} else {
-			toast.error((await res.json()).message);
-			setHasUser(false);
-		}
 	}
-
-	async function fetchUser() {
-		if (hasCode) {
-			const re = fetch(
-				`/api/find_user?name=${localStorage.getItem('username')?.toLowerCase()}`,
-				{
-					method: 'POST',
-				},
-			);
-
-			toast.promise(re, {
-				loading: 'Loading...',
-				success: 'Request completed',
-				error: 'We ran into an error when trying to look for your account',
-			});
-
-			const res = await re;
-
-			const out = await res.json();
-			console.log(out, res.status);
-			if (res.status == 200) {
-				setUser(out as User);
-				setHasUser(true);
-			} else if (res.status == 404) {
-				createAccount();
-			} else {
-				toast.error(out.message);
-			}
-		}
-	}
-
-	useEffect(() => {
-		if (
-			localStorage.getItem('username') &&
-			localStorage.getItem('username') !== 'undefined'
-		) {
-			fetchUser();
-		} else if (localStorage.getItem('username') === 'undefined') {
-			localStorage.removeItem('username');
-		}
-	}, [hasCode]);
 
 	return (
 		<Tabs
@@ -113,36 +65,35 @@ export default function Sidebar({
 					<CardContent className={`${!hasCode && 'text-muted-foreground'}`}>
 						<Label htmlFor="name">Name</Label>
 						<Input
-							defaultValue={
+							value={
 								hasCode
 									? user
 										? user.name
 										: localStorage.getItem('username') || ''
 									: ''
 							}
-							placeholder="Enter your username"
+							placeholder="Loading user information..."
 							id="name"
-							className="mb-6"
-							disabled={!hasCode}
-							onChange={(evt) => setName(evt.target.value.toLowerCase())}
+							className="mb-6 capitalize"
+							readOnly
 						/>
-						<Label htmlFor="pfp">Profile Picture</Label>
+						<Label htmlFor="avatar">Profile Picture</Label>
 						<Input
-							id="pfp"
+							id="avatar"
 							placeholder="Paste an image link here"
-							onChange={(evt) => setPfp(evt.target.value)}
-							disabled={!hasCode}
+							onChange={(evt) => setAvatar(evt.target.value)}
+							disabled={!hasCode || avatar == user.avatar}
 						/>
 					</CardContent>
 					<CardFooter className="mt-auto">
-						{/* TODO: Make it popup with a thing saying "saving" */}
 						<Button
 							variant={'outline'}
 							className="ml-auto"
 							disabled={!hasCode}
 							onClick={async () => {
-								localStorage.setItem('username', name.toLowerCase());
-								await fetchUser();
+								if (hasCode) {
+									await updateUser();
+								}
 							}}>
 							Save
 						</Button>

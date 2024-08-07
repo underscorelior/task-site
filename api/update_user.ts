@@ -26,10 +26,38 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, pfp } = req.query;
+		let { name, avatar } = req.query;
 
-		if (Array.isArray(name) || Array.isArray(pfp)) {
-			throw 'We ran into an error when modifying this account, please try again.';
+		if (!name) {
+			return res
+				.status(400)
+				.json({ message: 'Missing name in query parameters' });
+		}
+		if (Array.isArray(name)) {
+			return res
+				.status(400)
+				.json({ message: 'Cannot have an array for the name parameter' });
+		}
+
+		if (!avatar) {
+			return res
+				.status(400)
+				.json({ message: 'Avatar missing, nothing to update' });
+		}
+		const { data, error } = await supabase
+			.from('users')
+			.update({ name })
+			.eq('avatar', avatar)
+			.select();
+
+		if (error) throw error;
+
+		if (data) {
+			return res.status(200).json(data);
+		} else {
+			return res
+				.status(400)
+				.json({ message: 'We ran into an issue, please try again later' });
 		}
 	} catch (error) {
 		return res.status(500).json({

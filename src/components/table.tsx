@@ -41,6 +41,12 @@ import {
 } from './ui/card';
 import { convertCategory } from '@/lib/utils';
 import TaskHoverCard from './task-hover';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from './ui/tooltip';
 
 const users = ['Steve Jobs', 'Lior', 'Human', 'Name', 'Empty'];
 const baseColumns: ColumnDef<Task>[] = [

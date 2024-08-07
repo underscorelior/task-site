@@ -32,22 +32,35 @@ import { Label } from './components/ui/label';
 
 export default function App() {
 	const [hasCode, setHasCode] = useState<boolean>(true);
-	const [hasUser, setHasUser] = useState<boolean>(false);
+	const [user, setUser] = useState<User>();
 
 	useEffect(() => {
+		async function fetchUser() {
+			const re = fetch(`/api/get_user?name=${localStorage.getItem('name')}`, {
+				method: 'POST',
+			});
+
+			toast.promise(re, {
+				loading: 'Loading',
+				success: '',
+				error: '',
+			});
+			setUser((await (await re).json()) as User);
+		}
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
 			setHasCode(false);
 		} else {
 			setHasCode(true);
+			fetchUser();
 		}
 	}, []);
 
 	return (
 		<main className="grid min-h-screen w-full grid-cols-[19%,62%,19%] items-center justify-center gap-x-4 overflow-x-hidden">
 			<Toaster />
-			{!hasCode && <CodeDialog setHasCode={setHasCode} />}
+			{!hasCode && <CodeDialog setHasCode={setHasCode} setUser={setUser} />}
 			<section className="w-full max-w-sm">
-				<Sidebar hasCode={hasCode} setHasUser={setHasUser} />
+				<Sidebar hasCode={hasCode} user={user as User} setUser={setUser} />
 			</section>
 			<section className="mx-auto w-full max-w-7xl">
 				<Tabs defaultValue="table">
@@ -55,16 +68,10 @@ export default function App() {
 						<TabsTrigger value="table" className="w-full">
 							Table
 						</TabsTrigger>
-						<TabsTrigger
-							value="submit"
-							className="w-full"
-							disabled={!hasCode || !hasUser}>
+						<TabsTrigger value="submit" className="w-full" disabled={!hasCode}>
 							Submit
 						</TabsTrigger>
-						<TabsTrigger
-							value="verify"
-							className="w-full"
-							disabled={!hasCode || !hasUser}>
+						<TabsTrigger value="verify" className="w-full" disabled={!hasCode}>
 							Verify
 						</TabsTrigger>
 					</TabsList>
@@ -95,9 +102,11 @@ export default function App() {
 export function CodeDialog({
 	trigger = false,
 	setHasCode,
+	setUser,
 }: {
 	trigger?: boolean;
 	setHasCode: (c: boolean) => void;
+	setUser: (u: User) => void;
 }) {
 	const [code, setCode] = useState<string>('');
 	const [name, setName] = useState<string>('');
@@ -111,12 +120,9 @@ export function CodeDialog({
 			return;
 		}
 
-		const re = fetch(
-			`/api/find_user?name=${localStorage.getItem('username')?.toLowerCase()}`,
-			{
-				method: 'POST',
-			},
-		);
+		const re = fetch(`/api/get_user?name=${name.toLowerCase()}`, {
+			method: 'POST',
+		});
 
 		toast.promise(re, {
 			loading: 'Loading',
@@ -124,16 +130,15 @@ export function CodeDialog({
 			error: '',
 		});
 
-		const res = await re;
-
-		if (name) {
-			localStorage.setItem('name', name);
+		if (name && (await re).status == 200) {
+			localStorage.setItem('name', name.toLowerCase());
 		} else {
 			setWrong(true);
 			return;
 		}
 
 		setHasCode(true);
+		setUser((await (await re).json()) as User);
 	}
 
 	return (

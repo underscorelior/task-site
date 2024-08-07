@@ -41,19 +41,16 @@ export type Database = {
 			};
 			users: {
 				Row: {
-					id: string;
+					avatar: string | null;
 					name: string;
-					pfp: string | null;
 				};
 				Insert: {
-					id?: string;
+					avatar?: string | null;
 					name?: string;
-					pfp?: string | null;
 				};
 				Update: {
-					id?: string;
+					avatar?: string | null;
 					name?: string;
-					pfp?: string | null;
 				};
 				Relationships: [];
 			};
