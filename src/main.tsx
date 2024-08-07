@@ -25,7 +25,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import { Label } from './components/ui/label';
 
 // TODO: MAKE SURE TO CHECK PERMS ON EVERY SINGLE REQUEST
 
@@ -42,7 +43,7 @@ export default function App() {
 	}, []);
 
 	return (
-		<main className="grid min-h-screen w-full grid-cols-[22.5%,61%,16.5%] items-center justify-center gap-x-4 overflow-x-hidden">
+		<main className="grid min-h-screen w-full grid-cols-[19%,62%,19%] items-center justify-center gap-x-4 overflow-x-hidden">
 			<Toaster />
 			{!hasCode && <CodeDialog setHasCode={setHasCode} />}
 			<section className="w-full max-w-sm">
@@ -99,15 +100,40 @@ export function CodeDialog({
 	setHasCode: (c: boolean) => void;
 }) {
 	const [code, setCode] = useState<string>('');
+	const [name, setName] = useState<string>('');
 	const [wrong, setWrong] = useState<boolean>(false);
 
-	function submit() {
+	async function submit() {
 		if (process.env.PERMISSION_CODE === code) {
-			setHasCode(true);
 			localStorage.setItem('code', code);
 		} else {
 			setWrong(true);
+			return;
 		}
+
+		const re = fetch(
+			`/api/find_user?name=${localStorage.getItem('username')?.toLowerCase()}`,
+			{
+				method: 'POST',
+			},
+		);
+
+		toast.promise(re, {
+			loading: 'Loading',
+			success: '',
+			error: '',
+		});
+
+		const res = await re;
+
+		if (name) {
+			localStorage.setItem('name', name);
+		} else {
+			setWrong(true);
+			return;
+		}
+
+		setHasCode(true);
 	}
 
 	return (
@@ -123,6 +149,7 @@ export function CodeDialog({
 				</AlertDialogHeader>
 
 				<div>
+					<Label htmlFor="code">Code</Label>
 					<Input
 						id="code"
 						placeholder="Put code here"
@@ -134,6 +161,20 @@ export function CodeDialog({
 							The code you have inputted is incorrect.
 						</p>
 					)}
+				</div>
+				<div>
+					<Label htmlFor="name">Name</Label>
+					<Input
+						id="name"
+						placeholder="Put name here"
+						onChange={(evt) => setName(evt.target.value)}
+						className="mb-0"
+					/>
+					{/* {wrong && (
+						<p className="text-sm text-red-400">
+							The code you have inputted is incorrect.
+						</p>
+					)} */}
 				</div>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Continue</AlertDialogCancel>

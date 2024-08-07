@@ -8,12 +8,11 @@ type Task = {
 	users: { name: string; amount: number }[]; // TODO: Remove
 	scores?: {
 		// TODO: Make it required later
-		[id: string]: number;
+		[name: string]: number;
 	};
 };
 
 interface User {
-	id: string;
 	name: string;
 	avatar: string;
 	points: number; // FIXME: Calculate this later or not at all?

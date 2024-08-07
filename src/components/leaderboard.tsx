@@ -11,33 +11,28 @@ import {
 export default function Leaderboard() {
 	const users: User[] = [
 		{
-			id: '0',
 			name: 'Name',
 			points: 14,
 			avatar: 'https://cdn.discordapp.com/embed/avatars/0.png',
 		},
 		{
-			id: '1',
 			name: 'Steve Jobs',
 			points: 7000000000,
 			avatar:
 				'https://cdn.vox-cdn.com/thumbor/yIoKynT0Jl-zE7yWwzmW2fy04xc=/0x0:706x644/1400x1400/filters:focal(353x322:354x323)/cdn.vox-cdn.com/uploads/chorus_asset/file/13874040/stevejobs.1419962539.png',
 		},
 		{
-			id: '2',
 			name: 'Lior',
 			points: 53,
 			avatar:
 				'https://cdn.discordapp.com/avatars/454356237614841870/99ce4376815e1338e64745135a5d7930.webp?size=160',
 		},
 		{
-			id: '3',
 			name: 'Empty',
 			points: 0,
 			avatar: '',
 		},
 		{
-			id: '4',
 			name: 'Human',
 			points: 50,
 			avatar:

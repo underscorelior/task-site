@@ -26,7 +26,7 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, pfp, uuid } = req.query;
+		let { name, pfp } = req.query;
 
 		if (Array.isArray(name) || Array.isArray(pfp)) {
 			throw 'We ran into an error when modifying this account, please try again.';

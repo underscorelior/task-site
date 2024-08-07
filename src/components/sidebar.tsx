@@ -42,20 +42,29 @@ export default function Sidebar({
 		if (res.status == 200) {
 			setUser(out);
 			setHasUser(true);
-			localStorage.setItem('username', out.id);
+			localStorage.setItem('username', out.name);
 		} else {
 			toast.error((await res.json()).message);
 			setHasUser(false);
 		}
 	}
+
 	async function fetchUser() {
 		if (hasCode) {
-			const res = await fetch(
-				`/api/find_user?name=${localStorage.getItem('username')}`,
+			const re = fetch(
+				`/api/find_user?name=${localStorage.getItem('username')?.toLowerCase()}`,
 				{
 					method: 'POST',
 				},
 			);
+
+			toast.promise(re, {
+				loading: 'Loading...',
+				success: 'Request completed',
+				error: 'We ran into an error when trying to look for your account',
+			});
+
+			const res = await re;
 
 			const out = await res.json();
 			console.log(out, res.status);
@@ -71,8 +80,13 @@ export default function Sidebar({
 	}
 
 	useEffect(() => {
-		if (localStorage.getItem('username')) {
+		if (
+			localStorage.getItem('username') &&
+			localStorage.getItem('username') !== 'undefined'
+		) {
 			fetchUser();
+		} else if (localStorage.getItem('username') === 'undefined') {
+			localStorage.removeItem('username');
 		}
 	}, [hasCode]);
 
@@ -110,7 +124,7 @@ export default function Sidebar({
 							id="name"
 							className="mb-6"
 							disabled={!hasCode}
-							onChange={(evt) => setName(evt.target.value)}
+							onChange={(evt) => setName(evt.target.value.toLowerCase())}
 						/>
 						<Label htmlFor="pfp">Profile Picture</Label>
 						<Input
@@ -127,7 +141,7 @@ export default function Sidebar({
 							className="ml-auto"
 							disabled={!hasCode}
 							onClick={async () => {
-								localStorage.setItem('username', name);
+								localStorage.setItem('username', name.toLowerCase());
 								await fetchUser();
 							}}>
 							Save
