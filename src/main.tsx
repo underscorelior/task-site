@@ -33,15 +33,26 @@ import { Label } from './components/ui/label';
 export default function App() {
 	const [hasCode, setHasCode] = useState<boolean>(true);
 	const [user, setUser] = useState<User | null>(null);
+	const [tasks, setTasks] = useState<Task[]>([]);
 
 	useEffect(() => {
+		async function fetchTasks() {
+			const res = await fetch('/api/get_tasks', { method: 'GET' });
+
+			if (res.status == 200) setTasks((await res.json()) as Task[]);
+			else
+				toast.error(
+					`We ran into an error when loading tasks, ${(await res.json()).message}`,
+				);
+		}
+
 		async function fetchUser() {
 			const re = fetch(`/api/get_user?name=${localStorage.getItem('name')}`, {
 				method: 'POST',
 			});
 
 			toast.promise(re, {
-				loading: 'Loading',
+				loading: 'Loading user data...',
 				success: '',
 				error: '',
 			});
@@ -49,8 +60,13 @@ export default function App() {
 			const res = await re;
 
 			if (res.status == 200) setUser((await res.json()) as User);
-			else toast.error(`We ran into an error, ${(await res.json()).message}`);
+			else
+				toast.error(
+					`We ran into an error loading your user data, ${(await res.json()).message}`,
+				);
 		}
+
+		fetchTasks();
 
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
 			setHasCode(false);
@@ -87,7 +103,7 @@ export default function App() {
 						</TabsTrigger>
 					</TabsList>
 					<TabsContent value="table">
-						<TaskTable />
+						<TaskTable tasks={tasks} />
 					</TabsContent>
 					<TabsContent value="submit">
 						<Submit user={user as User} />

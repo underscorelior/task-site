@@ -1,15 +1,4 @@
 const users = ['luke', 'lior', 'ishaan', 'soham', 'sam'];
-type Task = {
-	id?: number; // TODO: Make it required later
-	name: string;
-	description: string;
-	type: 'daily' | 'multi' | 'single' | 'weekly';
-	points: number;
-	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
-	scores: {
-		[name: string]: number;
-	};
-};
 
 function user(single = false): Task['scores'] {
 	const out: Task['scores'] = {};
@@ -27,6 +16,7 @@ export const data: Task[] = [
 		points: 5,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Go outside for an hour',
@@ -36,6 +26,7 @@ export const data: Task[] = [
 		points: 3,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Meditate for at least 20 minutes',
@@ -44,6 +35,7 @@ export const data: Task[] = [
 		points: 1,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Do a T-25 video',
@@ -52,6 +44,7 @@ export const data: Task[] = [
 		points: 1,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Times homework was late',
@@ -60,6 +53,7 @@ export const data: Task[] = [
 		points: 3,
 		category: 'productivity',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Read a book that was not assigned in school',
@@ -69,6 +63,7 @@ export const data: Task[] = [
 		points: 2,
 		category: 'productivity',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Go to sleep before 1:30 AM',
@@ -77,6 +72,7 @@ export const data: Task[] = [
 		points: 2,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Drink 6 glasses of water every day',
@@ -85,6 +81,7 @@ export const data: Task[] = [
 		points: 4,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Have at least 6 hours of sleep that night',
@@ -93,6 +90,7 @@ export const data: Task[] = [
 		points: 2,
 		category: 'health',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Watch the news',
@@ -101,6 +99,7 @@ export const data: Task[] = [
 		points: 1,
 		category: 'normal',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Go a day without video games',
@@ -110,6 +109,7 @@ export const data: Task[] = [
 		points: 2,
 		category: 'productivity',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: 'Be productive',
@@ -119,6 +119,7 @@ export const data: Task[] = [
 		points: 3,
 		category: 'productivity',
 		scores: user(),
+		lower: false,
 	},
 	{
 		name: "Talk with someone you haven't talked to for 5+ years",
@@ -127,6 +128,7 @@ export const data: Task[] = [
 		points: 2,
 		category: 'normal',
 		scores: user(true),
+		lower: false,
 	},
 	{
 		name: 'Go to prom',
@@ -135,6 +137,7 @@ export const data: Task[] = [
 		points: 5,
 		category: 'normal',
 		scores: user(true),
+		lower: false,
 	},
 	{
 		name: 'Go on a date',
@@ -144,6 +147,7 @@ export const data: Task[] = [
 		points: 5,
 		category: 'normal',
 		scores: user(true),
+		lower: false,
 	},
 	{
 		name: "Eat something which you haven't ate before",
@@ -152,6 +156,7 @@ export const data: Task[] = [
 		points: 1,
 		category: 'normal',
 		scores: user(true),
+		lower: false,
 	},
 	{
 		name: 'Go to someplace new far away',
@@ -161,5 +166,6 @@ export const data: Task[] = [
 		points: 1,
 		category: 'normal',
 		scores: user(true),
+		lower: false,
 	},
 ];

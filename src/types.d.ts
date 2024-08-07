@@ -8,6 +8,7 @@ type Task = {
 	scores: {
 		[name: string]: number;
 	};
+	lower: boolean;
 };
 
 interface User {

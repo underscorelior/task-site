@@ -38,7 +38,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 		const { data: users, error: userError } = await supabase
 			.from('users')
 			.select();
-		console.log(users);
 
 		if (userError) throw userError;
 
@@ -48,12 +47,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 			});
 		else return res.status(404).json({ message: 'No users found' });
 
-		console.log(out);
-
 		const { data: tasks, error: taskError } = await supabase
 			.from('tasks')
 			.select();
-		console.log(tasks);
 
 		if (taskError) throw taskError;
 

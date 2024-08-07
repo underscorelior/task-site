@@ -1,4 +1,5 @@
-import LeaderboardUser from './leaderboard-user';
+import { useEffect, useState } from 'react';
+import LeaderboardUser, { LoadingLBUser } from './leaderboard-user';
 import {
 	Card,
 	CardContent,
@@ -7,70 +8,38 @@ import {
 	CardHeader,
 	CardTitle,
 } from './ui/card';
+import toast from 'react-hot-toast';
 
 export default function Leaderboard() {
-	const users: Leaderboard = {
-		name: {
-			avatar: 'https://cdn.discordapp.com/embed/avatars/0.png',
-			score: 14,
-		},
-		'steve jobs': {
-			avatar:
-				'https://cdn.vox-cdn.com/thumbor/yIoKynT0Jl-zE7yWwzmW2fy04xc=/0x0:706x644/1400x1400/filters:focal(353x322:354x323)/cdn.vox-cdn.com/uploads/chorus_asset/file/13874040/stevejobs.1419962539.png',
-			score: 7000000000,
-		},
-		lior: {
-			avatar:
-				'https://cdn.discordapp.com/avatars/454356237614841870/99ce4376815e1338e64745135a5d7930.webp?size=160',
-			score: 53,
-		},
-		empty: {
-			avatar: '',
-			score: 0,
-		},
-		human: {
-			avatar:
-				'https://www.whitehouse.gov/wp-content/uploads/2024/07/P20240724AS-1343.jpg?w=750&h=500&crop=1',
-			score: 50,
-		},
-		// {
-		// 	name: 'Name',
-		// 	points: 14,
-		// 	avatar: 'https://cdn.discordapp.com/embed/avatars/0.png',
-		// },
-		// {
-		// 	name: 'Steve Jobs',
-		// 	points: 7000000000,
-		// 	avatar:
-		// 		'https://cdn.vox-cdn.com/thumbor/yIoKynT0Jl-zE7yWwzmW2fy04xc=/0x0:706x644/1400x1400/filters:focal(353x322:354x323)/cdn.vox-cdn.com/uploads/chorus_asset/file/13874040/stevejobs.1419962539.png',
-		// },
-		// {
-		// 	name: 'Lior',
-		// 	points: 53,
-		// 	avatar:
-		// 		'https://cdn.discordapp.com/avatars/454356237614841870/99ce4376815e1338e64745135a5d7930.webp?size=160',
-		// },
-		// {
-		// 	name: 'Empty',
-		// 	points: 0,
-		// 	avatar: '',
-		// },
-		// {
-		// 	name: 'Human',
-		// 	points: 50,
-		// 	avatar:
-		// 		'https://www.whitehouse.gov/wp-content/uploads/2024/07/P20240724AS-1343.jpg?w=750&h=500&crop=1',
-		// },
-	};
+	const [LBData, setLBData] = useState<Leaderboard | null>(null);
+	const [LBUsers, setLBUsers] = useState<User[]>([]);
+	async function fetchData() {
+		const res = await fetch(`/api/gen_leaderboard`, {
+			method: 'GET',
+		});
+
+		if (res.status == 200) setLBData((await res.json()) as Leaderboard);
+		else toast.error(`We ran into an error, ${(await res.json()).message}`);
+	}
+
+	useEffect(() => {
+		fetchData();
+	}, []);
+
+	useEffect(() => {
+		if (LBData != null) {
+			setLBUsers(convertToLBUsers());
+		}
+	}, [LBData]);
 
 	function convertToLBUsers(): User[] {
-		const LBUsers: User[] = [];
+		const out: User[] = [];
 
-		for (const [name, user] of Object.entries(users)) {
-			LBUsers.push({ name, ...user });
+		for (const [name, user] of Object.entries(LBData as Leaderboard)) {
+			out.push({ name, ...user });
 		}
 
-		return LBUsers.sort((a, b) => (b.score || 0) - (a.score || 0));
+		return out.sort((a, b) => (b.score || 0) - (a.score || 0));
 	}
 
 	return (
@@ -80,11 +49,15 @@ export default function Leaderboard() {
 				<CardDescription></CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-2">
-				{convertToLBUsers().map((user, idx) => {
-					return <LeaderboardUser {...user} index={idx + 1} key={idx} />;
-				})}
+				{LBData == null
+					? [...Array(5).keys()].map((number, idx) => {
+							return <LoadingLBUser key={idx} index={number + 1} />;
+						})
+					: LBUsers.map((user, idx) => {
+							return <LeaderboardUser {...user} index={idx + 1} key={idx} />;
+						})}
 			</CardContent>
-			<CardFooter>
+			<CardFooter className="">
 				<h6 className="ml-auto font-mono text-xs font-light text-stone-400">
 					Updates automatically.
 				</h6>

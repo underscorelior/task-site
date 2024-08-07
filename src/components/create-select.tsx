@@ -104,19 +104,39 @@ function TaskDialog({ task }: { task?: Task }) {
 						className="mb-4 w-[30%]"
 						type="number"
 					/>
-
-					<Label className="text-base font-medium" htmlFor="type">
-						Type
-					</Label>
-					<div className="mb-4 flex flex-row items-center gap-2" id="type">
-						<ToggleGroup
-							type="single"
-							defaultValue={task ? task.type : ''} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-							variant={'outline'}>
-							<ToggleGroupItem value="single">Single</ToggleGroupItem>
-							<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
-							<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
-						</ToggleGroup>
+					<div className="grid grid-cols-2">
+						<div>
+							<Label className="text-base font-medium" htmlFor="type">
+								Type
+							</Label>
+							<div className="mb-4 flex flex-row items-center gap-2" id="type">
+								<ToggleGroup
+									type="single"
+									defaultValue={task ? task.type : ''} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+									variant={'outline'}>
+									<ToggleGroupItem value="single">Single</ToggleGroupItem>
+									<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
+									<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
+								</ToggleGroup>
+							</div>
+						</div>
+						<div>
+							<Label className="text-base font-medium" htmlFor="type">
+								Priority
+								<span className="ml-2 text-xs font-light">
+									{'(not required if using single)'}
+								</span>
+							</Label>
+							<div className="mb-4 flex flex-row items-center gap-2" id="type">
+								<ToggleGroup
+									type="single"
+									defaultValue={task ? (task.lower ? 'lower' : 'higher') : ''} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+									variant={'outline'}>
+									<ToggleGroupItem value="higher">Higher</ToggleGroupItem>
+									<ToggleGroupItem value="lower">Lower</ToggleGroupItem>
+								</ToggleGroup>
+							</div>
+						</div>
 					</div>
 
 					<Label className="text-base font-medium" id="category">

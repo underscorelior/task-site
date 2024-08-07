@@ -35,7 +35,10 @@ export default function TaskHoverCard({
 					{task.description}
 				</div>
 				<div>Category: {convertCategory(task.category)}</div>
-				<div className="text-sm font-light">{convertType(task.type)}</div>
+				<div className="text-sm font-light">
+					{convertType(task.type)}
+					{task.type !== 'single' && (task.lower ? ' - Lowest' : ' - Highest')}
+				</div>
 			</HoverCardContent>
 		</HoverCard>
 	);

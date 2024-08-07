@@ -29,7 +29,6 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { data } from '@/lib/test.js';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { useState } from 'react';
 import {
@@ -127,7 +126,7 @@ const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 
 const columns: ColumnDef<Task>[] = [...baseColumns, ...userColumns];
 
-export function TaskTable() {
+export function TaskTable({ tasks }: { tasks: Task[] }) {
 	const size = useWindowSize();
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -135,7 +134,7 @@ export function TaskTable() {
 	const [rowSelection, setRowSelection] = useState({});
 
 	const table = useReactTable({
-		data,
+		data: tasks,
 		columns,
 		onSortingChange: setSorting,
 		onColumnFiltersChange: setColumnFilters,
