@@ -27,28 +27,28 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { uuid } = req.query;
+		let { name } = req.query;
 
-		if (!uuid) {
+		if (!name) {
 			return res
 				.status(400)
-				.json({ message: 'Missing uuid in query parameters' });
+				.json({ message: 'Missing name in query parameters' });
 		}
 
 		const { data, error } = await supabase.from('users').select();
 
 		if (error) throw error;
 
-		if (data.some((user) => user.id == uuid))
+		if (data.some((user) => user.name == name))
 			return res.status(200).json(
 				data.find((user) => {
-					if (user.id == uuid) return user;
+					if (user.name == name) return user;
 				}),
 			);
 		else
 			return res
 				.status(404)
-				.json({ message: `User with UUID ${uuid} not found` });
+				.json({ message: `User with name ${name} not found` });
 	} catch (error) {
 		return res.status(500).json({
 			message: 'An error occurred while processing the request',

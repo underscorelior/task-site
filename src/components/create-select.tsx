@@ -32,7 +32,7 @@ import { Textarea } from './ui/textarea';
 
 export function CreateSelect() {
 	return (
-		<ScrollArea className="h-[35vh] rounded-md border">
+		<ScrollArea className="h-[27.5vh] rounded-md border">
 			<div className="px-4 py-2">
 				{data.map((task, idx) => (
 					<>
@@ -57,12 +57,15 @@ function TaskDialog({ task }: { task?: Task }) {
 			<DialogTrigger>
 				{task ? (
 					<Button size={'iconsm'} variant={'outline'}>
+						{/* disabled={!hasCode || !hasUser}> */}{' '}
+						{/* TODO: MAKE THIS WORK */}
 						<RiEditLine />
 					</Button>
 				) : (
 					<Button
 						variant={'link'}
 						className="m-0 flex h-min flex-row items-center gap-2 p-0">
+						{/*  disabled={!hasCode || !hasUser}> */}
 						<IoCreateOutline /> Create new task
 					</Button>
 				)}

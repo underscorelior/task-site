@@ -27,8 +27,10 @@ import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
 import { Toaster } from 'react-hot-toast';
 
+// TODO: MAKE SURE TO CHECK PERMS ON EVERY SINGLE REQUEST
+
 export default function App() {
-	const [hasCode, setHasCode] = useState<boolean>(false);
+	const [hasCode, setHasCode] = useState<boolean>(true);
 	const [hasUser, setHasUser] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -44,7 +46,7 @@ export default function App() {
 			<Toaster />
 			{!hasCode && <CodeDialog setHasCode={setHasCode} />}
 			<section className="w-full max-w-sm">
-				<Sidebar hasCode={hasCode} hasUser={hasUser} setHasUser={setHasUser} />
+				<Sidebar hasCode={hasCode} setHasUser={setHasUser} />
 			</section>
 			<section className="mx-auto w-full max-w-7xl">
 				<Tabs defaultValue="table">
@@ -100,7 +102,6 @@ export function CodeDialog({
 	const [wrong, setWrong] = useState<boolean>(false);
 
 	function submit() {
-		console.log(process.env.PERMISSION_CODE, code);
 		if (process.env.PERMISSION_CODE === code) {
 			setHasCode(true);
 			localStorage.setItem('code', code);
