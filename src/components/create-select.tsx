@@ -26,15 +26,16 @@ import {
 	SelectValue,
 } from './ui/select';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
-import { data } from '@/lib/test.js';
 import TaskHoverCard from './task-hover';
 import { Textarea } from './ui/textarea';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 
-export function CreateSelect() {
+export function CreateSelect({ tasks }: { tasks: Task[] }) {
 	return (
 		<ScrollArea className="h-[27.5vh] rounded-md border">
 			<div className="px-4 py-2">
-				{data.map((task, idx) => (
+				{tasks.map((task, idx) => (
 					<div key={idx}>
 						<div className="flex flex-row items-center justify-between gap-4">
 							<TaskHoverCard task={task} className="text-sm font-normal" />
@@ -50,6 +51,56 @@ export function CreateSelect() {
 }
 
 function TaskDialog({ task }: { task?: Task }) {
+	// const [name, setName] = useState<string>(task ? task.name : '');
+	// const [description, setDescription] = useState<string>(
+	// 	task ? task.description : '',
+	// );
+	// const [points, setPoints] = useState<number>(task ? task.points : 0);
+	// const [taskType, setTaskType] = useState<
+	// 	'daily' | 'multi' | 'single' | 'weekly'
+	// >(task ? task.type : 'multi');
+	// const [lower, setLower] = useState<boolean>(task ? task.lower : false);
+	// const [category, setCategory] = useState<
+	// 	'health' | 'normal' | 'cool' | 'productivity' | 'insane'
+	// >(task ? task.category : 'health');
+
+	const [out, setOut] = useState<Task>(
+		task
+			? task
+			: ({
+					name: '',
+					description: '',
+					points: 0,
+					category: '',
+					type: '',
+					lower: null,
+					scores: [],
+				} as unknown as Task),
+	);
+
+	async function submit() {
+		if (task) {
+			const re = fetch(
+				`/api/update_task?id=${task.id}&data=${JSON.stringify(out)}`,
+				{
+					method: 'POST',
+				},
+			);
+
+			toast.promise(re, {
+				loading: 'Updating...',
+				success: '',
+				error: '',
+			});
+
+			if ((await re).status == 200) {
+				// Update the tasks
+			} else {
+				// Show error message
+			}
+		} else {
+		}
+	}
 	return (
 		<Dialog>
 			<DialogTrigger>
@@ -78,10 +129,15 @@ function TaskDialog({ task }: { task?: Task }) {
 					</Label>
 					<Input
 						id="name"
-						defaultValue={task ? task.name : ''}
+						defaultValue={out.name}
 						placeholder="Task Name"
 						className="mb-4"
 						aria-rowcount={2}
+						onChange={(evt) => {
+							const t = out;
+							t.name = evt.target.value;
+							setOut(t);
+						}}
 					/>
 
 					<Label className="text-base font-medium" htmlFor="desc">
@@ -89,9 +145,14 @@ function TaskDialog({ task }: { task?: Task }) {
 					</Label>
 					<Textarea
 						id="desc"
-						defaultValue={task ? task.description : ''}
+						defaultValue={out.description}
 						placeholder="Task Description"
 						className="mb-4 h-auto resize-none"
+						onChange={(evt) => {
+							const t = out;
+							t.description = evt.target.value;
+							setOut(t);
+						}}
 					/>
 
 					<Label className="text-base font-medium" htmlFor="vp">
@@ -99,10 +160,15 @@ function TaskDialog({ task }: { task?: Task }) {
 					</Label>
 					<Input
 						id="vp"
-						defaultValue={task && task.points}
+						defaultValue={out.points}
 						placeholder="Task VP Worth"
 						className="mb-4 w-[30%]"
 						type="number"
+						onChange={(evt) => {
+							const t = out;
+							t.points = +evt.target.value;
+							setOut(t);
+						}}
 					/>
 					<div className="grid grid-cols-2">
 						<div>
@@ -112,8 +178,13 @@ function TaskDialog({ task }: { task?: Task }) {
 							<div className="mb-4 flex flex-row items-center gap-2" id="type">
 								<ToggleGroup
 									type="single"
-									defaultValue={task ? task.type : ''} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-									variant={'outline'}>
+									defaultValue={out.type} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+									variant={'outline'}
+									onValueChange={(typ) => {
+										const t = out;
+										t.type = typ as Task['type'];
+										setOut(t);
+									}}>
 									<ToggleGroupItem value="single">Single</ToggleGroupItem>
 									<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
 									<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
@@ -130,8 +201,13 @@ function TaskDialog({ task }: { task?: Task }) {
 							<div className="mb-4 flex flex-row items-center gap-2" id="type">
 								<ToggleGroup
 									type="single"
-									defaultValue={task ? (task.lower ? 'lower' : 'higher') : ''} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
-									variant={'outline'}>
+									defaultValue={out.lower ? 'lower' : 'higher'} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+									variant={'outline'}
+									onValueChange={(lower) => {
+										const t = out;
+										t.lower = lower == 'lower';
+										setOut(t);
+									}}>
 									<ToggleGroupItem value="higher">Higher</ToggleGroupItem>
 									<ToggleGroupItem value="lower">Lower</ToggleGroupItem>
 								</ToggleGroup>
@@ -142,7 +218,13 @@ function TaskDialog({ task }: { task?: Task }) {
 					<Label className="text-base font-medium" id="category">
 						Category
 					</Label>
-					<Select defaultValue={task ? task.category : ''}>
+					<Select
+						defaultValue={out.category}
+						onValueChange={(category) => {
+							const t = out; // TODO CHECK IF CAN SKIP THIS STEP
+							t.category = category as Task['category'];
+							setOut(t);
+						}}>
 						<SelectTrigger className="w-[40%]">
 							<SelectValue placeholder="Select a category" />
 						</SelectTrigger>
@@ -162,7 +244,7 @@ function TaskDialog({ task }: { task?: Task }) {
 					<DialogClose>
 						<Button variant={'outline'}>Cancel</Button>
 					</DialogClose>
-					<Button>Submit</Button>
+					<Button onClick={submit}>Submit</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

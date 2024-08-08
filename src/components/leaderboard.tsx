@@ -9,10 +9,19 @@ import {
 	CardTitle,
 } from './ui/card';
 import toast from 'react-hot-toast';
+// import { Button } from './ui/button';
+// import { MdRefresh } from 'react-icons/md';
 
-export default function Leaderboard() {
+export default function Leaderboard({
+	user,
+	tasks,
+}: {
+	user: User | null;
+	tasks: Task[];
+}) {
 	const [LBData, setLBData] = useState<Leaderboard | null>(null);
 	const [LBUsers, setLBUsers] = useState<User[]>([]);
+
 	async function fetchData() {
 		const res = await fetch(`/api/gen_leaderboard`, {
 			method: 'GET',
@@ -24,7 +33,7 @@ export default function Leaderboard() {
 
 	useEffect(() => {
 		fetchData();
-	}, []);
+	}, [user, tasks]);
 
 	useEffect(() => {
 		if (LBData != null) {
@@ -61,6 +70,10 @@ export default function Leaderboard() {
 				<h6 className="ml-auto font-mono text-xs font-light text-stone-400">
 					Updates automatically.
 				</h6>
+				{/* <Button onClick={fetchData} variant={'ghost'} size={'sm'}>
+					<MdRefresh />
+					Refresh
+				</Button> */}
 			</CardFooter>
 		</Card>
 	);

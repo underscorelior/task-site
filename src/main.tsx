@@ -81,7 +81,12 @@ export default function App() {
 			<Toaster />
 			{!hasCode && <CodeDialog setHasCode={setHasCode} setUser={setUser} />}
 			<section className="w-full max-w-sm">
-				<Sidebar hasCode={hasCode} user={user as User} setUser={setUser} />
+				<Sidebar
+					hasCode={hasCode}
+					user={user as User}
+					setUser={setUser}
+					tasks={tasks}
+				/>
 			</section>
 			<section className="mx-auto w-full max-w-7xl">
 				<Tabs defaultValue="table">
@@ -120,7 +125,7 @@ export default function App() {
 				</Tabs>
 			</section>
 			<section className="col-start-3 ml-auto flex h-full w-full max-w-sm items-center justify-center">
-				<Leaderboard />
+				<Leaderboard user={user} tasks={tasks} />
 			</section>
 		</main>
 	);

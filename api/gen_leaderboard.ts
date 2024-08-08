@@ -63,6 +63,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 							out[name].score += task.points;
 						}
 					}
+				} else if (task.lower) {
+					const min = Math.min(
+						...Object.values(task.scores as { [name: string]: number }),
+					);
+
+					for (const [name, score] of Object.entries(
+						task.scores as { [name: string]: number },
+					)) {
+						if (score == min) {
+							out[name].score += task.points;
+						}
+					}
 				} else {
 					const max = Math.max(
 						...Object.values(task.scores as { [name: string]: number }),

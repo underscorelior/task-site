@@ -67,7 +67,7 @@ const baseColumns: ColumnDef<Task>[] = [
 				</Button>
 			);
 		},
-		size: 50,
+		size: 75,
 		cell: ({ row }) => (
 			<div className="overflow-hidden truncate">
 				{convertCategory(row.getValue('category'))}
@@ -105,7 +105,7 @@ const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 			{user}
 		</div>
 	),
-	size: 50,
+	size: 40,
 	cell: ({ getValue }) => {
 		const value = getValue() as [number, Task['type']];
 		return (

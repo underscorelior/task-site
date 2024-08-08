@@ -16,10 +16,12 @@ import toast from 'react-hot-toast';
 
 export default function Sidebar({
 	hasCode,
+	tasks,
 	user,
 	setUser,
 }: {
 	hasCode: boolean;
+	tasks: Task[];
 	user: User | null;
 	setUser: (u: User | null) => void;
 }) {
@@ -114,7 +116,7 @@ export default function Sidebar({
 						<CardDescription></CardDescription>
 					</CardHeader>
 					<CardContent className="flex h-full items-center justify-center">
-						<CreateSelect />
+						<CreateSelect tasks={tasks} />
 					</CardContent>
 				</Card>
 			</TabsContent>
