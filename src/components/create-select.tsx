@@ -87,16 +87,47 @@ function TaskDialog({
 					points: 0,
 					category: '',
 					type: '',
-					lower: null,
-					scores: [],
+					lower: false,
+					scores: {},
 				} as unknown as Task),
 	);
 	const [open, setOpen] = useState<boolean>(false);
 
-	async function submit() {
+	async function add() {
+		const re = fetch(
+			`/api/add_task?data=${encodeURIComponent(JSON.stringify(out))}&code=${encodeURIComponent(localStorage.code)}`,
+			{
+				method: 'POST',
+			},
+		);
+
+		toast.promise(re, {
+			loading: 'Updating...',
+			success: '',
+			error: '',
+		});
+
+		const res = await re;
+		const ret = await res.json();
+
+		if (ret.hasOwnProperty('message')) {
+			const err = ret as { message: string };
+			toast.error(`We ran into an error when adding ${out.name}, ${err}`);
+			setOpen(false);
+		} else if (res.status == 200 && ret) {
+			const data = ret as Task;
+			console.log(data);
+			console.log(tasks);
+			console.log([...tasks, data]);
+			setTasks([...tasks, data]);
+			setOpen(false);
+		}
+	}
+
+	async function edit() {
 		if (task) {
 			const re = fetch(
-				`/api/update_task?id=${task.id}&data=${JSON.stringify(out)}`,
+				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify(out))}`,
 				{
 					method: 'POST',
 				},
@@ -109,50 +140,32 @@ function TaskDialog({
 			});
 
 			const res = await re;
+			const ret = await res.json();
 
-			if (res.status == 200 && (await res.json())) {
-				// TODO: THIS SEEMS WRONG
+			console.log('AA');
+			if (res.status == 200 && ret) {
 				let out;
-				if (!tasks.some((tsk) => task.id === tsk.id)) {
-					out = [...tasks, (await res.json()) as Task];
-				} else {
-					out = tasks.filter((tsk) => task.id !== tsk.id);
-					out = [...out, (await res.json()) as Task];
-				}
-
+				console.log(tasks.length);
+				out = tasks.filter((tsk) => task.id !== tsk.id);
+				console.log(ret as Task, out.length);
+				out = [...out, ret as Task];
+				console.log(ret as Task, out.length);
+				console.table(out);
 				setTasks(out);
+				setOpen(false);
 			} else {
 				toast.error(
-					`We ran into an error when updating ${task.name}, ${(await res.json()).message}`,
+					`We ran into an error when updating ${task.name}, ${ret.message}`,
 				);
-			}
-		} else {
-			const re = fetch(
-				`/api/add_task?data=${JSON.stringify(out)}&code=${localStorage.code}`,
-				{
-					method: 'POST',
-				},
-			);
-
-			toast.promise(re, {
-				loading: 'Updating...',
-				success: '',
-				error: '',
-			});
-
-			const res = await re;
-
-			if (res.status == 200 && (await res.json())) {
-				setTasks([...tasks, (await res.json()) as Task]);
-			} else {
-				toast.error(
-					`We ran into an error when adding ${out.name}, ${(await res.json()).message}`,
-				);
+				setOpen(false);
 			}
 		}
 	}
+
+	async function del() {}
+
 	return (
-		<Dialog defaultOpen={open} onOpenChange={setOpen}>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
 				{task ? (
 					<Button size={'iconsm'} variant={'outline'}>
@@ -294,7 +307,16 @@ function TaskDialog({
 					<DialogClose>
 						<Button variant={'outline'}>Cancel</Button>
 					</DialogClose>
-					<Button onClick={submit}>Submit</Button>
+					{task ? (
+						<>
+							<Button onClick={del} variant={'destructive'}>
+								Delete
+							</Button>
+							<Button onClick={edit}>Submit</Button>
+						</>
+					) : (
+						<Button onClick={add}>Create</Button>
+					)}
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>

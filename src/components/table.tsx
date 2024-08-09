@@ -96,7 +96,7 @@ const baseColumns: ColumnDef<Task>[] = [
 
 const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 	accessorFn: (row): [number, Task['type']] => {
-		const userAmount = row.scores[user];
+		const userAmount = row.scores[user] ? row.scores[user] : 0;
 		return [userAmount !== undefined ? userAmount : 0, row.type];
 	},
 	id: user,
@@ -131,8 +131,8 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [rowSelection, setRowSelection] = useState({});
-
+	const [pageIndex, setPageIndex] = useState<number>(0);
+	console.log(pageIndex);
 	const table = useReactTable({
 		data: tasks,
 		columns,
@@ -143,19 +143,17 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		onColumnVisibilityChange: setColumnVisibility,
-		onRowSelectionChange: setRowSelection,
 		state: {
 			sorting,
 			columnFilters,
 			columnVisibility,
-			rowSelection,
 		},
 		initialState: {
 			pagination: {
 				pageSize: Math.floor(
 					((size.height || window.innerHeight) * 0.8 - 282) / 53,
 				),
-				pageIndex: 0,
+				pageIndex,
 			},
 		},
 	});
@@ -178,7 +176,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" className="ml-auto">
-								Columns <ChevronDown className="ml-2 h-4 w-4" />
+								Filter Users <ChevronDown className="ml-2 h-4 w-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
@@ -268,14 +266,20 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 				<Button
 					variant="outline"
 					size="sm"
-					onClick={() => table.previousPage()}
+					onClick={() => {
+						table.previousPage();
+						setPageIndex(table.getState().pagination.pageIndex - 1);
+					}}
 					disabled={!table.getCanPreviousPage()}>
 					Previous
 				</Button>
 				<Button
 					variant="outline"
 					size="sm"
-					onClick={() => table.nextPage()}
+					onClick={() => {
+						table.nextPage();
+						setPageIndex(table.getState().pagination.pageIndex + 1);
+					}}
 					disabled={!table.getCanNextPage()}>
 					Next
 				</Button>

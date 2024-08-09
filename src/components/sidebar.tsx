@@ -31,7 +31,7 @@ export default function Sidebar({
 
 	async function updateUser() {
 		const re = fetch(
-			`/api/update_user?name=${user?.name.toLowerCase()}&avatar=${avatar}`,
+			`/api/update_user?name=${user?.name.toLowerCase()}&avatar=${encodeURIComponent(avatar)}`,
 			{
 				method: 'POST',
 			},
