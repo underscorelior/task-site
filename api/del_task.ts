@@ -1,6 +1,6 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Database, Json } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { Database } from '../database.types';
 
 const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
@@ -41,15 +41,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 			if (error) throw error;
 
-			if (data) {
-				return res
-					.status(200)
-					.json({ message: `Successfully deleted task ${id}` });
-			} else {
-				return res
-					.status(400)
-					.json({ message: 'We ran into an issue, please try again later' });
-			}
+			return res
+				.status(200)
+				.json({ message: `Successfully deleted task ${id}` });
 		} else {
 			throw 'Code missing or invalid.';
 		}

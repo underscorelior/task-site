@@ -30,22 +30,22 @@ import { Label } from './components/ui/label';
 
 // TODO: MAKE SURE TO CHECK PERMS ON EVERY SINGLE REQUEST
 
+export async function fetchTasks(setTasks: (t: Task[]) => void) {
+	const res = await fetch('/api/get_tasks', { method: 'GET' });
+
+	if (res.status == 200) setTasks((await res.json()) as Task[]);
+	else
+		toast.error(
+			`We ran into an error when loading tasks, ${(await res.json()).message}`,
+		);
+}
+
 export default function App() {
 	const [hasCode, setHasCode] = useState<boolean>(true);
 	const [user, setUser] = useState<User | null>(null);
 	const [tasks, setTasks] = useState<Task[]>([]);
 
 	useEffect(() => {
-		async function fetchTasks() {
-			const res = await fetch('/api/get_tasks', { method: 'GET' });
-
-			if (res.status == 200) setTasks((await res.json()) as Task[]);
-			else
-				toast.error(
-					`We ran into an error when loading tasks, ${(await res.json()).message}`,
-				);
-		}
-
 		async function fetchUser() {
 			const re = fetch(`/api/get_user?name=${localStorage.getItem('name')}`, {
 				method: 'POST',
@@ -66,7 +66,7 @@ export default function App() {
 				);
 		}
 
-		fetchTasks();
+		fetchTasks(setTasks);
 
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
 			setHasCode(false);

@@ -1,11 +1,13 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Button } from './ui/button';
 import { IoCreateOutline } from 'react-icons/io5';
 import { RiEditLine } from 'react-icons/ri';
+import { Button } from './ui/button';
 
-import { Label } from './ui/label';
-import { Input } from './ui/input';
+import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+import TaskHoverCard from './task-hover';
 import {
 	Dialog,
 	DialogClose,
@@ -16,6 +18,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from './ui/dialog';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 import {
 	Select,
 	SelectContent,
@@ -25,12 +29,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from './ui/select';
-import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
-import TaskHoverCard from './task-hover';
 import { Textarea } from './ui/textarea';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { Trash2 } from 'lucide-react';
+import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
 
 export function CreateSelect({
 	tasks,
@@ -42,8 +42,8 @@ export function CreateSelect({
 	return (
 		<ScrollArea className="h-[27.5vh] rounded-md border">
 			<div className="px-4 py-2">
-				{tasks.map((task, idx) => (
-					<div key={idx}>
+				{tasks.map((task) => (
+					<div key={task.id}>
 						<div className="flex flex-row items-center justify-between gap-4">
 							<TaskHoverCard task={task} className="text-sm font-normal" />
 							<TaskDialog task={task} tasks={tasks} setTasks={setTasks} />
@@ -149,12 +149,12 @@ function TaskDialog({
 				out = [...out, Array.isArray(ret) ? ret[0] : ret];
 
 				setTasks(out);
+				setOut(Array.isArray(ret) ? ret[0] : ret);
 			} else {
 				toast.error(
 					`We ran into an error when updating ${task.name}, ${ret.message}`,
 				);
 			}
-			setOut(genInitialOut());
 			setOpen(false);
 		}
 	}
@@ -175,18 +175,16 @@ function TaskDialog({
 			});
 
 			const res = await re;
-			const ret = await res.json();
 
-			if (res.status == 200 && ret) {
+			if (res.status == 200) {
 				let out;
 				out = tasks.filter((tsk) => task.id !== tsk.id);
 				setTasks(out);
 			} else {
 				toast.error(
-					`We ran into an error when deleting ${task.name}, ${ret.message}`,
+					`We ran into an error when deleting ${task.name}, ${(await res.json()).message}`,
 				);
 			}
-			setOut(genInitialOut());
 			setOpen(false);
 		}
 	}
@@ -195,15 +193,13 @@ function TaskDialog({
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
 				{task ? (
-					<Button size={'iconsm'} variant={'outline'}>
+					<div className="border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-6 w-6 items-center justify-center rounded-md border text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50">
 						<RiEditLine />
-					</Button>
+					</div>
 				) : (
-					<Button
-						variant={'link'}
-						className="m-0 flex h-min flex-row items-center gap-2 p-0">
+					<div className="text-primary m-0 flex h-min flex-row items-center justify-center gap-2 whitespace-nowrap rounded-md p-0 text-sm font-medium underline-offset-4 transition-colors hover:underline disabled:pointer-events-none disabled:opacity-50">
 						<IoCreateOutline /> Create new task
-					</Button>
+					</div>
 				)}
 			</DialogTrigger>
 			<DialogContent className="h-max w-[40%]">
@@ -215,7 +211,7 @@ function TaskDialog({
 								onClick={del}
 								size={'icon'}
 								variant={'ghost'}
-								className="rounded-full">
+								className="aspect-square w-auto rounded-3xl">
 								<Trash2 className="size-5" />
 							</Button>
 						)}
