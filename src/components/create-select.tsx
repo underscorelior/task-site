@@ -30,6 +30,7 @@ import TaskHoverCard from './task-hover';
 import { Textarea } from './ui/textarea';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { Trash2 } from 'lucide-react';
 
 export function CreateSelect({
 	tasks,
@@ -78,8 +79,11 @@ function TaskDialog({
 	// 	'health' | 'normal' | 'cool' | 'productivity' | 'insane'
 	// >(task ? task.category : 'health');
 
-	const [out, setOut] = useState<Task>(
-		task
+	const [out, setOut] = useState<Task>(genInitialOut());
+	const [open, setOpen] = useState<boolean>(false);
+
+	function genInitialOut(): Task {
+		return task
 			? task
 			: ({
 					name: '',
@@ -89,9 +93,8 @@ function TaskDialog({
 					type: '',
 					lower: false,
 					scores: {},
-				} as unknown as Task),
-	);
-	const [open, setOpen] = useState<boolean>(false);
+				} as unknown as Task);
+	}
 
 	async function add() {
 		const re = fetch(
@@ -111,17 +114,14 @@ function TaskDialog({
 		const ret = await res.json();
 
 		if (ret.hasOwnProperty('message')) {
-			const err = ret as { message: string };
-			toast.error(`We ran into an error when adding ${out.name}, ${err}`);
-			setOpen(false);
+			toast.error(
+				`We ran into an error when adding ${out.name}, ${(ret as { message: string }).message}`,
+			);
 		} else if (res.status == 200 && ret) {
-			const data = ret as Task;
-			console.log(data);
-			console.log(tasks);
-			console.log([...tasks, data]);
-			setTasks([...tasks, data]);
-			setOpen(false);
+			setTasks([...tasks, Array.isArray(ret) ? ret[0] : ret]);
 		}
+		setOut(genInitialOut());
+		setOpen(false);
 	}
 
 	async function edit() {
@@ -142,27 +142,54 @@ function TaskDialog({
 			const res = await re;
 			const ret = await res.json();
 
-			console.log('AA');
 			if (res.status == 200 && ret) {
 				let out;
-				console.log(tasks.length);
+
 				out = tasks.filter((tsk) => task.id !== tsk.id);
-				console.log(ret as Task, out.length);
-				out = [...out, ret as Task];
-				console.log(ret as Task, out.length);
-				console.table(out);
+				out = [...out, Array.isArray(ret) ? ret[0] : ret];
+
 				setTasks(out);
-				setOpen(false);
 			} else {
 				toast.error(
 					`We ran into an error when updating ${task.name}, ${ret.message}`,
 				);
-				setOpen(false);
 			}
+			setOut(genInitialOut());
+			setOpen(false);
 		}
 	}
 
-	async function del() {}
+	async function del() {
+		if (task) {
+			const re = fetch(
+				`/api/del_task?id=${task.id}&code=${encodeURIComponent(localStorage.code)}`,
+				{
+					method: 'POST',
+				},
+			);
+
+			toast.promise(re, {
+				loading: 'Updating...',
+				success: '',
+				error: '',
+			});
+
+			const res = await re;
+			const ret = await res.json();
+
+			if (res.status == 200 && ret) {
+				let out;
+				out = tasks.filter((tsk) => task.id !== tsk.id);
+				setTasks(out);
+			} else {
+				toast.error(
+					`We ran into an error when deleting ${task.name}, ${ret.message}`,
+				);
+			}
+			setOut(genInitialOut());
+			setOpen(false);
+		}
+	}
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -181,8 +208,17 @@ function TaskDialog({
 			</DialogTrigger>
 			<DialogContent className="h-max w-[40%]">
 				<DialogHeader>
-					<DialogTitle className="text-2xl">
+					<DialogTitle className="flex flex-row items-center justify-between text-2xl">
 						{task ? `Editing "${task.name}"` : 'Create A New Task'}
+						{task && (
+							<Button
+								onClick={del}
+								size={'icon'}
+								variant={'ghost'}
+								className="rounded-full">
+								<Trash2 className="size-5" />
+							</Button>
+						)}
 					</DialogTitle>
 					<DialogDescription></DialogDescription>
 				</DialogHeader>
@@ -308,12 +344,7 @@ function TaskDialog({
 						<Button variant={'outline'}>Cancel</Button>
 					</DialogClose>
 					{task ? (
-						<>
-							<Button onClick={del} variant={'destructive'}>
-								Delete
-							</Button>
-							<Button onClick={edit}>Submit</Button>
-						</>
+						<Button onClick={edit}>Submit</Button>
 					) : (
 						<Button onClick={add}>Create</Button>
 					)}

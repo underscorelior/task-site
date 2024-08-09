@@ -40,8 +40,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 				.json({ message: 'Cannot have an array for the name parameter' });
 		}
 
-		// TODO: FIX BROKEN IMAGE URLS
-
 		if (!avatar || Array.isArray(avatar)) {
 			return res
 				.status(400)

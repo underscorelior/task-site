@@ -96,7 +96,15 @@ const baseColumns: ColumnDef<Task>[] = [
 
 const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 	accessorFn: (row): [number, Task['type']] => {
-		const userAmount = row.scores[user] ? row.scores[user] : 0;
+		if (row.name == 'a')
+			console.log(
+				row.scores[user],
+				typeof row.scores[user],
+				!row.scores[user],
+				row.scores[user] !== undefined ? row.scores[user] : 0,
+			);
+
+		const userAmount = row.scores[user];
 		return [userAmount !== undefined ? userAmount : 0, row.type];
 	},
 	id: user,

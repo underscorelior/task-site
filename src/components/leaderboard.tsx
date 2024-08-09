@@ -32,7 +32,7 @@ export default function Leaderboard({
 	}
 
 	useEffect(() => {
-		fetchData();
+		if (user != null || tasks) fetchData();
 	}, [user, tasks]);
 
 	useEffect(() => {
