@@ -41,15 +41,15 @@ export function DailyTask({
 	return (
 		<Button
 			variant={
-				!selTasks.some((tsk) => task.name === tsk.name) ? 'outline' : 'selected'
+				!selTasks.some((tsk) => task.id === tsk.id) ? 'outline' : 'selected'
 			}
 			className="mx-auto w-[95%] border px-6 py-2 text-start"
 			onClick={() => {
 				let out;
-				if (!selTasks.some((tsk) => task.name === tsk.name)) {
+				if (!selTasks.some((tsk) => task.id === tsk.id)) {
 					out = [...selTasks, task];
 				} else {
-					out = selTasks.filter((tsk) => task.name !== tsk.name);
+					out = selTasks.filter((tsk) => task.id !== tsk.id);
 				}
 
 				setSelTasks(out);
@@ -79,7 +79,7 @@ export function MultiTask({
 }) {
 	return (
 		<Button
-			variant={task.name != selected?.name ? 'outline' : 'selected'}
+			variant={task.id != selected?.id ? 'outline' : 'selected'}
 			className="mx-auto w-[95%] border px-6 py-2 text-start"
 			onClick={() => setSelected(task)}>
 			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">

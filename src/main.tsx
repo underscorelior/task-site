@@ -86,6 +86,7 @@ export default function App() {
 					user={user as User}
 					setUser={setUser}
 					tasks={tasks}
+					setTasks={setTasks}
 				/>
 			</section>
 			<section className="mx-auto w-full max-w-7xl">
@@ -111,7 +112,7 @@ export default function App() {
 						<TaskTable tasks={tasks} />
 					</TabsContent>
 					<TabsContent value="submit">
-						<Submit user={user as User} />
+						<Submit user={user as User} tasks={tasks} />
 					</TabsContent>
 					<TabsContent value="verify">
 						<Card className="h-[80vh]">

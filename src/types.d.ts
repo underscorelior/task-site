@@ -1,5 +1,5 @@
 type Task = {
-	id?: number; // TODO: Make it required later
+	id: number;
 	name: string;
 	description: string;
 	type: 'daily' | 'multi' | 'single' | 'weekly';

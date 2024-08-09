@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Database } from '../database.types';
+import type { Database, Json } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient<Database>(
@@ -26,42 +26,45 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, avatar } = req.query;
+		let { data: task, code } = req.query;
+		console.log(task, code);
 
-		if (!name) {
+		if (!task) {
 			return res
 				.status(400)
-				.json({ message: 'Missing name in query parameters' });
+				.json({ message: 'Missing task in query parameters' });
 		}
 
-		if (Array.isArray(name)) {
-			return res
-				.status(400)
-				.json({ message: 'Cannot have an array for the name parameter' });
+		if (Array.isArray(task)) {
+			return res.status(400).json({ message: 'Invalid task' });
 		}
+		if (code && code == process.env.PERMISSION_CODE) {
+			const { data, error } = await supabase
+				.from('tasks')
+				.insert(
+					JSON.parse(task) as unknown as {
+						category: string;
+						description: string;
+						lower: boolean | null;
+						name: string | null;
+						points: number;
+						scores: Json;
+						type: string;
+					},
+				)
+				.select();
 
-		// TODO: FIX BROKEN IMAGE URLS
+			if (error) throw error;
 
-		if (!avatar || Array.isArray(avatar)) {
-			return res
-				.status(400)
-				.json({ message: 'Avatar missing, nothing to update' });
-		}
-
-		const { data, error } = await supabase
-			.from('users')
-			.update({ avatar })
-			.eq('name', name)
-			.select();
-
-		if (error) throw error;
-
-		if (data) {
-			return res.status(200).json(data);
+			if (data) {
+				return res.status(200).json(data);
+			} else {
+				return res
+					.status(400)
+					.json({ message: 'We ran into an issue, please try again later' });
+			}
 		} else {
-			return res
-				.status(400)
-				.json({ message: 'We ran into an issue, please try again later' });
+			throw 'Code missing or invalid.';
 		}
 	} catch (error) {
 		return res.status(500).json({

@@ -47,18 +47,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 		const { data, error } = await supabase
 			.from('tasks')
 			.update(
-				// JSON.parse(
-				task as unknown as {
+				JSON.parse(task) as unknown as {
 					category: string;
 					description: string;
-					id: number;
 					lower: boolean | null;
 					name: string | null;
 					points: number;
 					scores: Json;
 					type: string;
 				},
-				// ),
 			)
 			.eq('id', id)
 			.select();

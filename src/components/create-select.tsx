@@ -31,7 +31,13 @@ import { Textarea } from './ui/textarea';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 
-export function CreateSelect({ tasks }: { tasks: Task[] }) {
+export function CreateSelect({
+	tasks,
+	setTasks,
+}: {
+	tasks: Task[];
+	setTasks: (t: Task[]) => void;
+}) {
 	return (
 		<ScrollArea className="h-[27.5vh] rounded-md border">
 			<div className="px-4 py-2">
@@ -39,18 +45,26 @@ export function CreateSelect({ tasks }: { tasks: Task[] }) {
 					<div key={idx}>
 						<div className="flex flex-row items-center justify-between gap-4">
 							<TaskHoverCard task={task} className="text-sm font-normal" />
-							<TaskDialog task={task} />
+							<TaskDialog task={task} tasks={tasks} setTasks={setTasks} />
 						</div>
 						<Separator className="my-2" />
 					</div>
 				))}
-				<TaskDialog />
+				<TaskDialog tasks={tasks} setTasks={setTasks} />
 			</div>
 		</ScrollArea>
 	);
 }
 
-function TaskDialog({ task }: { task?: Task }) {
+function TaskDialog({
+	task,
+	tasks,
+	setTasks,
+}: {
+	task?: Task;
+	tasks: Task[];
+	setTasks: (t: Task[]) => void;
+}) {
 	// const [name, setName] = useState<string>(task ? task.name : '');
 	// const [description, setDescription] = useState<string>(
 	// 	task ? task.description : '',
@@ -77,6 +91,7 @@ function TaskDialog({ task }: { task?: Task }) {
 					scores: [],
 				} as unknown as Task),
 	);
+	const [open, setOpen] = useState<boolean>(false);
 
 	async function submit() {
 		if (task) {
@@ -93,16 +108,51 @@ function TaskDialog({ task }: { task?: Task }) {
 				error: '',
 			});
 
-			if ((await re).status == 200) {
-				// Update the tasks
+			const res = await re;
+
+			if (res.status == 200 && (await res.json())) {
+				// TODO: THIS SEEMS WRONG
+				let out;
+				if (!tasks.some((tsk) => task.id === tsk.id)) {
+					out = [...tasks, (await res.json()) as Task];
+				} else {
+					out = tasks.filter((tsk) => task.id !== tsk.id);
+					out = [...out, (await res.json()) as Task];
+				}
+
+				setTasks(out);
 			} else {
-				// Show error message
+				toast.error(
+					`We ran into an error when updating ${task.name}, ${(await res.json()).message}`,
+				);
 			}
 		} else {
+			const re = fetch(
+				`/api/add_task?data=${JSON.stringify(out)}&code=${localStorage.code}`,
+				{
+					method: 'POST',
+				},
+			);
+
+			toast.promise(re, {
+				loading: 'Updating...',
+				success: '',
+				error: '',
+			});
+
+			const res = await re;
+
+			if (res.status == 200 && (await res.json())) {
+				setTasks([...tasks, (await res.json()) as Task]);
+			} else {
+				toast.error(
+					`We ran into an error when adding ${out.name}, ${(await res.json()).message}`,
+				);
+			}
 		}
 	}
 	return (
-		<Dialog>
+		<Dialog defaultOpen={open} onOpenChange={setOpen}>
 			<DialogTrigger>
 				{task ? (
 					<Button size={'iconsm'} variant={'outline'}>

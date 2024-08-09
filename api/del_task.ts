@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Database } from '../database.types';
+import type { Database, Json } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient<Database>(
@@ -26,42 +26,32 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { name, avatar } = req.query;
+		let { id, code } = req.query;
 
-		if (!name) {
+		if (!id) {
 			return res
 				.status(400)
-				.json({ message: 'Missing name in query parameters' });
+				.json({ message: 'Missing id in query parameters' });
 		}
+		if (code && code == process.env.PERMISSION_CODE) {
+			const { data, error } = await supabase
+				.from('tasks')
+				.delete()
+				.eq('id', id);
 
-		if (Array.isArray(name)) {
-			return res
-				.status(400)
-				.json({ message: 'Cannot have an array for the name parameter' });
-		}
+			if (error) throw error;
 
-		// TODO: FIX BROKEN IMAGE URLS
-
-		if (!avatar || Array.isArray(avatar)) {
-			return res
-				.status(400)
-				.json({ message: 'Avatar missing, nothing to update' });
-		}
-
-		const { data, error } = await supabase
-			.from('users')
-			.update({ avatar })
-			.eq('name', name)
-			.select();
-
-		if (error) throw error;
-
-		if (data) {
-			return res.status(200).json(data);
+			if (data) {
+				return res
+					.status(200)
+					.json({ message: `Successfully deleted task ${id}` });
+			} else {
+				return res
+					.status(400)
+					.json({ message: 'We ran into an issue, please try again later' });
+			}
 		} else {
-			return res
-				.status(400)
-				.json({ message: 'We ran into an issue, please try again later' });
+			throw 'Code missing or invalid.';
 		}
 	} catch (error) {
 		return res.status(500).json({
