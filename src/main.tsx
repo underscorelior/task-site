@@ -3,13 +3,6 @@ import ReactDOM from 'react-dom/client';
 import Leaderboard from './components/leaderboard';
 import './globals.css';
 import Sidebar from './components/sidebar';
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from './components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import Submit from './components/submit';
 import { TaskTable } from './components/table';
@@ -28,8 +21,6 @@ import { Button } from './components/ui/button';
 import toast, { Toaster } from 'react-hot-toast';
 import { Label } from './components/ui/label';
 import Verify from './components/verify';
-
-// TODO: MAKE SURE TO CHECK PERMS ON EVERY SINGLE REQUEST
 
 export async function fetchTasks(setTasks: (t: Task[]) => void) {
 	const res = await fetch('/api/get_tasks', { method: 'GET' });

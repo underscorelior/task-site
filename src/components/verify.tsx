@@ -1,8 +1,10 @@
+import { convertType } from '@/lib/utils';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
+import { MdCheck, MdClear } from 'react-icons/md';
 
 export default function Verify({
 	verify,
@@ -20,11 +22,11 @@ export default function Verify({
 			</CardHeader>
 			<CardContent>
 				<div className="mb-4 mt-1 flex h-[65vh] flex-col">
-					<div className="grid w-full grid-cols-[40%,25%,10%,10%] gap-[5%] rounded-t-md border-x border-t px-[5%] py-2 text-lg font-medium">
+					<div className="grid w-full grid-cols-[40%,15%,20%,20%] gap-[5%] rounded-t-md border-x border-t px-[5%] py-2 text-lg font-medium">
 						<h3>Name</h3>
 						<h3>User</h3>
-						<h3>Points</h3>
-						<h3>#</h3>
+						<h3>Date Submitted</h3>
+						<h3>Verification</h3>
 					</div>
 					<ScrollArea
 						className="h-full w-full rounded-b-md border border-t-2"
@@ -47,77 +49,79 @@ export default function Verify({
 	);
 }
 
-// TODO: If daily, put date. If single, idfk. If multi, put amount
-
 function Submission({
-	// user,
 	submission,
 	tasks,
 }: {
-	// user: User;
 	submission: Verify;
 	tasks: Task[];
 }) {
-	const task: Task | undefined = tasks.find(
-		(task) => task.id === submission.task,
-	);
+	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
 
 	return (
-		<Button
-			variant={'outline'}
-			className="mx-auto w-[95%] border px-6 py-2 text-start">
-			<div className="grid w-full grid-cols-[40%,25%,10%,10%] items-center justify-between gap-[5%]">
-				<Hover task={task} submission={submission} />
-				{/*<p className="truncate overflow-ellipsis font-normal">
-					{convertCategory(task.category)}
+		<div className="ring-offset-background focus-visible:ring-ring mx-auto inline-flex w-[95%] items-center justify-center whitespace-nowrap rounded-md border px-6 py-2 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
+			<div className="grid w-full grid-cols-[40%,15%,20%,20%] items-center justify-between gap-[5%]">
+				<HoverCard>
+					<HoverCardTrigger
+						className={
+							'w-min truncate overflow-ellipsis font-medium underline-offset-4 hover:underline'
+						}>
+						{task.name}
+					</HoverCardTrigger>
+					<HoverCardContent className="flex w-auto max-w-sm flex-col gap-2">
+						<div className="flex h-full min-h-full w-full flex-row gap-4">
+							<div className="whitespace-normal text-base font-medium">
+								{task.name}
+							</div>
+							<Separator orientation="vertical" className="ml-auto w-0.5" />
+							<div className="my-auto text-center text-base capitalize">
+								{submission.name}
+							</div>
+						</div>
+
+						<Separator className="h-0.5" />
+
+						<div className="whitespace-normal text-base font-[450]">
+							<span className="font-medium">More Info:</span>{' '}
+							{submission?.description}
+						</div>
+						<div className="text-sm font-light">
+							<span className="font-medium">Submitted:</span>{' '}
+							{new Date(Date.parse(submission.created_at)).toLocaleString([], {
+								year: 'numeric',
+								month: '2-digit',
+								day: '2-digit',
+								hour12: true,
+								hour: '2-digit',
+								minute: '2-digit',
+								timeZoneName: 'short',
+							})}
+						</div>
+						<div className="text-sm font-light">
+							<span className="font-medium">Task Type:</span>{' '}
+							{convertType(task.type)}
+							{task.type == 'multi' ? `, ${submission.amount}` : ''}
+						</div>
+					</HoverCardContent>
+				</HoverCard>
+				<p className="font-normal capitalize">{submission.name}</p>
+				<p>
+					{new Date(Date.parse(submission.created_at)).toLocaleString([], {
+						year: 'numeric',
+						month: '2-digit',
+						day: '2-digit',
+					})}
 				</p>
-				<p className="font-mono">{task.points}</p>
-				<p className="font-mono">{task.scores[user.name]}</p> */}
-				<p className="capitalize">{submission.name}</p>
+				<div className="flex flex-row gap-4">
+					<Button size={'iconmd'} variant={'outline'}>
+						<MdCheck />
+					</Button>
+					<Separator orientation="vertical" className="w-0.5" />
+					<Button size={'iconmd'} variant={'outline'}>
+						<MdClear />
+					</Button>
+				</div>
 			</div>
-		</Button>
-	);
-}
-
-function Hover({
-	task,
-	submission,
-}: {
-	task: Task | undefined;
-	submission: Verify;
-}) {
-	return (
-		<HoverCard>
-			<HoverCardTrigger
-				className={
-					'w-full truncate overflow-ellipsis font-medium underline-offset-4 hover:underline'
-				}>
-				{task?.name}
-			</HoverCardTrigger>
-			<HoverCardContent className="flex w-auto max-w-sm flex-col gap-2">
-				<div className="flex h-full min-h-full w-full flex-row gap-4">
-					<div className="whitespace-normal text-base font-medium">
-						{task?.name}
-					</div>
-					<Separator orientation="vertical" className="ml-auto w-[1.5px]" />
-					{/* <div className="my-auto text-center font-mono text-base">
-                {task.points} VP{task.points != 1 && 's'}
-            </div> */}
-				</div>
-
-				<Separator className="h-[2px]" />
-
-				<div className="whitespace-normal text-[0.9375rem] font-[450]">
-					{submission?.description}
-				</div>
-				{/*
-        <div>Category: {convertCategory(task.category)}</div>
-        <div className="text-sm font-light">
-            {convertType(task.type)}
-            {task.type !== 'single' &&
-                (task.lower ? ' - Lowest' : ' - Highest')}
-        </div> */}
-			</HoverCardContent>
-		</HoverCard>
+		</div>
 	);
 }
