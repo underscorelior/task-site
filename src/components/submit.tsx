@@ -21,11 +21,91 @@ import { SingleTask, DailyTask, MultiTask } from './task';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import toast from 'react-hot-toast';
 
-export default function Submit({ user, tasks }: { user: User; tasks: Task[] }) {
+export default function Submit({
+	user,
+	tasks,
+	verify,
+	setVerify,
+}: {
+	user: User;
+	tasks: Task[];
+	verify: Verify[];
+	setVerify: (v: Verify[]) => void;
+}) {
 	const [type, setType] = useState<string>('');
 	const [selTasks, setSelTasks] = useState<Task[]>([]);
 	const [selected, setSelected] = useState<Task | null>(null);
+	const [amount, setAmount] = useState<number>(1);
+	const [description, setDescription] = useState<string>('');
+
+	async function singleSubmit() {
+		const re = fetch(
+			`/api/submit_task?id=${selected?.id}&name=${encodeURIComponent(user.name)}&amount=${amount}&description=${encodeURIComponent(description)}`,
+			{
+				method: 'POST',
+			},
+		);
+
+		toast.promise(re, {
+			loading: 'Updating...',
+			success: '',
+			error: '',
+		});
+
+		const res = await re;
+
+		if (res.status == 200) {
+			const ret = await res.json();
+			setVerify([...verify, Array.isArray(ret) ? ret[0] : ret]);
+		} else {
+			toast.error(
+				`We ran into an error when submitting ${selected?.name}, ${(await res.json()).message}`,
+			);
+		}
+		setSelTasks([]);
+		setSelected(null);
+		setAmount(1);
+		setDescription('');
+	}
+
+	async function bulkSubmit() {
+		const out = selTasks.map((task) => {
+			return {
+				id: task.id,
+				name: encodeURIComponent(user.name),
+				amount: 1,
+				description: encodeURIComponent(description),
+			};
+		});
+
+		const re = fetch(
+			`/api/bulk_task?tasks=${encodeURIComponent(JSON.stringify(out))}`,
+			{
+				method: 'POST',
+			},
+		);
+
+		toast.promise(re, {
+			loading: 'Updating...',
+			success: '',
+			error: '',
+		});
+
+		const res = await re;
+		if (res.status == 200) {
+			setVerify([...verify, ...(await res.json())]);
+		} else {
+			toast.error(
+				`We ran into an error when submitting ${selected?.name}, ${(await res.json()).message}`,
+			);
+		}
+		setSelTasks([]);
+		setSelected(null);
+		setAmount(1);
+		setDescription('');
+	}
 
 	return (
 		<Card className="flex h-[80vh] flex-col">
@@ -41,6 +121,8 @@ export default function Submit({ user, tasks }: { user: User; tasks: Task[] }) {
 						setType(s);
 						setSelTasks([]);
 						setSelected(null);
+						setAmount(1);
+						setDescription('');
 					}}>
 					<SelectTrigger className="mb-4 mt-1 w-[40%]" id="type">
 						<SelectValue placeholder="Select a type" />
@@ -60,6 +142,8 @@ export default function Submit({ user, tasks }: { user: User; tasks: Task[] }) {
 						setSelected={setSelected}
 						user={user}
 						tasks={tasks}
+						description={description}
+						setDescription={setDescription}
 					/>
 				) : type == 'daily' ? (
 					<Daily
@@ -67,6 +151,8 @@ export default function Submit({ user, tasks }: { user: User; tasks: Task[] }) {
 						setSelTasks={setSelTasks}
 						user={user}
 						tasks={tasks}
+						description={description}
+						setDescription={setDescription}
 					/>
 				) : type == 'multi' ? (
 					<Multi
@@ -74,13 +160,24 @@ export default function Submit({ user, tasks }: { user: User; tasks: Task[] }) {
 						setSelected={setSelected}
 						user={user}
 						tasks={tasks}
+						amount={amount}
+						setAmount={setAmount}
+						description={description}
+						setDescription={setDescription}
 					/>
 				) : (
 					<></>
 				)}
 			</CardContent>
 			<CardFooter className="ml-auto mt-auto">
-				<Button disabled={selected === null || !selTasks}>Submit</Button>
+				<Button
+					disabled={selected === null || !selTasks || !description}
+					onClick={() => {
+						if (selected == null) bulkSubmit();
+						else singleSubmit();
+					}}>
+					Submit
+				</Button>
 			</CardFooter>
 		</Card>
 	);
@@ -91,11 +188,15 @@ function Single({
 	tasks,
 	selected,
 	setSelected,
+	description,
+	setDescription,
 }: {
 	user: User;
 	tasks: Task[];
 	selected: Task | null;
 	setSelected: (task: Task | null) => void;
+	description: string;
+	setDescription: (s: string) => void;
 }) {
 	return (
 		<>
@@ -134,6 +235,8 @@ function Single({
 				id="info"
 				placeholder="Put a bit more info about your task completion"
 				className="mt-1 h-max resize-none"
+				onChange={(evt) => setDescription(evt.target.value)}
+				value={description}
 			/>
 		</>
 	);
@@ -144,11 +247,15 @@ function Daily({
 	tasks,
 	selTasks,
 	setSelTasks,
+	description,
+	setDescription,
 }: {
 	user: User;
 	tasks: Task[];
 	selTasks: Task[];
 	setSelTasks: (tasks: Task[]) => void;
+	description: string;
+	setDescription: (s: string) => void;
 }) {
 	return (
 		<>
@@ -188,6 +295,7 @@ function Daily({
 				id="info"
 				placeholder="Put a bit more info about your task completion"
 				className="mt-1 h-max resize-none"
+				onChange={(evt) => setDescription(evt.target.value)}
 			/>
 		</>
 	);
@@ -196,20 +304,22 @@ function Daily({
 function Multi({
 	user,
 	tasks,
+	amount,
+	setAmount,
 	selected,
 	setSelected,
+	description,
+	setDescription,
 }: {
 	user: User;
 	tasks: Task[];
+	amount: number;
+	setAmount: (a: number) => void;
 	selected: Task | null;
 	setSelected: (task: Task | null) => void;
+	description: string;
+	setDescription: (s: string) => void;
 }) {
-	const [increment, setIncrement] = useState<number>(1);
-	const [task, setTask] = useState<number>(0);
-	const [description, setDescription] = useState<string>('');
-
-	function submit() {}
-
 	return (
 		<>
 			<Label htmlFor="tasks" className="text-lg font-medium">
@@ -248,17 +358,18 @@ function Multi({
 					id="info"
 					placeholder="Put a bit more info about your task completion"
 					className="row-start-2 mt-1 h-max resize-none"
+					onChange={(evt) => setDescription(evt.target.value)}
 				/>
 
 				<Label htmlFor="increment" className="text-lg font-medium">
 					Increment
 				</Label>
 				<Input
-					defaultValue={increment}
+					defaultValue={amount}
 					className="mb-4 mt-1"
 					type="number"
 					onChange={(e) => {
-						setIncrement(+e.target.value);
+						setAmount(+e.target.value);
 					}}
 					min={1}
 				/>

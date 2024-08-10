@@ -23,3 +23,13 @@ type Leaderboard = {
 		score: number;
 	};
 };
+
+type Verify = {
+	id: number;
+	created_at: string;
+	name: string;
+	task: number;
+	description: string;
+	amount: number;
+	verify: string[];
+};

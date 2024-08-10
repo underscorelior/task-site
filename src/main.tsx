@@ -44,6 +44,7 @@ export default function App() {
 	const [hasCode, setHasCode] = useState<boolean>(true);
 	const [user, setUser] = useState<User | null>(null);
 	const [tasks, setTasks] = useState<Task[]>([]);
+	const [verify, setVerify] = useState<Verify[]>([]);
 
 	useEffect(() => {
 		async function fetchUser() {
@@ -66,7 +67,18 @@ export default function App() {
 				);
 		}
 
+		async function fetchVerify() {
+			const res = await fetch('/api/get_submissions', { method: 'GET' });
+
+			if (res.status == 200) setVerify((await res.json()) as Verify[]);
+			else
+				toast.error(
+					`We ran into an error when loading tasks, ${(await res.json()).message}`,
+				);
+		}
+
 		fetchTasks(setTasks);
+		fetchVerify();
 
 		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
 			setHasCode(false);
@@ -112,7 +124,12 @@ export default function App() {
 						<TaskTable tasks={tasks} />
 					</TabsContent>
 					<TabsContent value="submit">
-						<Submit user={user as User} tasks={tasks} />
+						<Submit
+							user={user as User}
+							tasks={tasks}
+							verify={verify}
+							setVerify={setVerify}
+						/>
 					</TabsContent>
 					<TabsContent value="verify">
 						<Card className="h-[80vh]">

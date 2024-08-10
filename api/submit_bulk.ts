@@ -26,40 +26,19 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { id, name, description, amount } = req.query;
+		let { tasks } = req.query;
 
-		if (!id || Array.isArray(id)) {
+		if (!tasks) {
 			return res
 				.status(400)
-				.json({ message: 'Error with id in query parameters' });
+				.json({ message: 'Error with tasks in query parameters' });
 		}
 
-		if (!name || Array.isArray(name)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with name in query parameters' });
-		}
-
-		if (!description || Array.isArray(description)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with description in query parameters' });
-		}
-
-		if (!amount || Array.isArray(amount)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with amount in query parameters' });
-		}
+		// TODO: IF THE TASK IS A DAILY TASK, STORE IT IN ANOTHER TABLE SO REPETITION ISN'T POSSIBLE
 
 		const { data, error } = await supabase
 			.from('submit')
-			.insert({
-				task: parseInt(id),
-				name,
-				description,
-				amount: parseInt(amount),
-			})
+			.insert(JSON.parse(JSON.stringify(tasks)))
 			.select();
 
 		if (error) throw error;
