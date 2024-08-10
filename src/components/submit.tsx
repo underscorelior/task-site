@@ -115,9 +115,9 @@ function Single({
 						{tasks
 							.filter((task) => task.type === 'single')
 							.filter((task) => task.scores[user.name] == 0)
-							.map((task, idx) => (
+							.map((task) => (
 								<SingleTask
-									key={idx}
+									key={task.id}
 									task={task}
 									selected={selected}
 									setSelected={setSelected}
@@ -168,9 +168,9 @@ function Daily({
 					<div className="my-3 flex flex-col gap-3">
 						{tasks
 							.filter((task) => task.type === 'daily')
-							.map((task, idx) => (
+							.map((task) => (
 								<DailyTask
-									key={idx}
+									key={task.id}
 									user={user}
 									task={task}
 									selTasks={selTasks}
@@ -205,6 +205,10 @@ function Multi({
 	setSelected: (task: Task | null) => void;
 }) {
 	const [increment, setIncrement] = useState<number>(1);
+	const [task, setTask] = useState<number>(0);
+	const [description, setDescription] = useState<string>('');
+
+	function submit() {}
 
 	return (
 		<>
@@ -224,9 +228,9 @@ function Multi({
 					<div className="my-3 flex flex-col gap-3">
 						{tasks
 							.filter((task) => task.type == 'multi')
-							.map((task, idx) => (
+							.map((task) => (
 								<MultiTask
-									key={idx}
+									key={task.id}
 									user={user}
 									task={task}
 									selected={selected}

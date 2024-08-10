@@ -9,8 +9,6 @@ import {
 	CardTitle,
 } from './ui/card';
 import toast from 'react-hot-toast';
-// import { Button } from './ui/button';
-// import { MdRefresh } from 'react-icons/md';
 
 export default function Leaderboard({
 	user,
@@ -63,7 +61,9 @@ export default function Leaderboard({
 							return <LoadingLBUser key={idx} index={number + 1} />;
 						})
 					: LBUsers.map((user, idx) => {
-							return <LeaderboardUser {...user} index={idx + 1} key={idx} />;
+							return (
+								<LeaderboardUser {...user} index={idx + 1} key={user?.name} />
+							);
 						})}
 			</CardContent>
 			<CardFooter className="">

@@ -96,14 +96,6 @@ const baseColumns: ColumnDef<Task>[] = [
 
 const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 	accessorFn: (row): [number, Task['type']] => {
-		if (row.name == 'a')
-			console.log(
-				row.scores[user],
-				typeof row.scores[user],
-				!row.scores[user],
-				row.scores[user] !== undefined ? row.scores[user] : 0,
-			);
-
 		const userAmount = row.scores[user];
 		return [userAmount !== undefined ? userAmount : 0, row.type];
 	},
@@ -140,7 +132,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [pageIndex, setPageIndex] = useState<number>(0);
-	console.log(pageIndex);
+
 	const table = useReactTable({
 		data: tasks,
 		columns,
@@ -155,6 +147,12 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 			sorting,
 			columnFilters,
 			columnVisibility,
+			pagination: {
+				pageIndex,
+				pageSize: Math.floor(
+					((size.height || window.innerHeight) * 0.8 - 282) / 53,
+				),
+			},
 		},
 		initialState: {
 			pagination: {

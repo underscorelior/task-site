@@ -27,3 +27,14 @@ const typeIDs = {
 export function convertType(type: Task['type']): string {
 	return typeIDs[type];
 }
+
+export function sortTaskArr(tasks: Task[]): Task[] {
+	const out: Task[] = [];
+
+	['health', 'normal', 'cool', 'productivity', 'insane'].forEach((i) => {
+		const temp = tasks.filter((task) => task.category == i);
+		temp.forEach((task) => out.push(task as Task));
+	});
+
+	return out;
+}

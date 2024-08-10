@@ -27,7 +27,6 @@ const allowCors = (fn) => async (req, res) => {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
 		let { data: task, code } = req.query;
-		console.log(task, code);
 
 		if (!task) {
 			return res

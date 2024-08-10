@@ -8,5 +8,5 @@
 - [ ] In get_tasks do a secondary sort for amount of vps (higher = better)
 - [ ] Add code verification for every single api route
 - [ ] Add a button to be able to setup user after clicking continue
-- [ ] Fix delete saying it failed, when it didn't
-- [ ] Sort tasks after deleting
+- [x] Fix delete saying it failed, when it didn't
+- [ ] Sort tasks after deleting/editing

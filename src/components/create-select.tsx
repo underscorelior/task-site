@@ -66,19 +66,6 @@ function TaskDialog({
 	tasks: Task[];
 	setTasks: (t: Task[]) => void;
 }) {
-	// const [name, setName] = useState<string>(task ? task.name : '');
-	// const [description, setDescription] = useState<string>(
-	// 	task ? task.description : '',
-	// );
-	// const [points, setPoints] = useState<number>(task ? task.points : 0);
-	// const [taskType, setTaskType] = useState<
-	// 	'daily' | 'multi' | 'single' | 'weekly'
-	// >(task ? task.type : 'multi');
-	// const [lower, setLower] = useState<boolean>(task ? task.lower : false);
-	// const [category, setCategory] = useState<
-	// 	'health' | 'normal' | 'cool' | 'productivity' | 'insane'
-	// >(task ? task.category : 'health');
-
 	const [out, setOut] = useState<Task>(genInitialOut());
 	const [open, setOpen] = useState<boolean>(false);
 
@@ -211,7 +198,7 @@ function TaskDialog({
 								onClick={del}
 								size={'icon'}
 								variant={'ghost'}
-								className="aspect-square w-auto rounded-3xl">
+								className="aspect-square w-auto rounded-xl">
 								<Trash2 className="size-5" />
 							</Button>
 						)}
