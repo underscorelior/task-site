@@ -27,6 +27,7 @@ import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
 import toast, { Toaster } from 'react-hot-toast';
 import { Label } from './components/ui/label';
+import Verify from './components/verify';
 
 // TODO: MAKE SURE TO CHECK PERMS ON EVERY SINGLE REQUEST
 
@@ -132,13 +133,7 @@ export default function App() {
 						/>
 					</TabsContent>
 					<TabsContent value="verify">
-						<Card className="h-[80vh]">
-							<CardHeader>
-								<CardTitle className="text-3xl">Verify</CardTitle>
-							</CardHeader>
-							<CardContent></CardContent>
-							<CardFooter></CardFooter>
-						</Card>
+						<Verify verify={verify} user={user as User} tasks={tasks} />
 					</TabsContent>
 				</Tabs>
 			</section>

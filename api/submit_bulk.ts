@@ -28,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
 		let { tasks } = req.query;
 
-		if (!tasks) {
+		if (!tasks || Array.isArray(tasks)) {
 			return res
 				.status(400)
 				.json({ message: 'Error with tasks in query parameters' });
@@ -38,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 		const { data, error } = await supabase
 			.from('submit')
-			.insert(JSON.parse(JSON.stringify(tasks)))
+			.insert(JSON.parse(tasks))
 			.select();
 
 		if (error) throw error;

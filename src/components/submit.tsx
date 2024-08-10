@@ -73,7 +73,7 @@ export default function Submit({
 	async function bulkSubmit() {
 		const out = selTasks.map((task) => {
 			return {
-				id: task.id,
+				task: task.id,
 				name: encodeURIComponent(user.name),
 				amount: 1,
 				description: encodeURIComponent(description),
@@ -81,7 +81,7 @@ export default function Submit({
 		});
 
 		const re = fetch(
-			`/api/bulk_task?tasks=${encodeURIComponent(JSON.stringify(out))}`,
+			`/api/submit_bulk?tasks=${encodeURIComponent(JSON.stringify(out))}`,
 			{
 				method: 'POST',
 			},
@@ -171,7 +171,7 @@ export default function Submit({
 			</CardContent>
 			<CardFooter className="ml-auto mt-auto">
 				<Button
-					disabled={selected === null || !selTasks || !description}
+					disabled={(selected === null && selTasks.length == 0) || !description}
 					onClick={() => {
 						if (selected == null) bulkSubmit();
 						else singleSubmit();
@@ -296,6 +296,7 @@ function Daily({
 				placeholder="Put a bit more info about your task completion"
 				className="mt-1 h-max resize-none"
 				onChange={(evt) => setDescription(evt.target.value)}
+				value={description}
 			/>
 		</>
 	);
@@ -359,6 +360,7 @@ function Multi({
 					placeholder="Put a bit more info about your task completion"
 					className="row-start-2 mt-1 h-max resize-none"
 					onChange={(evt) => setDescription(evt.target.value)}
+					value={description}
 				/>
 
 				<Label htmlFor="increment" className="text-lg font-medium">
