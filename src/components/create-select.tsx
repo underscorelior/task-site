@@ -1,9 +1,11 @@
+import { z } from 'zod';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { IoCreateOutline } from 'react-icons/io5';
 import { RiEditLine } from 'react-icons/ri';
 import { Button } from './ui/button';
 
+import { Trash2 } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -31,6 +33,9 @@ import {
 } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormField, FormItem } from './ui/form';
 
 export function CreateSelect({
 	tasks,
@@ -57,6 +62,22 @@ export function CreateSelect({
 	);
 }
 
+const formSchema = z.object({
+	name: z
+		.string()
+		.min(1, { message: 'Name must be a minimum of 1 character.' })
+		.max(64, { message: 'Name must be a maximum of 64 characters.' }),
+	description: z
+		.string()
+		.min(1, { message: 'Description must be a minimum of 1 character.' }),
+	points: z
+		.number()
+		.min(0.1, { message: 'Task must be worth a minimum of 0.1 points.' }),
+	category: z.enum(['health', 'normal', 'cool', 'productivity', 'insane', '']),
+	type: z.enum(['daily', 'multi', 'single', 'weekly', '']),
+	lower: z.boolean(),
+});
+
 function TaskDialog({
 	task,
 	tasks,
@@ -68,6 +89,21 @@ function TaskDialog({
 }) {
 	const [out, setOut] = useState<Task>(genInitialOut());
 	const [open, setOpen] = useState<boolean>(false);
+	const [name, setName] = useState<string>('');
+	const [type, setType] = useState<string>('');
+	const [prio, setPrio] = useState<boolean>(false);
+
+	const form = useForm<z.infer<typeof formSchema>>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: '',
+			description: '',
+			points: 0,
+			category: '',
+			type: '',
+			lower: false,
+		},
+	});
 
 	function genInitialOut(): Task {
 		return task
@@ -205,8 +241,38 @@ function TaskDialog({
 					</DialogTitle>
 					<DialogDescription></DialogDescription>
 				</DialogHeader>
+				<Form {...form}>
+					<FormField
+						name="name"
+						control={form.control}
+						render={({ field }) => (
+							<FormItem>
+								<Label className="mb-1 text-base font-medium" htmlFor="name">
+									Name
+								</Label>
+								<Input
+									id="name"
+									defaultValue={out.name}
+									placeholder="Task Name"
+									className="mb-4"
+									// onChange={(evt) => {
+									// 	const t = out;
+									// 	t.name = evt.target.value;
+									// 	setOut(t);
+									// 	setName(evt.target.value);
+									// }}
+									maxLength={64}
+									{...field}
+								/>
+								<div className="-mt-3 mb-2 font-mono text-xs font-normal">
+									{`${'0'.repeat(2 - (name.length + '').length) + name.length}/64 Chars`}
+								</div>
+							</FormItem>
+						)}
+					/>
+				</Form>
 				<div className="h-full">
-					<Label className="text-base font-medium" htmlFor="name">
+					<Label className="mb-1 text-base font-medium" htmlFor="name">
 						Name
 					</Label>
 					<Input
@@ -214,15 +280,19 @@ function TaskDialog({
 						defaultValue={out.name}
 						placeholder="Task Name"
 						className="mb-4"
-						aria-rowcount={2}
 						onChange={(evt) => {
 							const t = out;
 							t.name = evt.target.value;
 							setOut(t);
+							setName(evt.target.value);
 						}}
+						maxLength={64}
 					/>
+					<div className="-mt-3 mb-2 font-mono text-xs font-normal">
+						{`${'0'.repeat(2 - (name.length + '').length) + name.length}/64 Chars`}
+					</div>
 
-					<Label className="text-base font-medium" htmlFor="desc">
+					<Label className="mb-1 text-base font-medium" htmlFor="desc">
 						Description
 					</Label>
 					<Textarea
@@ -237,7 +307,7 @@ function TaskDialog({
 						}}
 					/>
 
-					<Label className="text-base font-medium" htmlFor="vp">
+					<Label className="mb-1 text-base font-medium" htmlFor="vp">
 						# of VPs
 					</Label>
 					<Input
@@ -254,27 +324,43 @@ function TaskDialog({
 					/>
 					<div className="grid grid-cols-2">
 						<div>
-							<Label className="text-base font-medium" htmlFor="type">
+							<Label className="mb-1 text-base font-medium" htmlFor="type">
 								Type
 							</Label>
 							<div className="mb-4 flex flex-row items-center gap-2" id="type">
 								<ToggleGroup
 									type="single"
-									defaultValue={out.type} // FIXME: REQUIRE THERE TO BE ONE IN THE TOGGLE GROUP OTHERWISE IT WILL BE SCUFFED
+									defaultValue={out.type}
 									variant={'outline'}
 									onValueChange={(typ) => {
 										const t = out;
 										t.type = typ as Task['type'];
 										setOut(t);
+										setType(typ);
 									}}>
-									<ToggleGroupItem value="single">Single</ToggleGroupItem>
-									<ToggleGroupItem value="daily">Daily</ToggleGroupItem>
-									<ToggleGroupItem value="multi">Multi</ToggleGroupItem>
+									<ToggleGroupItem
+										value="single"
+										disabled={type == 'single'}
+										className="disabled:opacity-100">
+										Single
+									</ToggleGroupItem>
+									<ToggleGroupItem
+										value="daily"
+										disabled={type == 'daily'}
+										className="disabled:opacity-100">
+										Daily
+									</ToggleGroupItem>
+									<ToggleGroupItem
+										value="multi"
+										disabled={type == 'multi'}
+										className="disabled:opacity-100">
+										Multi
+									</ToggleGroupItem>
 								</ToggleGroup>
 							</div>
 						</div>
 						<div>
-							<Label className="text-base font-medium" htmlFor="type">
+							<Label className="mb-1 text-base font-medium" htmlFor="type">
 								Priority
 								<span className="ml-2 text-xs font-light">
 									{'(not required if using single)'}
@@ -289,9 +375,20 @@ function TaskDialog({
 										const t = out;
 										t.lower = lower == 'lower';
 										setOut(t);
+										setPrio(lower == 'lower');
 									}}>
-									<ToggleGroupItem value="higher">Higher</ToggleGroupItem>
-									<ToggleGroupItem value="lower">Lower</ToggleGroupItem>
+									<ToggleGroupItem
+										value="higher"
+										disabled={!prio}
+										className="disabled:opacity-100">
+										Higher
+									</ToggleGroupItem>
+									<ToggleGroupItem
+										value="lower"
+										disabled={prio}
+										className="disabled:opacity-100">
+										Lower
+									</ToggleGroupItem>
 								</ToggleGroup>
 							</div>
 						</div>
@@ -303,7 +400,7 @@ function TaskDialog({
 					<Select
 						defaultValue={out.category}
 						onValueChange={(category) => {
-							const t = out; // TODO CHECK IF CAN SKIP THIS STEP
+							const t = out;
 							t.category = category as Task['category'];
 							setOut(t);
 						}}>
@@ -327,9 +424,19 @@ function TaskDialog({
 						<Button variant={'outline'}>Cancel</Button>
 					</DialogClose>
 					{task ? (
-						<Button onClick={edit}>Submit</Button>
+						<Button
+							onClick={() => {
+								edit();
+							}}>
+							Submit
+						</Button>
 					) : (
-						<Button onClick={add}>Create</Button>
+						<Button
+							onClick={() => {
+								add();
+							}}>
+							Create
+						</Button>
 					)}
 				</DialogFooter>
 			</DialogContent>
