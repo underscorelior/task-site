@@ -1,5 +1,5 @@
 type Task = {
-	id: number;
+	id?: number;
 	name: string;
 	description: string;
 	type: 'daily' | 'multi' | 'single' | 'weekly';

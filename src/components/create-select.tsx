@@ -79,10 +79,8 @@ const formSchema = z.object({
 	points: z
 		.number()
 		.gt(0, { message: 'Task must be worth more than 0 points.' }),
-	// category: z.enum(['health', 'normal', 'cool', 'productivity', 'insane', '']),
-	// type: z.enum(['daily', 'multi', 'single', 'weekly', '']),
-	category: z.string({ required_error: 'You must specify a category.' }),
-	type: z.string({ required_error: 'You must specify a type.' }),
+	category: z.string().min(1, { message: 'You must specify a category.' }),
+	type: z.string().min(1, { message: 'You must specify a type.' }),
 	lower: z.enum(['higher', 'lower']), // FIXME: try and make this a boolean
 });
 
@@ -95,7 +93,6 @@ function TaskDialog({
 	tasks: Task[];
 	setTasks: (t: Task[]) => void;
 }) {
-	const [out, setOut] = useState<Task>(genInitialOut());
 	const [open, setOpen] = useState<boolean>(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -115,23 +112,9 @@ function TaskDialog({
 		},
 	});
 
-	function genInitialOut(): Task {
-		return task
-			? task
-			: ({
-					name: '',
-					description: '',
-					points: 0,
-					category: '',
-					type: '',
-					lower: 'higher',
-					scores: {},
-				} as unknown as Task);
-	}
-
-	async function add() {
+	async function add(data: Task) {
 		const re = fetch(
-			`/api/add_task?data=${encodeURIComponent(JSON.stringify(out))}&code=${encodeURIComponent(localStorage.code)}`,
+			`/api/add_task?data=${encodeURIComponent(JSON.stringify(data))}&code=${encodeURIComponent(localStorage.code)}`,
 			{
 				method: 'POST',
 			},
@@ -148,19 +131,17 @@ function TaskDialog({
 
 		if (ret.hasOwnProperty('message')) {
 			toast.error(
-				`We ran into an error when adding ${out.name}, ${(ret as { message: string }).message}`,
+				`We ran into an error when adding ${data.name}, ${(ret as { message: string }).message}`,
 			);
 		} else if (res.status == 200 && ret) {
 			setTasks([...tasks, Array.isArray(ret) ? ret[0] : ret]);
 		}
-		setOut(genInitialOut());
-		setOpen(false);
 	}
 
-	async function edit() {
+	async function edit(data: Task) {
 		if (task) {
 			const re = fetch(
-				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify(out))}`,
+				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify({ ...data, id: task.id }))}`,
 				{
 					method: 'POST',
 				},
@@ -182,13 +163,12 @@ function TaskDialog({
 				out = [...out, Array.isArray(ret) ? ret[0] : ret];
 
 				setTasks(out);
-				setOut(Array.isArray(ret) ? ret[0] : ret);
+				// setOut(Array.isArray(ret) ? ret[0] : ret); // TODO: REPLACE THIS
 			} else {
 				toast.error(
 					`We ran into an error when updating ${task.name}, ${ret.message}`,
 				);
 			}
-			setOpen(false);
 		}
 	}
 
@@ -218,12 +198,27 @@ function TaskDialog({
 					`We ran into an error when deleting ${task.name}, ${(await res.json()).message}`,
 				);
 			}
-			setOpen(false);
 		}
 	}
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: z.infer<typeof formSchema>) {
 		console.log(values);
+		const data: Task = {
+			name: values.name,
+			description: values.description,
+			type: values.type as Task['type'],
+			points: values.points,
+			category: values.category as Task['category'],
+			lower: values.lower == 'lower',
+			scores: task ? task.scores : {},
+		};
+		if (task) {
+			await edit(data);
+		} else {
+			await add(data);
+		}
+
+		setOpen(false);
 	}
 
 	return (
@@ -368,6 +363,7 @@ function TaskDialog({
 												</ToggleGroupItem>
 											</ToggleGroup>
 										</FormControl>
+										<FormMessage />
 									</FormItem>
 								)}
 							/>
@@ -385,7 +381,7 @@ function TaskDialog({
 										<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
 											<ToggleGroup
 												type="single"
-												defaultValue={out.lower ? 'lower' : 'higher'}
+												defaultValue={field.value}
 												variant={'outline'}
 												{...field}
 												onValueChange={(prio) => field.onChange(prio)}>
