@@ -6,7 +6,6 @@ import { RiEditLine } from 'react-icons/ri';
 import { Button } from './ui/button';
 
 import { Trash2 } from 'lucide-react';
-import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import TaskHoverCard from './task-hover';
@@ -35,7 +34,15 @@ import { Textarea } from './ui/textarea';
 import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormField, FormItem } from './ui/form';
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from './ui/form';
 
 export function CreateSelect({
 	tasks,
@@ -75,7 +82,7 @@ const formSchema = z.object({
 		.min(0.1, { message: 'Task must be worth a minimum of 0.1 points.' }),
 	category: z.enum(['health', 'normal', 'cool', 'productivity', 'insane', '']),
 	type: z.enum(['daily', 'multi', 'single', 'weekly', '']),
-	lower: z.boolean(),
+	lower: z.enum(['higher', 'lower']),
 });
 
 function TaskDialog({
@@ -101,7 +108,7 @@ function TaskDialog({
 			points: 0,
 			category: '',
 			type: '',
-			lower: false,
+			lower: 'higher',
 		},
 	});
 
@@ -114,7 +121,7 @@ function TaskDialog({
 					points: 0,
 					category: '',
 					type: '',
-					lower: false,
+					lower: 'higher',
 					scores: {},
 				} as unknown as Task);
 	}
@@ -212,6 +219,12 @@ function TaskDialog({
 		}
 	}
 
+	function onSubmit(values: z.infer<typeof formSchema>) {
+		// Do something with the form values.
+		// ✅ This will be type-safe and validated.
+		console.log(values);
+	}
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger>
@@ -242,36 +255,184 @@ function TaskDialog({
 					<DialogDescription></DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<FormField
-						name="name"
-						control={form.control}
-						render={({ field }) => (
-							<FormItem>
-								<Label className="mb-1 text-base font-medium" htmlFor="name">
-									Name
-								</Label>
-								<Input
-									id="name"
-									defaultValue={out.name}
-									placeholder="Task Name"
-									className="mb-4"
-									// onChange={(evt) => {
-									// 	const t = out;
-									// 	t.name = evt.target.value;
-									// 	setOut(t);
-									// 	setName(evt.target.value);
-									// }}
-									maxLength={64}
-									{...field}
-								/>
-								<div className="-mt-3 mb-2 font-mono text-xs font-normal">
-									{`${'0'.repeat(2 - (name.length + '').length) + name.length}/64 Chars`}
-								</div>
-							</FormItem>
-						)}
-					/>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+						<FormField
+							name="name"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="mb-1 text-base font-medium">
+										Name
+									</FormLabel>
+									<FormControl>
+										<Input
+											// defaultValue={out.name}
+											placeholder="Task Name"
+											className="mb-4"
+											// maxLength={64}
+											{...field}
+										/>
+									</FormControl>
+									<FormDescription className="-mt-3 mb-2 font-mono text-xs font-normal">
+										{`${'0'.repeat(2 - (field.value.length + '').length) + field.value.length}/64 Chars`}
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							name="description"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="mb-1 text-base font-medium">
+										Description
+									</FormLabel>
+									<FormControl>
+										<Textarea
+											// defaultValue={out.description}
+											placeholder="Task Description"
+											className="mb-4 h-auto resize-none"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							name="points"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="mb-1 text-base font-medium">
+										# of VPs
+									</FormLabel>
+									<FormControl>
+										<Input
+											// defaultValue={out.points}
+											placeholder="Task VP Worth"
+											className="mb-4 w-[30%]"
+											type="number"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+
+						<div className="grid grid-cols-2">
+							<FormField
+								name="type"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="mb-1 text-base font-medium">
+											Type
+										</FormLabel>
+										<FormControl className="mb-4 flex flex-row items-center justify-start gap-2">
+											<ToggleGroup
+												type="single"
+												// defaultValue={out.type}
+												variant={'outline'}
+												{...field}
+												className="mr-auto">
+												<ToggleGroupItem
+													value="single"
+													disabled={type == 'single'}
+													className="disabled:opacity-100">
+													Single
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="daily"
+													disabled={type == 'daily'}
+													className="disabled:opacity-100">
+													Daily
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="multi"
+													disabled={type == 'multi'}
+													className="disabled:opacity-100">
+													Multi
+												</ToggleGroupItem>
+											</ToggleGroup>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								name="lower"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="mb-1 text-base font-medium">
+											Priority
+											<span className="ml-2 text-xs font-light">
+												{'(not required if using single)'}
+											</span>
+										</FormLabel>
+										<FormControl className="mb-4 flex flex-row items-center justify-start gap-2">
+											<ToggleGroup
+												type="single"
+												defaultValue={out.lower ? 'lower' : 'higher'}
+												variant={'outline'}
+												{...field}>
+												<ToggleGroupItem
+													value="higher"
+													disabled={!prio}
+													className="disabled:opacity-100">
+													Higher
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="lower"
+													disabled={prio}
+													className="disabled:opacity-100">
+													Lower
+												</ToggleGroupItem>
+											</ToggleGroup>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+						<FormField
+							name="category"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-base font-medium">
+										Category
+									</FormLabel>
+									<Select
+										onValueChange={field.onChange}
+										defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger className="w-[40%]">
+												<SelectValue placeholder="Select a category" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectGroup>
+												<SelectLabel>Category</SelectLabel>
+												<SelectItem value="health">Health</SelectItem>
+												<SelectItem value="normal">Become Normal</SelectItem>
+												<SelectItem value="cool">POV: Cool</SelectItem>
+												<SelectItem value="productivity">
+													Productivity
+												</SelectItem>
+												<SelectItem value="insane">INSANE</SelectItem>
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</form>
 				</Form>
-				<div className="h-full">
+				{/* <div className="h-full">
 					<Label className="mb-1 text-base font-medium" htmlFor="name">
 						Name
 					</Label>
@@ -418,12 +579,12 @@ function TaskDialog({
 							</SelectGroup>
 						</SelectContent>
 					</Select>
-				</div>
+				</div> */}
 				<DialogFooter>
 					<DialogClose>
 						<Button variant={'outline'}>Cancel</Button>
 					</DialogClose>
-					{task ? (
+					{/* {task ? (
 						<Button
 							onClick={() => {
 								edit();
@@ -437,7 +598,8 @@ function TaskDialog({
 							}}>
 							Create
 						</Button>
-					)}
+					)} */}
+					<Button type="submit">{task ? 'Submit' : 'Create'}</Button>
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
