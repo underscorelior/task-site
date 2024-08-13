@@ -97,11 +97,11 @@ const baseColumns: ColumnDef<Task>[] = [
 
 const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 	accessorFn: (row): [number, Task['type'], string | undefined] => {
-		const userAmount = row.users[user].score;
+		const userAmount = row.users[user]?.score;
 		return [
 			userAmount !== undefined ? userAmount : 0,
 			row.type,
-			row.users[user].description,
+			row.users[user]?.description,
 		];
 	},
 	id: user,
@@ -137,7 +137,6 @@ const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 		);
 	},
 }));
-
 const columns: ColumnDef<Task>[] = [...baseColumns, ...userColumns];
 
 export function TaskTable({ tasks }: { tasks: Task[] }) {

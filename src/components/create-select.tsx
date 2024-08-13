@@ -51,7 +51,7 @@ export function CreateSelect({
 	setTasks: (t: Task[]) => void;
 }) {
 	return (
-		<ScrollArea className="h-[27.5vh] rounded-md border">
+		<ScrollArea className="h-[27.5vh] w-full rounded-md border">
 			<div className="px-4 py-2">
 				{tasks.map((task) => (
 					<div key={task.id}>

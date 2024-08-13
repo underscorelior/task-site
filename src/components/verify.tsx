@@ -57,6 +57,7 @@ function Submission({
 	tasks: Task[];
 }) {
 	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
+	console.log(task, submission.task);
 
 	return (
 		<div className="ring-offset-background focus-visible:ring-ring mx-auto inline-flex w-[95%] items-center justify-center whitespace-nowrap rounded-md border px-6 py-2 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
@@ -100,7 +101,7 @@ function Submission({
 						<div className="text-sm font-light">
 							<span className="font-medium">Task Type:</span>{' '}
 							{convertType(task.type)}
-							{task.type == 'multi' ? `, ${submission.amount}` : ''}
+							{task.type == 'multi' ? `, Amount: ${submission.amount}` : ''}
 						</div>
 					</HoverCardContent>
 				</HoverCard>
@@ -114,6 +115,7 @@ function Submission({
 				</p>
 				<div className="flex flex-row gap-4">
 					<Button size={'iconmd'} variant={'outline'}>
+						{/* TODO: ON SUBMIT IF IT IS A DAILY, MAKE SURE TO STORE SUBMITTED DATE */}
 						<MdCheck />
 					</Button>
 					<Separator orientation="vertical" className="w-0.5" />

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Database } from '../database.types.ts';
+import type { Database, Json } from '../database.types.ts';
 
 const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
@@ -26,21 +26,50 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		const { id, code } = req.query;
+		const { id, code, task_id, data: task } = req.query;
 
 		if (!id) {
 			return res
 				.status(400)
 				.json({ message: 'Missing id in query parameters' });
 		}
+
+		if (!task_id) {
+			return res
+				.status(400)
+				.json({ message: 'Missing task_id in query parameters' });
+		}
+
+		if (Array.isArray(task)) {
+			return res.status(400).json({ message: 'Invalid task' });
+		}
+
 		if (code && code == process.env.PERMISSION_CODE) {
-			const { error } = await supabase.from('tasks').delete().eq('id', id);
+			const { error } = await supabase.from('submit').delete().eq('id', id);
 
 			if (error) throw error;
 
+			const { error: taskError } = await supabase
+				.from('tasks')
+				.update(
+					JSON.parse(task) as unknown as {
+						category: string;
+						description: string;
+						lower: boolean | null;
+						name: string | null;
+						points: number;
+						scores: Json;
+						type: string;
+					},
+				)
+				.eq('id', task_id)
+				.select();
+
+			if (taskError) throw taskError;
+
 			return res
 				.status(200)
-				.json({ message: `Successfully deleted task ${id}` });
+				.json({ message: `Successfully approved task ${id}` });
 		} else {
 			throw 'Code missing or invalid.';
 		}

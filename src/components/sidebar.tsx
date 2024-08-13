@@ -117,7 +117,7 @@ export default function Sidebar({
 						<CardTitle>Tasks</CardTitle>
 						<CardDescription></CardDescription>
 					</CardHeader>
-					<CardContent className="flex h-full items-center justify-center">
+					<CardContent className="flex h-full w-full items-center justify-center">
 						<CreateSelect tasks={tasks} setTasks={setTasks} />
 					</CardContent>
 				</Card>
