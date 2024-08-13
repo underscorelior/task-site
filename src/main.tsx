@@ -125,7 +125,13 @@ export default function App() {
 						/>
 					</TabsContent>
 					<TabsContent value="verify">
-						<Verify verify={verify} user={user as User} tasks={tasks} />
+						<Verify
+							user={user as User}
+							tasks={tasks}
+							setTasks={setTasks}
+							verify={verify}
+							setVerify={setVerify}
+						/>
 					</TabsContent>
 				</Tabs>
 			</section>

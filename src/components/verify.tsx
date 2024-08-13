@@ -5,15 +5,20 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { MdCheck, MdClear } from 'react-icons/md';
+import { toast } from 'react-hot-toast';
 
 export default function Verify({
-	verify,
 	user,
 	tasks,
+	setTasks,
+	verify,
+	setVerify,
 }: {
-	verify: Verify[];
 	user: User;
 	tasks: Task[];
+	setTasks: (t: Task[]) => void;
+	verify: Verify[];
+	setVerify: (v: Verify[]) => void;
 }) {
 	return (
 		<Card className="flex h-[80vh] flex-col">
@@ -31,17 +36,27 @@ export default function Verify({
 					<ScrollArea
 						className="h-full w-full rounded-b-md border border-t-2"
 						id="tasks">
-						<div className="my-3 flex flex-col gap-3">
-							{verify
-								.filter((submission) => submission.name !== user.name)
-								.map((submission) => (
-									<Submission
-										key={submission.id}
-										submission={submission}
-										tasks={tasks}
-									/>
-								))}
-						</div>
+						{verify.filter((submission) => submission.name !== user.name)
+							.length == 0 ? (
+							<div className="my-10 flex h-full w-full items-center justify-center">
+								<h1 className="mx-auto my-auto">No submissions found.</h1>
+							</div>
+						) : (
+							<div className="my-3 flex flex-col gap-3">
+								{verify
+									.filter((submission) => submission.name !== user.name)
+									.map((submission) => (
+										<Submission
+											key={submission.id}
+											submission={submission}
+											tasks={tasks}
+											setTasks={setTasks}
+											verify={verify}
+											setVerify={setVerify}
+										/>
+									))}
+							</div>
+						)}
 					</ScrollArea>
 				</div>
 			</CardContent>
@@ -52,11 +67,79 @@ export default function Verify({
 function Submission({
 	submission,
 	tasks,
+	setTasks,
+	verify,
+	setVerify,
 }: {
 	submission: Verify;
 	tasks: Task[];
+	setTasks: (t: Task[]) => void;
+	verify: Verify[];
+	setVerify: (v: Verify[]) => void;
 }) {
 	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
+
+	console.log(task, JSON.stringify(task));
+
+	async function approve() {
+		task.users[submission.name].score += submission.amount;
+		task.users[submission.name].updated_at = Date.now();
+		task.users[submission.name].description = submission.description;
+
+		console.log(task, JSON.stringify(task));
+
+		const re = fetch(
+			`/api/approve_verify?id=${submission.id}&task_id=${task.id}&task=${encodeURIComponent(JSON.stringify(task))}&code=${encodeURIComponent(localStorage.code)}`,
+			{
+				method: 'POST',
+			},
+		);
+
+		toast.promise(re, {
+			loading: 'Updating...',
+			success: '',
+			error: '',
+		});
+
+		const res = await re;
+
+		if (res.status == 200) {
+			console.log('A');
+			setVerify(verify.filter((tsk) => task.id !== tsk.id));
+			console.log('B');
+			setTasks([...tasks.filter((tsk) => task.id !== tsk.id, task)]);
+			console.log('C');
+		} else {
+			toast.error(
+				`We ran into an error when approving ${task.name}, ${(await res.json()).message}`,
+			);
+		}
+	}
+
+	async function deny() {
+		const re = fetch(
+			`/api/del_verify?id=${submission.id}&code=${encodeURIComponent(localStorage.code)}`,
+			{
+				method: 'POST',
+			},
+		);
+
+		toast.promise(re, {
+			loading: 'Updating...',
+			success: '',
+			error: '',
+		});
+
+		const res = await re;
+
+		if (res.status == 200) {
+			setVerify(verify.filter((tsk) => task.id !== tsk.id));
+		} else {
+			toast.error(
+				`We ran into an error when denying ${task.name}, ${(await res.json()).message}`,
+			);
+		}
+	}
 
 	return (
 		<div className="ring-offset-background focus-visible:ring-ring mx-auto inline-flex w-[95%] items-center justify-center whitespace-nowrap rounded-md border px-6 py-2 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
@@ -113,12 +196,11 @@ function Submission({
 					})}
 				</p>
 				<div className="flex flex-row gap-4">
-					<Button size={'iconmd'} variant={'outline'}>
-						{/* TODO: ON SUBMIT IF IT IS A DAILY, MAKE SURE TO STORE SUBMITTED DATE */}
+					<Button size={'iconmd'} variant={'outline'} onClick={approve}>
 						<MdCheck />
 					</Button>
 					<Separator orientation="vertical" className="w-0.5" />
-					<Button size={'iconmd'} variant={'outline'}>
+					<Button size={'iconmd'} variant={'outline'} onClick={deny}>
 						<MdClear />
 					</Button>
 				</div>

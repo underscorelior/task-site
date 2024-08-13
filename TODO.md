@@ -12,3 +12,4 @@
 - [ ] Sort tasks after deleting/editing
 - [ ] For single tasks that require some proof, make it such that you can put a hover card with the description for a link
 - [ ] When creating and submitting tasks autosort the stuff
+- [ ] Fix verification breaking when task is deleted

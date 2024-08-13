@@ -33,6 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 				.status(400)
 				.json({ message: 'Missing id in query parameters' });
 		}
+
 		if (code && code == process.env.PERMISSION_CODE) {
 			const { error } = await supabase.from('tasks').delete().eq('id', id);
 

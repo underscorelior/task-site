@@ -364,7 +364,7 @@ function Multi({
 					Increment
 				</Label>
 				<Input
-					defaultValue={amount}
+					value={amount}
 					className="mb-4 mt-1"
 					type="number"
 					onChange={(e) => {

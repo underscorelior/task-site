@@ -26,7 +26,7 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		const { id, code, task_id, data: task } = req.query;
+		const { id, code, task_id, task } = req.query;
 
 		if (!id) {
 			return res
@@ -45,10 +45,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 		}
 
 		if (code && code == process.env.PERMISSION_CODE) {
-			const { error } = await supabase.from('submit').delete().eq('id', id);
-
-			if (error) throw error;
-
 			const { error: taskError } = await supabase
 				.from('tasks')
 				.update(
@@ -66,6 +62,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 				.select();
 
 			if (taskError) throw taskError;
+
+			const { error } = await supabase.from('submit').delete().eq('id', id);
+
+			if (error) throw error;
 
 			return res
 				.status(200)
