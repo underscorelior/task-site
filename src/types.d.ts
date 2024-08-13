@@ -8,7 +8,7 @@ type Task = {
 	users: {
 		[name: string]: {
 			score: number;
-			updated_at?: string;
+			updated_at?: number;
 			description?: string;
 		};
 	};

@@ -119,6 +119,7 @@ export default function App() {
 						<Submit
 							user={user as User}
 							tasks={tasks}
+							setTasks={setTasks}
 							verify={verify}
 							setVerify={setVerify}
 						/>

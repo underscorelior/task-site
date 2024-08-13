@@ -201,7 +201,6 @@ function TaskDialog({
 	}
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
 		const data: Task = {
 			name: values.name,
 			description: values.description,

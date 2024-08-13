@@ -26,11 +26,13 @@ import toast from 'react-hot-toast';
 export default function Submit({
 	user,
 	tasks,
+	setTasks,
 	verify,
 	setVerify,
 }: {
 	user: User;
 	tasks: Task[];
+	setTasks: (t: Task[]) => void;
 	verify: Verify[];
 	setVerify: (v: Verify[]) => void;
 }) {
@@ -71,40 +73,43 @@ export default function Submit({
 	}
 
 	async function bulkSubmit() {
-		const out = selTasks.map((task) => {
-			return {
-				task: task.id,
-				name: encodeURIComponent(user.name),
-				amount: 1,
-				description: encodeURIComponent(description),
-			};
-		});
+		selTasks.forEach(async (task) => {
+			task.users[user.name].score += 1;
+			task.users[user.name].updated_at = Date.now();
 
-		const re = fetch(
-			`/api/submit_bulk?tasks=${encodeURIComponent(JSON.stringify(out))}`,
-			{
-				method: 'POST',
-			},
-		);
-
-		toast.promise(re, {
-			loading: 'Updating...',
-			success: '',
-			error: '',
-		});
-
-		const res = await re;
-		if (res.status == 200) {
-			setVerify([...verify, ...(await res.json())]);
-		} else {
-			toast.error(
-				`We ran into an error when submitting ${selected?.name}, ${(await res.json()).message}`,
+			const re = fetch(
+				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify(task))}`,
+				{
+					method: 'POST',
+				},
 			);
-		}
+
+			toast.promise(re, {
+				loading: 'Updating...',
+				success: '',
+				error: '',
+			});
+
+			const res = await re;
+			const ret = await res.json();
+
+			if (res.status == 200 && ret) {
+				let out;
+
+				out = tasks.filter((tsk) => task.id !== tsk.id);
+				out = [...out, Array.isArray(ret) ? ret[0] : ret];
+
+				setTasks(out);
+			} else {
+				toast.error(
+					`We ran into an error when updating ${task.name}, ${ret.message}`,
+				);
+			}
+		});
+
 		setSelTasks([]);
 		setSelected(null);
 		setAmount(1);
-		setDescription('');
 	}
 
 	return (
@@ -151,8 +156,6 @@ export default function Submit({
 						setSelTasks={setSelTasks}
 						user={user}
 						tasks={tasks}
-						description={description}
-						setDescription={setDescription}
 					/>
 				) : type == 'multi' ? (
 					<Multi
@@ -247,15 +250,11 @@ function Daily({
 	tasks,
 	selTasks,
 	setSelTasks,
-	description,
-	setDescription,
 }: {
 	user: User;
 	tasks: Task[];
 	selTasks: Task[];
 	setSelTasks: (tasks: Task[]) => void;
-	description: string;
-	setDescription: (s: string) => void;
 }) {
 	return (
 		<>
@@ -274,7 +273,16 @@ function Daily({
 					id="tasks">
 					<div className="my-3 flex flex-col gap-3">
 						{tasks
-							.filter((task) => task.type === 'daily')
+							.filter(
+								(task) =>
+									task.type === 'daily' &&
+									new Date(task.users[user.name].updated_at || 0).setHours(
+										0,
+										0,
+										0,
+										0,
+									) !== new Date().setHours(0, 0, 0, 0),
+							)
 							.map((task) => (
 								<DailyTask
 									key={task.id}
@@ -287,17 +295,6 @@ function Daily({
 					</div>
 				</ScrollArea>
 			</div>
-
-			<Label htmlFor="info" className="text-lg font-medium">
-				More info
-			</Label>
-			<Textarea
-				id="info"
-				placeholder="Put a bit more info about your task completion"
-				className="mt-1 h-max resize-none"
-				onChange={(evt) => setDescription(evt.target.value)}
-				value={description}
-			/>
 		</>
 	);
 }

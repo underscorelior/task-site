@@ -57,7 +57,6 @@ function Submission({
 	tasks: Task[];
 }) {
 	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
-	console.log(task, submission.task);
 
 	return (
 		<div className="ring-offset-background focus-visible:ring-ring mx-auto inline-flex w-[95%] items-center justify-center whitespace-nowrap rounded-md border px-6 py-2 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">

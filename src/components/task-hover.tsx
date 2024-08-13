@@ -13,7 +13,7 @@ export default function TaskHoverCard({
 		<HoverCard>
 			<HoverCardTrigger
 				className={cn(
-					'w-min truncate overflow-ellipsis font-medium underline-offset-4 hover:underline',
+					'truncate overflow-ellipsis font-medium underline-offset-4 hover:underline',
 					className,
 				)}>
 				{task.name}
