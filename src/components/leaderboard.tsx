@@ -70,10 +70,6 @@ export default function Leaderboard({
 				<h6 className="ml-auto font-mono text-xs font-light text-stone-400">
 					Updates automatically.
 				</h6>
-				{/* <Button onClick={fetchData} variant={'ghost'} size={'sm'}>
-					<MdRefresh />
-					Refresh
-				</Button> */}
 			</CardFooter>
 		</Card>
 	);

@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Database } from '../database.types';
+import type { Database } from '../database.types.ts';
 
 const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
@@ -26,7 +26,7 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { id, code } = req.query;
+		const { id, code } = req.query;
 
 		if (!id) {
 			return res

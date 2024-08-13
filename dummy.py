@@ -14,7 +14,7 @@ users = ["luke", "lior", "ishaan", "soham", "sam"]
 def user(single=False):
     out = {}
     for user in users:
-        out[user] = random.randint(0, 1 if single else 100)
+        out[user] = {"score":random.randint(0, 1 if single else 100)}
     print(str(out))
     return str(out)
 
@@ -26,7 +26,7 @@ data = [
         "type": "multi",
         "points": "5",
         "category": "health",
-        "scores": user(),
+        "users": user(), 
     },
     {
         "name": "Go outside for an hour",
@@ -34,7 +34,7 @@ data = [
         "type": "multi",
         "points": "3",
         "category": "health",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Meditate for at least 20 minutes",
@@ -42,7 +42,7 @@ data = [
         "type": "multi",
         "points": "1",
         "category": "health",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Do a T-25 video",
@@ -50,7 +50,7 @@ data = [
         "type": "multi",
         "points": "1",
         "category": "health",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Times homework was late",
@@ -58,7 +58,7 @@ data = [
         "type": "multi",
         "points": "3",
         "category": "productivity",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Read a book that was not assigned in school",
@@ -66,7 +66,7 @@ data = [
         "type": "multi",
         "points": "2",
         "category": "productivity",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Go to sleep before 1:30 AM",
@@ -74,7 +74,7 @@ data = [
         "type": "daily",
         "points": "2",
         "category": "health",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Drink 6 glasses of water every day",
@@ -82,7 +82,7 @@ data = [
         "type": "daily",
         "points": "4",
         "category": "health",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Have at least 6 hours of sleep that night",
@@ -90,7 +90,7 @@ data = [
         "type": "daily",
         "points": "2",
         "category": "health",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Watch the news",
@@ -98,7 +98,7 @@ data = [
         "type": "daily",
         "points": "1",
         "category": "normal",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Go a day without video games",
@@ -106,7 +106,7 @@ data = [
         "type": "daily",
         "points": "2",
         "category": "productivity",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Be productive",
@@ -114,7 +114,7 @@ data = [
         "type": "daily",
         "points": "3",
         "category": "productivity",
-        "scores": user(),
+        "users": user(),
     },
     {
         "name": "Talk with someone you haven't talked to for 5+ years",
@@ -122,7 +122,7 @@ data = [
         "type": "single",
         "points": "2",
         "category": "normal",
-        "scores": user(True),
+        "users": user(True),
     },
     {
         "name": "Go to prom",
@@ -130,7 +130,7 @@ data = [
         "type": "single",
         "points": "5",
         "category": "normal",
-        "scores": user(True),
+        "users": user(True),
     },
     {
         "name": "Go on a date",
@@ -138,7 +138,7 @@ data = [
         "type": "single",
         "points": "5",
         "category": "normal",
-        "scores": user(True),
+        "users": user(True),
     },
     {
         "name": "Eat something which you haven't ate before",
@@ -146,7 +146,7 @@ data = [
         "type": "single",
         "points": "1",
         "category": "normal",
-        "scores": user(True),
+        "users": user(True),
     },
     {
         "name": "Go to someplace new far away",
@@ -154,14 +154,14 @@ data = [
         "type": "single",
         "points": "1",
         "category": "normal",
-        "scores": user(True),
+        "users": user(True),
     },
 ]
 
 print(data)
 
 with open("dummy.csv", "w+") as f:
-    f.write("name,description,type,points,category,scores\n")
+    f.write("name,description,type,points,category,users\n")
     for i in data:
         x = []
         for j in i.values():

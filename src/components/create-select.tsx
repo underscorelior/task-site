@@ -129,7 +129,7 @@ function TaskDialog({
 		const res = await re;
 		const ret = await res.json();
 
-		if (ret.hasOwnProperty('message')) {
+		if (Object.prototype.hasOwnProperty.call(ret, 'message')) {
 			toast.error(
 				`We ran into an error when adding ${data.name}, ${(ret as { message: string }).message}`,
 			);
@@ -190,8 +190,7 @@ function TaskDialog({
 			const res = await re;
 
 			if (res.status == 200) {
-				let out;
-				out = tasks.filter((tsk) => task.id !== tsk.id);
+				const out = tasks.filter((tsk) => task.id !== tsk.id);
 				setTasks(out);
 			} else {
 				toast.error(
@@ -210,7 +209,7 @@ function TaskDialog({
 			points: values.points,
 			category: values.category as Task['category'],
 			lower: values.lower == 'lower',
-			scores: task ? task.scores : {},
+			users: task ? task.users : {},
 		};
 		if (task) {
 			await edit(data);

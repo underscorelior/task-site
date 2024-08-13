@@ -1,11 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { Database, Json } from '../database.types';
+import type { Database, Json } from '../database.types.ts';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
 	process.env.SUPABASE_KEY || '',
 );
+
 const allowCors = (fn) => async (req, res) => {
 	res.setHeader('Access-Control-Allow-Credentials', true);
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,7 +27,7 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		let { data: task, code } = req.query;
+		const { data: task, code } = req.query;
 
 		if (!task) {
 			return res

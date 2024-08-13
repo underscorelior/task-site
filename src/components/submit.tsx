@@ -215,7 +215,7 @@ function Single({
 					<div className="my-3 flex flex-col gap-3">
 						{tasks
 							.filter((task) => task.type === 'single')
-							.filter((task) => task.scores[user.name] == 0)
+							.filter((task) => task.users[user.name].score == 0)
 							.map((task) => (
 								<SingleTask
 									key={task.id}

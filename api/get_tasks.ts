@@ -3,14 +3,18 @@ import { Database } from '../database.types';
 import { createClient } from '@supabase/supabase-js';
 
 type Task = {
-	id: number;
+	id?: number;
 	name: string;
 	description: string;
 	type: 'daily' | 'multi' | 'single' | 'weekly';
 	points: number;
 	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
-	scores: {
-		[name: string]: number;
+	users: {
+		[name: string]: {
+			score: number;
+			updated_at?: string;
+			description?: string;
+		};
 	};
 	lower: boolean;
 };

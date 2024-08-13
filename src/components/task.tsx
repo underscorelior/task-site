@@ -60,7 +60,7 @@ export function DailyTask({
 					{convertCategory(task.category)}
 				</p>
 				<p className="font-mono">{task.points}</p>
-				<p className="font-mono">{task.scores[user.name]}</p>
+				<p className="font-mono">{task.users[user.name].score}</p>
 			</div>
 		</Button>
 	);
@@ -88,7 +88,7 @@ export function MultiTask({
 					{convertCategory(task.category)}
 				</p>
 				<p className="font-mono">{task.points}</p>
-				<p className="font-mono">{task.scores[user.name]}</p>
+				<p className="font-mono">{task.users[user.name].score}</p>
 			</div>
 		</Button>
 	);

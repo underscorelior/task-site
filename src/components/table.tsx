@@ -40,6 +40,7 @@ import {
 } from './ui/card';
 import { convertCategory } from '@/lib/utils';
 import TaskHoverCard from './task-hover';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
 
 const users = ['luke', 'lior', 'ishaan', 'soham', 'sam'];
 const baseColumns: ColumnDef<Task>[] = [
@@ -95,9 +96,13 @@ const baseColumns: ColumnDef<Task>[] = [
 ];
 
 const userColumns: ColumnDef<Task>[] = users.map((user) => ({
-	accessorFn: (row): [number, Task['type']] => {
-		const userAmount = row.scores[user];
-		return [userAmount !== undefined ? userAmount : 0, row.type];
+	accessorFn: (row): [number, Task['type'], string | undefined] => {
+		const userAmount = row.users[user].score;
+		return [
+			userAmount !== undefined ? userAmount : 0,
+			row.type,
+			row.users[user].description,
+		];
 	},
 	id: user,
 	header: () => (
@@ -107,12 +112,21 @@ const userColumns: ColumnDef<Task>[] = users.map((user) => ({
 	),
 	size: 40,
 	cell: ({ getValue }) => {
-		const value = getValue() as [number, Task['type']];
+		const value = getValue() as [number, Task['type'], string | undefined];
 		return (
 			<div className="flex items-end justify-end font-mono">
 				{value[1] === 'single' ? (
 					value[0] ? (
-						<MdCheck className="size-4" />
+						value[2] ? (
+							<HoverCard>
+								<HoverCardTrigger>
+									<MdCheck className="text-primary size-4 underline-offset-4 hover:underline" />
+								</HoverCardTrigger>
+								<HoverCardContent>{value[2]}</HoverCardContent>
+							</HoverCard>
+						) : (
+							<MdCheck className="size-4" />
+						)
 					) : (
 						<MdClear className="size-4" />
 					)

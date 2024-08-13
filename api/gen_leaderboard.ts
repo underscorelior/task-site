@@ -55,35 +55,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 		if (tasks) {
 			tasks.forEach((task) => {
-				if (task.type == 'single') {
-					for (const [name, score] of Object.entries(
-						task.scores as { [name: string]: number },
+				if (task.type === 'single') {
+					for (const [name, user] of Object.entries(
+						task.users as { [name: string]: { score: number } },
 					)) {
-						if (score != 0) {
+						if (user.score !== 0) {
 							out[name].score += task.points;
 						}
 					}
 				} else if (task.lower) {
-					const min = Math.min(
-						...Object.values(task.scores as { [name: string]: number }),
+					const minScore = Math.min(
+						...Object.values(
+							task.users as { [name: string]: { score: number } },
+						).map((user) => user.score),
 					);
 
-					for (const [name, score] of Object.entries(
-						task.scores as { [name: string]: number },
+					for (const [name, user] of Object.entries(
+						task.users as { [name: string]: { score: number } },
 					)) {
-						if (score == min) {
+						if (user.score === minScore) {
 							out[name].score += task.points;
 						}
 					}
 				} else {
-					const max = Math.max(
-						...Object.values(task.scores as { [name: string]: number }),
+					const maxScore = Math.max(
+						...Object.values(
+							task.users as { [name: string]: { score: number } },
+						).map((user) => user.score),
 					);
 
-					for (const [name, score] of Object.entries(
-						task.scores as { [name: string]: number },
+					for (const [name, user] of Object.entries(
+						task.users as { [name: string]: { score: number } },
 					)) {
-						if (score == max) {
+						if (user.score === maxScore) {
 							out[name].score += task.points;
 						}
 					}

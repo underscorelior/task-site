@@ -22,7 +22,7 @@ export default function Verify({
 			</CardHeader>
 			<CardContent>
 				<div className="mb-4 mt-1 flex h-[65vh] flex-col">
-					<div className="grid w-full grid-cols-[40%,15%,20%,20%] gap-[5%] rounded-t-md border-x border-t px-[5%] py-2 text-lg font-medium">
+					<div className="grid w-full grid-cols-[35%,15%,20%,20%] gap-[5%] rounded-t-md border-x border-t px-[5%] py-2 text-lg font-medium">
 						<h3>Name</h3>
 						<h3>User</h3>
 						<h3>Date Submitted</h3>
@@ -60,11 +60,11 @@ function Submission({
 
 	return (
 		<div className="ring-offset-background focus-visible:ring-ring mx-auto inline-flex w-[95%] items-center justify-center whitespace-nowrap rounded-md border px-6 py-2 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
-			<div className="grid w-full grid-cols-[40%,15%,20%,20%] items-center justify-between gap-[5%]">
+			<div className="grid w-full grid-cols-[35%,15%,20%,20%] items-center justify-between gap-[5%]">
 				<HoverCard>
 					<HoverCardTrigger
 						className={
-							'w-min truncate overflow-ellipsis font-medium underline-offset-4 hover:underline'
+							'truncate overflow-ellipsis font-medium underline-offset-4 hover:underline'
 						}>
 						{task.name}
 					</HoverCardTrigger>

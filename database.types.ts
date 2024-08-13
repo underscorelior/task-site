@@ -12,12 +12,12 @@ export type Database = {
 			submit: {
 				Row: {
 					amount: number | null;
-					created_at?: string;
+					created_at: string;
 					description: string | null;
-					id?: number;
+					id: number;
 					name: string;
 					task: number;
-					verify?: Json | null;
+					verify: Json | null;
 				};
 				Insert: {
 					amount?: number | null;
@@ -47,8 +47,8 @@ export type Database = {
 					lower: boolean | null;
 					name: string | null;
 					points: number;
-					scores: Json;
 					type: string;
+					users: Json;
 				};
 				Insert: {
 					category?: string;
@@ -57,8 +57,8 @@ export type Database = {
 					lower?: boolean | null;
 					name?: string | null;
 					points?: number;
-					scores?: Json;
 					type?: string;
+					users?: Json;
 				};
 				Update: {
 					category?: string;
@@ -67,8 +67,8 @@ export type Database = {
 					lower?: boolean | null;
 					name?: string | null;
 					points?: number;
-					scores?: Json;
 					type?: string;
+					users?: Json;
 				};
 				Relationships: [];
 			};
