@@ -26,50 +26,54 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		const { id, name, description, amount } = req.query;
+		const { id, name, description, amount, code } = req.query;
 
-		if (!id || Array.isArray(id)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with id in query parameters' });
-		}
+		if (code && code == process.env.PERMISSION_CODE) {
+			if (!id || Array.isArray(id)) {
+				return res
+					.status(400)
+					.json({ message: 'Error with id in query parameters' });
+			}
 
-		if (!name || Array.isArray(name)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with name in query parameters' });
-		}
+			if (!name || Array.isArray(name)) {
+				return res
+					.status(400)
+					.json({ message: 'Error with name in query parameters' });
+			}
 
-		if (!description || Array.isArray(description)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with description in query parameters' });
-		}
+			if (!description || Array.isArray(description)) {
+				return res
+					.status(400)
+					.json({ message: 'Error with description in query parameters' });
+			}
 
-		if (!amount || Array.isArray(amount)) {
-			return res
-				.status(400)
-				.json({ message: 'Error with amount in query parameters' });
-		}
+			if (!amount || Array.isArray(amount)) {
+				return res
+					.status(400)
+					.json({ message: 'Error with amount in query parameters' });
+			}
 
-		const { data, error } = await supabase
-			.from('submit')
-			.insert({
-				task: parseInt(id),
-				name,
-				description,
-				amount: parseInt(amount),
-			})
-			.select();
+			const { data, error } = await supabase
+				.from('submit')
+				.insert({
+					task: parseInt(id),
+					name,
+					description,
+					amount: parseInt(amount),
+				})
+				.select();
 
-		if (error) throw error;
+			if (error) throw error;
 
-		if (data) {
-			return res.status(200).json(data);
+			if (data) {
+				return res.status(200).json(data);
+			} else {
+				return res
+					.status(400)
+					.json({ message: 'We ran into an issue, please try again later' });
+			}
 		} else {
-			return res
-				.status(400)
-				.json({ message: 'We ran into an issue, please try again later' });
+			throw 'Code missing or invalid.';
 		}
 	} catch (error) {
 		return res.status(500).json({

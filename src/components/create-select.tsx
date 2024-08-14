@@ -142,7 +142,7 @@ function TaskDialog({
 	async function edit(data: Task) {
 		if (task) {
 			const re = fetch(
-				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify({ ...data, id: task.id }))}`,
+				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify({ ...data, id: task.id }))}&code=${encodeURIComponent(localStorage.code)}`,
 				{
 					method: 'POST',
 				},
@@ -355,6 +355,12 @@ function TaskDialog({
 												<ToggleGroupItem
 													value="multi"
 													disabled={field.value == 'multi'}
+													className="disabled:opacity-100">
+													Multi
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="weekly"
+													disabled={field.value == 'weekly'}
 													className="disabled:opacity-100">
 													Multi
 												</ToggleGroupItem>

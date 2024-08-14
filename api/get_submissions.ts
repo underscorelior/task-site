@@ -26,16 +26,22 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		const { data, error } = await supabase
-			.from('submit')
-			.select()
-			.order('created_at', { ascending: false });
+		const { code } = req.query;
 
-		if (error) throw error;
+		if (code && code == process.env.PERMISSION_CODE) {
+			const { data, error } = await supabase
+				.from('submit')
+				.select()
+				.order('created_at', { ascending: false });
 
-		if (data) {
-			return res.status(200).json(data);
-		} else return res.status(404).json({ message: `Submissions not found` });
+			if (error) throw error;
+
+			if (data) {
+				return res.status(200).json(data);
+			} else return res.status(404).json({ message: `Submissions not found` });
+		} else {
+			throw 'Code missing or invalid.';
+		}
 	} catch (error) {
 		return res.status(500).json({
 			message: 'An error occurred while processing the request',

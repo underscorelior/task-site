@@ -45,7 +45,7 @@ export default function Submit({
 
 	async function singleSubmit() {
 		const re = fetch(
-			`/api/submit_task?id=${selected?.id}&name=${encodeURIComponent(user.name)}&amount=${amount}&description=${encodeURIComponent(description)}`,
+			`/api/submit_task?id=${selected?.id}&name=${encodeURIComponent(user.name)}&amount=${amount}&description=${encodeURIComponent(description)}&code=${encodeURIComponent(localStorage.code)}`,
 			{
 				method: 'POST',
 			},
@@ -79,7 +79,7 @@ export default function Submit({
 			task.users[user.name].updated_at = Date.now();
 
 			const re = fetch(
-				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify(task))}`,
+				`/api/update_task?id=${task.id}&data=${encodeURIComponent(JSON.stringify(task))}&code=${encodeURIComponent(localStorage.code)}`,
 				{
 					method: 'POST',
 				},

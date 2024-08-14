@@ -21,9 +21,12 @@ export default function Leaderboard({
 	const [LBUsers, setLBUsers] = useState<User[]>([]);
 
 	async function fetchData() {
-		const res = await fetch(`/api/gen_leaderboard`, {
-			method: 'GET',
-		});
+		const res = await fetch(
+			`/api/gen_leaderboard?code=${encodeURIComponent(localStorage.code)}`,
+			{
+				method: 'GET',
+			},
+		);
 
 		if (res.status == 200) setLBData((await res.json()) as Leaderboard);
 		else toast.error(`We ran into an error, ${(await res.json()).message}`);

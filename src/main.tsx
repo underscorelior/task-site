@@ -23,7 +23,10 @@ import { Label } from './components/ui/label';
 import Verify from './components/verify';
 
 export async function fetchTasks(setTasks: (t: Task[]) => void) {
-	const res = await fetch('/api/get_tasks', { method: 'GET' });
+	const res = await fetch(
+		`/api/get_tasks?code=${encodeURIComponent(localStorage.code)}`,
+		{ method: 'GET' },
+	);
 
 	if (res.status == 200) setTasks((await res.json()) as Task[]);
 	else
@@ -37,12 +40,16 @@ export default function App() {
 	const [user, setUser] = useState<User | null>(null);
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [verify, setVerify] = useState<Verify[]>([]);
+	const [open, setOpen] = useState<boolean>(true);
 
 	useEffect(() => {
 		async function fetchUser() {
-			const re = fetch(`/api/get_user?name=${localStorage.getItem('name')}`, {
-				method: 'POST',
-			});
+			const re = fetch(
+				`/api/get_user?name=${localStorage.getItem('name')}&code=${encodeURIComponent(localStorage.code)}`,
+				{
+					method: 'POST',
+				},
+			);
 
 			toast.promise(re, {
 				loading: 'Loading user data...',
@@ -60,7 +67,10 @@ export default function App() {
 		}
 
 		async function fetchVerify() {
-			const res = await fetch('/api/get_submissions', { method: 'GET' });
+			const res = await fetch(
+				'/api/get_submissions?code=${encodeURIComponent(localStorage.code)}',
+				{ method: 'GET' },
+			);
 
 			if (res.status == 200) setVerify((await res.json()) as Verify[]);
 			else
@@ -83,7 +93,14 @@ export default function App() {
 	return (
 		<main className="grid min-h-screen w-full grid-cols-[19%,62%,19%] items-center justify-center gap-x-4 overflow-x-hidden">
 			<Toaster />
-			{!hasCode && <CodeDialog setHasCode={setHasCode} setUser={setUser} />}
+			{!hasCode && (
+				<CodeDialog
+					setHasCode={setHasCode}
+					setUser={setUser}
+					open={open}
+					setOpen={setOpen}
+				/>
+			)}
 			<section className="w-full max-w-sm">
 				<Sidebar
 					hasCode={hasCode}
@@ -112,8 +129,15 @@ export default function App() {
 							Verify
 						</TabsTrigger>
 					</TabsList>
-					<TabsContent value="table">
+					<TabsContent value="table" className="h-full w-full">
 						<TaskTable tasks={tasks} />
+						{!hasCode && (
+							<div className="mt-auto flex h-full w-full items-center justify-end">
+								<Button className="m-10 mx-auto" onClick={() => setOpen(true)}>
+									Open Login
+								</Button>
+							</div>
+						)}
 					</TabsContent>
 					<TabsContent value="submit">
 						<Submit
@@ -146,10 +170,14 @@ export function CodeDialog({
 	trigger = false,
 	setHasCode,
 	setUser,
+	open,
+	setOpen,
 }: {
 	trigger?: boolean;
 	setHasCode: (c: boolean) => void;
 	setUser: (u: User) => void;
+	open: boolean;
+	setOpen: (o: boolean) => void;
 }) {
 	const [code, setCode] = useState<string>('');
 	const [name, setName] = useState<string>('');
@@ -163,9 +191,12 @@ export function CodeDialog({
 			return;
 		}
 
-		const re = fetch(`/api/get_user?name=${name.toLowerCase()}`, {
-			method: 'POST',
-		});
+		const re = fetch(
+			`/api/get_user?name=${name.toLowerCase()}&code=${encodeURIComponent(localStorage.code)}`,
+			{
+				method: 'POST',
+			},
+		);
 
 		toast.promise(re, {
 			loading: 'Loading',
@@ -185,7 +216,7 @@ export function CodeDialog({
 	}
 
 	return (
-		<AlertDialog defaultOpen={!trigger}>
+		<AlertDialog onOpenChange={setOpen} open={open}>
 			{trigger && <AlertDialogTrigger>Insert Code</AlertDialogTrigger>}
 			<AlertDialogContent>
 				<AlertDialogHeader>
@@ -218,11 +249,6 @@ export function CodeDialog({
 						onChange={(evt) => setName(evt.target.value)}
 						className="mb-0"
 					/>
-					{/* {wrong && (
-						<p className="text-sm text-red-400">
-							The code you have inputted is incorrect.
-						</p>
-					)} */}
 				</div>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Continue</AlertDialogCancel>

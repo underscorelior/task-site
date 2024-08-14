@@ -43,22 +43,28 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
+		const { code } = req.query;
+
 		const out: Task[] = [];
 
-		const { data, error } = await supabase.from('tasks').select();
+		if (code && code == process.env.PERMISSION_CODE) {
+			const { data, error } = await supabase.from('tasks').select();
 
-		if (error) throw error;
+			if (error) throw error;
 
-		if (data) {
-			['health', 'normal', 'cool', 'productivity', 'insane'].forEach((i) => {
-				const temp = data
-					.filter((task) => task.category == i)
-					.sort((a, b) => b.points - a.points);
-				temp.forEach((task) => out.push(task as Task));
-			});
+			if (data) {
+				['health', 'normal', 'cool', 'productivity', 'insane'].forEach((i) => {
+					const temp = data
+						.filter((task) => task.category == i)
+						.sort((a, b) => b.points - a.points);
+					temp.forEach((task) => out.push(task as Task));
+				});
 
-			return res.status(200).json(out);
-		} else return res.status(404).json({ message: `Tasks not found` });
+				return res.status(200).json(out);
+			} else return res.status(404).json({ message: `Tasks not found` });
+		} else {
+			throw 'Code missing or invalid.';
+		}
 	} catch (error) {
 		return res.status(500).json({
 			message: 'An error occurred while processing the request',

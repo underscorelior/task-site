@@ -26,40 +26,44 @@ const allowCors = (fn) => async (req, res) => {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 	try {
-		const { name, avatar } = req.query;
+		const { name, avatar, code } = req.query;
 
-		if (!name) {
-			return res
-				.status(400)
-				.json({ message: 'Missing name in query parameters' });
-		}
+		if (code && code == process.env.PERMISSION_CODE) {
+			if (!name) {
+				return res
+					.status(400)
+					.json({ message: 'Missing name in query parameters' });
+			}
 
-		if (Array.isArray(name)) {
-			return res
-				.status(400)
-				.json({ message: 'Cannot have an array for the name parameter' });
-		}
+			if (Array.isArray(name)) {
+				return res
+					.status(400)
+					.json({ message: 'Cannot have an array for the name parameter' });
+			}
 
-		if (!avatar || Array.isArray(avatar)) {
-			return res
-				.status(400)
-				.json({ message: 'Avatar missing, nothing to update' });
-		}
+			if (!avatar || Array.isArray(avatar)) {
+				return res
+					.status(400)
+					.json({ message: 'Avatar missing, nothing to update' });
+			}
 
-		const { data, error } = await supabase
-			.from('users')
-			.update({ avatar })
-			.eq('name', name)
-			.select();
+			const { data, error } = await supabase
+				.from('users')
+				.update({ avatar })
+				.eq('name', name)
+				.select();
 
-		if (error) throw error;
+			if (error) throw error;
 
-		if (data) {
-			return res.status(200).json(data);
+			if (data) {
+				return res.status(200).json(data);
+			} else {
+				return res
+					.status(400)
+					.json({ message: 'We ran into an issue, please try again later' });
+			}
 		} else {
-			return res
-				.status(400)
-				.json({ message: 'We ran into an issue, please try again later' });
+			throw 'Code missing or invalid.';
 		}
 	} catch (error) {
 		return res.status(500).json({
