@@ -1,4 +1,4 @@
-import { convertType } from '@/lib/utils';
+import { convertType, sortTaskArr } from '@/lib/utils';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
@@ -79,14 +79,10 @@ function Submission({
 }) {
 	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
 
-	console.log(task, JSON.stringify(task));
-
 	async function approve() {
 		task.users[submission.name].score += submission.amount;
 		task.users[submission.name].updated_at = Date.now();
 		task.users[submission.name].description = submission.description;
-
-		console.log(task, JSON.stringify(task));
 
 		const re = fetch(
 			`/api/approve_verify?id=${submission.id}&task_id=${task.id}&task=${encodeURIComponent(JSON.stringify(task))}&code=${encodeURIComponent(localStorage.code)}`,
@@ -104,11 +100,10 @@ function Submission({
 		const res = await re;
 
 		if (res.status == 200) {
-			console.log('A');
-			setVerify(verify.filter((tsk) => task.id !== tsk.id));
-			console.log('B');
-			setTasks([...tasks.filter((tsk) => task.id !== tsk.id, task)]);
-			console.log('C');
+			setVerify(verify.filter((tsk) => submission.id !== tsk.id));
+			setTasks(
+				sortTaskArr([...tasks.filter((tsk) => task.id !== tsk.id, task)]),
+			);
 		} else {
 			toast.error(
 				`We ran into an error when approving ${task.name}, ${(await res.json()).message}`,
@@ -133,7 +128,7 @@ function Submission({
 		const res = await re;
 
 		if (res.status == 200) {
-			setVerify(verify.filter((tsk) => task.id !== tsk.id));
+			setVerify(verify.filter((tsk) => submission.id !== tsk.id));
 		} else {
 			toast.error(
 				`We ran into an error when denying ${task.name}, ${(await res.json()).message}`,

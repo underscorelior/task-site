@@ -50,9 +50,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 		if (error) throw error;
 
 		if (data) {
-			// TODO: SECONDARY SORT BY WETHER ITS MULTI VS SINGLE
 			['health', 'normal', 'cool', 'productivity', 'insane'].forEach((i) => {
-				const temp = data.filter((task) => task.category == i);
+				const temp = data
+					.filter((task) => task.category == i)
+					.sort((a, b) => b.points - a.points);
 				temp.forEach((task) => out.push(task as Task));
 			});
 

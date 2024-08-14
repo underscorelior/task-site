@@ -32,7 +32,9 @@ export function sortTaskArr(tasks: Task[]): Task[] {
 	const out: Task[] = [];
 
 	['health', 'normal', 'cool', 'productivity', 'insane'].forEach((i) => {
-		const temp = tasks.filter((task) => task.category == i);
+		const temp = tasks
+			.filter((task) => task.category == i)
+			.sort((a, b) => b.points - a.points);
 		temp.forEach((task) => out.push(task as Task));
 	});
 

@@ -1,6 +1,5 @@
 - [ ] Fix the api error of "cannot find module ../db.types"
 - [ ] Decrease the massive amount of gen_lb api requests
-- [ ] Verify tab
 - [ ] In get_tasks, remove the Task type, try and get it from the types.d.ts
 - [ ] In submit_task, if it is a daily task, make sure it cannot be reclaimed for that day. (Maybe add a way to do this after the day is over (?))
 - [ ] In create-select, make it such that there is at least one required button
@@ -11,5 +10,5 @@
 - [x] Fix delete saying it failed, when it didn't
 - [ ] Sort tasks after deleting/editing
 - [ ] For single tasks that require some proof, make it such that you can put a hover card with the description for a link
-- [ ] When creating and submitting tasks autosort the stuff
+- [x] When creating and submitting tasks autosort the stuff
 - [ ] Fix verification breaking when task is deleted

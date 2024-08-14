@@ -22,6 +22,7 @@ import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import toast from 'react-hot-toast';
+import { sortTaskArr } from '@/lib/utils';
 
 export default function Submit({
 	user,
@@ -94,12 +95,12 @@ export default function Submit({
 			const ret = await res.json();
 
 			if (res.status == 200 && ret) {
-				let out;
-
-				out = tasks.filter((tsk) => task.id !== tsk.id);
-				out = [...out, Array.isArray(ret) ? ret[0] : ret];
-
-				setTasks(out);
+				setTasks(
+					sortTaskArr([
+						...tasks.filter((tsk) => task.id !== tsk.id),
+						Array.isArray(ret) ? ret[0] : ret,
+					]),
+				);
 			} else {
 				toast.error(
 					`We ran into an error when updating ${task.name}, ${ret.message}`,
@@ -174,7 +175,10 @@ export default function Submit({
 			</CardContent>
 			<CardFooter className="ml-auto mt-auto">
 				<Button
-					disabled={(selected === null && selTasks.length == 0) || !description}
+					disabled={
+						(type == 'daily' && selTasks.length == 0) ||
+						(type != 'daily' && (selected == null || !description))
+					}
 					onClick={() => {
 						if (selected == null) bulkSubmit();
 						else singleSubmit();

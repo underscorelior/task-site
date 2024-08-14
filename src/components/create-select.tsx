@@ -42,6 +42,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from './ui/form';
+import { sortTaskArr } from '@/lib/utils';
 
 export function CreateSelect({
 	tasks,
@@ -134,7 +135,7 @@ function TaskDialog({
 				`We ran into an error when adding ${data.name}, ${(ret as { message: string }).message}`,
 			);
 		} else if (res.status == 200 && ret) {
-			setTasks([...tasks, Array.isArray(ret) ? ret[0] : ret]);
+			setTasks(sortTaskArr([...tasks, Array.isArray(ret) ? ret[0] : ret]));
 		}
 	}
 
@@ -162,8 +163,7 @@ function TaskDialog({
 				out = tasks.filter((tsk) => task.id !== tsk.id);
 				out = [...out, Array.isArray(ret) ? ret[0] : ret];
 
-				setTasks(out);
-				// setOut(Array.isArray(ret) ? ret[0] : ret); // TODO: REPLACE THIS
+				setTasks(sortTaskArr(out));
 			} else {
 				toast.error(
 					`We ran into an error when updating ${task.name}, ${ret.message}`,
@@ -190,8 +190,7 @@ function TaskDialog({
 			const res = await re;
 
 			if (res.status == 200) {
-				const out = tasks.filter((tsk) => task.id !== tsk.id);
-				setTasks(out);
+				setTasks(sortTaskArr(tasks.filter((tsk) => task.id !== tsk.id)));
 			} else {
 				toast.error(
 					`We ran into an error when deleting ${task.name}, ${(await res.json()).message}`,
