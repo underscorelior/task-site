@@ -323,90 +323,86 @@ function TaskDialog({
 								</FormItem>
 							)}
 						/>
-						<div className="grid grid-cols-2">
-							<FormField
-								name="type"
-								control={form.control}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className="text-base font-medium">
-											Type
-										</FormLabel>
-										<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
-											<ToggleGroup
-												type="single"
-												defaultValue={field.value}
-												variant={'outline'}
-												{...field}
-												className="mr-auto"
-												onValueChange={(type) => field.onChange(type)}>
-												<ToggleGroupItem
-													value="single"
-													disabled={field.value == 'single'}
-													className="disabled:opacity-100">
-													Single
-												</ToggleGroupItem>
-												<ToggleGroupItem
-													value="daily"
-													disabled={field.value == 'daily'}
-													className="disabled:opacity-100">
-													Daily
-												</ToggleGroupItem>
-												<ToggleGroupItem
-													value="multi"
-													disabled={field.value == 'multi'}
-													className="disabled:opacity-100">
-													Multi
-												</ToggleGroupItem>
-												<ToggleGroupItem
-													value="weekly"
-													disabled={field.value == 'weekly'}
-													className="disabled:opacity-100">
-													Multi
-												</ToggleGroupItem>
-											</ToggleGroup>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								name="lower"
-								control={form.control}
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className="text-base font-medium">
-											Priority
-											<span className="ml-2 text-xs font-light">
-												{'(not required if using single)'}
-											</span>
-										</FormLabel>
-										<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
-											<ToggleGroup
-												type="single"
-												defaultValue={field.value}
-												variant={'outline'}
-												{...field}
-												onValueChange={(prio) => field.onChange(prio)}>
-												<ToggleGroupItem
-													value="higher"
-													disabled={field.value == 'higher'}
-													className="disabled:opacity-100">
-													Higher
-												</ToggleGroupItem>
-												<ToggleGroupItem
-													value="lower"
-													disabled={field.value == 'lower'}
-													className="disabled:opacity-100">
-													Lower
-												</ToggleGroupItem>
-											</ToggleGroup>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</div>
+						<FormField
+							name="type"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-base font-medium">Type</FormLabel>
+									<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
+										<ToggleGroup
+											type="single"
+											defaultValue={field.value}
+											variant={'outline'}
+											{...field}
+											className="mr-auto"
+											onValueChange={(type) => field.onChange(type)}>
+											<ToggleGroupItem
+												value="single"
+												disabled={field.value == 'single'}
+												className="disabled:opacity-100">
+												Single
+											</ToggleGroupItem>
+											<ToggleGroupItem
+												value="daily"
+												disabled={field.value == 'daily'}
+												className="disabled:opacity-100">
+												Daily
+											</ToggleGroupItem>
+											<ToggleGroupItem
+												value="multi"
+												disabled={field.value == 'multi'}
+												className="disabled:opacity-100">
+												Multi
+											</ToggleGroupItem>
+											<ToggleGroupItem
+												value="weekly"
+												disabled={field.value == 'weekly'}
+												className="disabled:opacity-100">
+												Weekly
+											</ToggleGroupItem>
+										</ToggleGroup>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							name="lower"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-base font-medium">
+										Priority
+										<span className="ml-2 text-xs font-light">
+											{'(not required if using single)'}
+										</span>
+									</FormLabel>
+									<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
+										<ToggleGroup
+											type="single"
+											defaultValue={field.value}
+											variant={'outline'}
+											{...field}
+											onValueChange={(prio) => field.onChange(prio)}>
+											<ToggleGroupItem
+												value="higher"
+												disabled={field.value == 'higher'}
+												className="disabled:opacity-100">
+												Higher
+											</ToggleGroupItem>
+											<ToggleGroupItem
+												value="lower"
+												disabled={field.value == 'lower'}
+												className="disabled:opacity-100">
+												Lower
+											</ToggleGroupItem>
+										</ToggleGroup>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							name="category"
 							control={form.control}
