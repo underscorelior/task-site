@@ -7,7 +7,7 @@ type Task = {
 	category: 'health' | 'normal' | 'cool' | 'productivity' | 'insane';
 	users: {
 		[name: string]: {
-			score: number;
+			score?: number;
 			updated_at?: number;
 			description?: string;
 		};

@@ -75,11 +75,7 @@ export default function Sidebar({
 					<CardContent className={`${!hasCode && 'text-muted-foreground'}`}>
 						<Label htmlFor="name">Name</Label>
 						<Input
-							value={
-								hasCode && user
-									? user.name
-									: localStorage.getItem('username') || ''
-							}
+							value={hasCode && user ? user.name : localStorage.name || ''}
 							placeholder="Loading user information..."
 							id="name"
 							className="mb-6 capitalize"
@@ -91,14 +87,14 @@ export default function Sidebar({
 							id="avatar"
 							placeholder="Paste an image link here"
 							onChange={(evt) => setAvatar(evt.target.value)}
-							disabled={!hasCode || avatar == null}
+							disabled={!hasCode}
 						/>
 					</CardContent>
 					<CardFooter className="mt-auto">
 						<Button
 							variant={'outline'}
 							className="ml-auto"
-							disabled={!hasCode}
+							disabled={!hasCode || avatar == ''}
 							onClick={async () => {
 								if (hasCode && user) {
 									await updateUser();

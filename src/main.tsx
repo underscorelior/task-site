@@ -45,7 +45,7 @@ export default function App() {
 	useEffect(() => {
 		async function fetchUser() {
 			const re = fetch(
-				`/api/get_user?name=${localStorage.getItem('name')}&code=${encodeURIComponent(localStorage.code)}`,
+				`/api/get_user?name=${localStorage.name}&code=${encodeURIComponent(localStorage.code)}`,
 				{
 					method: 'POST',
 				},
@@ -68,7 +68,7 @@ export default function App() {
 
 		async function fetchVerify() {
 			const res = await fetch(
-				'/api/get_submissions?code=${encodeURIComponent(localStorage.code)}',
+				`/api/get_submissions?code=${encodeURIComponent(localStorage.code)}`,
 				{ method: 'GET' },
 			);
 
@@ -82,7 +82,7 @@ export default function App() {
 		fetchTasks(setTasks);
 		fetchVerify();
 
-		if (localStorage.getItem('code') !== process.env.PERMISSION_CODE) {
+		if (localStorage.code !== process.env.PERMISSION_CODE) {
 			setHasCode(false);
 		} else {
 			setHasCode(true);

@@ -75,7 +75,8 @@ export default function Submit({
 
 	async function bulkSubmit() {
 		selTasks.forEach(async (task) => {
-			task.users[user.name].score += 1;
+			task.users[user.name].score = (task.users[user.name].score ?? 0) + 1;
+
 			task.users[user.name].updated_at = Date.now();
 
 			const re = fetch(
@@ -222,7 +223,7 @@ function Single({
 					<div className="my-3 flex flex-col gap-3">
 						{tasks
 							.filter((task) => task.type === 'single')
-							.filter((task) => task.users[user.name].score == 0)
+							.filter((task) => task.users[user.name]?.score ?? 0 === 0)
 							.map((task) => (
 								<SingleTask
 									key={task.id}
@@ -280,7 +281,7 @@ function Daily({
 							.filter(
 								(task) =>
 									task.type === 'daily' &&
-									new Date(task.users[user.name].updated_at || 0).setHours(
+									new Date(task.users[user.name]?.updated_at ?? 0).setHours(
 										0,
 										0,
 										0,
