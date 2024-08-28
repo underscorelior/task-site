@@ -56,7 +56,9 @@ export default function Leaderboard({
 		<Card className="w-full" side={'right'}>
 			<CardHeader>
 				<CardTitle>Leaderboard</CardTitle>
-				<CardDescription></CardDescription>
+				<CardDescription>
+					Day #{Math.ceil((Date.parse(Date()) - Date.parse("8/1/24"))/86400000)}
+				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-2">
 				{LBData == null
