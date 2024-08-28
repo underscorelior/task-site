@@ -13,6 +13,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import toast from 'react-hot-toast';
+import { ModeToggle } from "./mode-toggle";
 
 export default function Sidebar({
 	hasCode,
@@ -68,10 +69,13 @@ export default function Sidebar({
 				<Card
 					side={'left'}
 					className="flex h-full min-h-[40vh] w-full flex-col">
-					<CardHeader>
-						<CardTitle>User</CardTitle>
-						<CardDescription></CardDescription>
-					</CardHeader>
+					<div className="flex flex-row justify-between">
+						<CardHeader className="pt-8">
+							<CardTitle>User</CardTitle>
+							<CardDescription></CardDescription>
+						</CardHeader>
+						<div className="w-fit p-6"><ModeToggle></ModeToggle></div>
+					</div>
 					<CardContent className={`${!hasCode && 'text-muted-foreground'}`}>
 						<Label htmlFor="name">Name</Label>
 						<Input

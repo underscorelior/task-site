@@ -21,6 +21,7 @@ import { Button } from './components/ui/button';
 import toast, { Toaster } from 'react-hot-toast';
 import { Label } from './components/ui/label';
 import Verify from './components/verify';
+import { ThemeProvider } from "./components/theme-provider";
 
 export async function fetchTasks(setTasks: (t: Task[]) => void) {
 	const res = await fetch(
@@ -261,6 +262,8 @@ export function CodeDialog({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<App />
+		<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+			<App />
+		</ThemeProvider>
 	</React.StrictMode>,
 );
