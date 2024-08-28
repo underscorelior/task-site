@@ -39,7 +39,9 @@ export default function Verify({
 						{verify.filter((submission) => submission.name !== user.name)
 							.length == 0 ? (
 							<div className="my-10 flex h-full w-full items-center justify-center">
-								<h1 className="mx-auto my-auto">No submissions found.</h1>
+								<h1 className="mx-auto my-auto text-sm">
+									No submissions found.
+								</h1>
 							</div>
 						) : (
 							<div className="my-3 flex flex-col gap-3">
@@ -80,7 +82,9 @@ function Submission({
 	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
 
 	async function approve() {
-		task.users[submission.name].score += submission.amount;
+		task.users[submission.name] = task.users[submission.name] || { score: 0 };
+		task.users[submission.name].score =
+			(task.users[submission.name].score ?? 0) + submission.amount;
 		task.users[submission.name].updated_at = Date.now();
 		task.users[submission.name].description = submission.description;
 

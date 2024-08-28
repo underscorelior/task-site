@@ -75,6 +75,8 @@ export default function Submit({
 
 	async function bulkSubmit() {
 		selTasks.forEach(async (task) => {
+			task.users[user.name] = task.users[user.name] || { score: 0 };
+
 			task.users[user.name].score = (task.users[user.name].score ?? 0) + 1;
 
 			task.users[user.name].updated_at = Date.now();
@@ -151,6 +153,7 @@ export default function Submit({
 						tasks={tasks}
 						description={description}
 						setDescription={setDescription}
+						verify={verify}
 					/>
 				) : type == 'daily' ? (
 					<Daily
@@ -198,6 +201,7 @@ function Single({
 	setSelected,
 	description,
 	setDescription,
+	verify,
 }: {
 	user: User;
 	tasks: Task[];
@@ -205,7 +209,18 @@ function Single({
 	setSelected: (task: Task | null) => void;
 	description: string;
 	setDescription: (s: string) => void;
+	verify: Verify[];
 }) {
+	tasks = tasks
+		.filter(
+			(task) =>
+				verify.find((v) => v.task == task.id && v.name == user.name) ==
+				undefined,
+		)
+		.filter((task) => task.type === 'single')
+		.filter((task) => task.users[user.name] ?? 0 === 0)
+		.filter((task) => task.users[user.name]?.score ?? 0 === 0);
+
 	return (
 		<>
 			<Label htmlFor="tasks" className="text-lg font-medium">
@@ -220,11 +235,9 @@ function Single({
 				<ScrollArea
 					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
-					<div className="my-3 flex flex-col gap-3">
-						{tasks
-							.filter((task) => task.type === 'single')
-							.filter((task) => task.users[user.name]?.score ?? 0 === 0)
-							.map((task) => (
+					{tasks.length > 0 ? (
+						<div className="my-3 flex flex-col gap-3">
+							{tasks.map((task) => (
 								<SingleTask
 									key={task.id}
 									task={task}
@@ -232,7 +245,12 @@ function Single({
 									setSelected={setSelected}
 								/>
 							))}
-					</div>
+						</div>
+					) : (
+						<div className="my-10 flex h-full w-full items-center justify-center">
+							<h1 className="mx-auto my-auto text-sm">No tasks found.</h1>
+						</div>
+					)}
 				</ScrollArea>
 			</div>
 
@@ -261,6 +279,13 @@ function Daily({
 	selTasks: Task[];
 	setSelTasks: (tasks: Task[]) => void;
 }) {
+	tasks = tasks.filter(
+		(task) =>
+			task.type === 'daily' &&
+			new Date(task.users[user.name]?.updated_at ?? 0).setHours(0, 0, 0, 0) !==
+				new Date().setHours(0, 0, 0, 0),
+	);
+
 	return (
 		<>
 			<Label htmlFor="tasks" className="text-lg font-medium">
@@ -276,19 +301,9 @@ function Daily({
 				<ScrollArea
 					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
-					<div className="my-3 flex flex-col gap-3">
-						{tasks
-							.filter(
-								(task) =>
-									task.type === 'daily' &&
-									new Date(task.users[user.name]?.updated_at ?? 0).setHours(
-										0,
-										0,
-										0,
-										0,
-									) !== new Date().setHours(0, 0, 0, 0),
-							)
-							.map((task) => (
+					{tasks.length > 0 ? (
+						<div className="my-3 flex flex-col gap-3">
+							{tasks.map((task) => (
 								<DailyTask
 									key={task.id}
 									user={user}
@@ -297,7 +312,12 @@ function Daily({
 									setSelTasks={setSelTasks}
 								/>
 							))}
-					</div>
+						</div>
+					) : (
+						<div className="my-10 flex h-full w-full items-center justify-center">
+							<h1 className="mx-auto my-auto text-sm">No tasks found.</h1>
+						</div>
+					)}
 				</ScrollArea>
 			</div>
 		</>
@@ -323,6 +343,8 @@ function Multi({
 	description: string;
 	setDescription: (s: string) => void;
 }) {
+	tasks = tasks.filter((task) => task.type == 'multi');
+
 	return (
 		<>
 			<Label htmlFor="tasks" className="text-lg font-medium">
@@ -338,10 +360,9 @@ function Multi({
 				<ScrollArea
 					className="h-full w-full rounded-b-md border border-t-2"
 					id="tasks">
-					<div className="my-3 flex flex-col gap-3">
-						{tasks
-							.filter((task) => task.type == 'multi')
-							.map((task) => (
+					{tasks.length > 0 ? (
+						<div className="my-3 flex flex-col gap-3">
+							{tasks.map((task) => (
 								<MultiTask
 									key={task.id}
 									user={user}
@@ -350,7 +371,12 @@ function Multi({
 									setSelected={setSelected}
 								/>
 							))}
-					</div>
+						</div>
+					) : (
+						<div className="my-10 flex h-full w-full items-center justify-center">
+							<h1 className="mx-auto my-auto text-sm">No tasks found.</h1>
+						</div>
+					)}
 				</ScrollArea>
 			</div>
 			<div className="grid grid-cols-[75%,20%] gap-x-[5%]">
