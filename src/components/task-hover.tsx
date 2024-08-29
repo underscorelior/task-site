@@ -11,12 +11,14 @@ export default function TaskHoverCard({
 }) {
 	return (
 		<HoverCard>
-			<HoverCardTrigger
-				className={cn(
-					'truncate overflow-ellipsis font-medium underline-offset-4 hover:underline',
-					className,
-				)}>
-				{task.name}
+			<HoverCardTrigger className="w-min">
+				<h2
+					className={cn(
+						'truncate overflow-ellipsis font-medium underline-offset-4 hover:underline',
+						className,
+					)}>
+					{task.name}
+				</h2>
 			</HoverCardTrigger>
 			<HoverCardContent className="flex w-auto max-w-sm flex-col gap-2">
 				<div className="flex h-full min-h-full w-full flex-row gap-4">

@@ -45,17 +45,22 @@ export default function Verify({
 							</div>
 						) : (
 							<div className="my-3 flex flex-col gap-3">
-								{verify.map((submission) => (
-									<Submission
-										key={submission.id}
-										submission={submission}
-										tasks={tasks}
-										setTasks={setTasks}
-										verify={verify}
-										setVerify={setVerify}
-										user={user}
-									/>
-								))}
+								{verify
+									.sort(
+										(a, b) =>
+											Date.parse(a.created_at) - Date.parse(b.created_at),
+									)
+									.map((submission) => (
+										<Submission
+											key={submission.id}
+											submission={submission}
+											tasks={tasks}
+											setTasks={setTasks}
+											verify={verify}
+											setVerify={setVerify}
+											user={user}
+										/>
+									))}
 							</div>
 						)}
 					</ScrollArea>
@@ -145,11 +150,13 @@ function Submission({
 		<div className="ring-offset-background focus-visible:ring-ring mx-auto inline-flex w-[95%] items-center justify-center whitespace-nowrap rounded-md border px-6 py-2 text-start text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
 			<div className="grid w-full grid-cols-[35%,15%,20%,20%] items-center justify-between gap-[5%]">
 				<HoverCard>
-					<HoverCardTrigger
-						className={
-							'truncate overflow-ellipsis font-medium underline-offset-4 hover:underline'
-						}>
-						{task.name}
+					<HoverCardTrigger className="w-min">
+						<h2 className="text-primary underline-offset-4 hover:underline">
+							{task.name}{' '}
+							{task.type == 'multi' && (
+								<span className="font-mono">- {submission.amount}</span>
+							)}
+						</h2>
 					</HoverCardTrigger>
 					<HoverCardContent className="flex w-auto max-w-sm flex-col gap-2">
 						<div className="flex h-full min-h-full w-full flex-row gap-4">
@@ -163,27 +170,40 @@ function Submission({
 						</div>
 
 						<Separator className="h-0.5" />
-
-						<div className="whitespace-normal text-base font-[450]">
-							<span className="font-medium">More Info:</span>{' '}
-							{submission?.description}
-						</div>
-						<div className="text-sm font-light">
-							<span className="font-medium">Submitted:</span>{' '}
-							{new Date(Date.parse(submission.created_at)).toLocaleString([], {
-								year: 'numeric',
-								month: '2-digit',
-								day: '2-digit',
-								hour12: true,
-								hour: '2-digit',
-								minute: '2-digit',
-								timeZoneName: 'short',
-							})}
-						</div>
-						<div className="text-sm font-light">
-							<span className="font-medium">Task Type:</span>{' '}
-							{convertType(task.type)}
-							{task.type == 'multi' ? `, Amount: ${submission.amount}` : ''}
+						<div className="flex flex-col gap-1">
+							<div className="flex flex-col">
+								<div className="text-[0.95rem] font-normal">
+									<span className="font-medium">More Info:</span>{' '}
+									{submission?.description}
+								</div>
+								{task.type == 'multi' && (
+									<div className="whitespace-normal text-[0.9rem] font-normal">
+										<span className="font-medium">Amount:</span>{' '}
+										{submission.amount}
+									</div>
+								)}
+							</div>
+							<div className="flex flex-col">
+								<div className="text-[0.825rem] font-normal">
+									<span className="font-medium">Task Type:</span>{' '}
+									{convertType(task.type)}
+								</div>
+								<div className="text-[0.825rem] font-normal">
+									<span className="font-medium">Submitted:</span>{' '}
+									{new Date(Date.parse(submission.created_at)).toLocaleString(
+										[],
+										{
+											year: 'numeric',
+											month: '2-digit',
+											day: '2-digit',
+											hour12: true,
+											hour: '2-digit',
+											minute: '2-digit',
+											timeZoneName: 'short',
+										},
+									)}
+								</div>
+							</div>
 						</div>
 					</HoverCardContent>
 				</HoverCard>
@@ -196,7 +216,6 @@ function Submission({
 					})}
 				</p>
 				<div className="flex flex-row gap-4">
-					{/* {submission.name !== user.name && ( */}
 					<Button
 						size={'iconmd'}
 						variant={'outline'}
@@ -204,7 +223,6 @@ function Submission({
 						disabled={submission.name === user.name}>
 						<MdCheck />
 					</Button>
-					{/* )} */}
 					<Separator orientation="vertical" className="w-0.5" />
 					<Button size={'iconmd'} variant={'outline'} onClick={deny}>
 						<MdClear />

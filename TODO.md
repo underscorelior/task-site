@@ -1,12 +1,14 @@
 - [ ] Fix the api error of "cannot find module ../db.types"
 - [ ] Decrease the massive amount of gen_lb api requests
 - [ ] In get_tasks, remove the Task type, try and get it from the types.d.ts
+- [ ] Mobile
 - [ ] Fix verification breaking when task is deleted
 - [ ] Put point stuff inside of create FOR NOW, to make porting easier
-- [ ] Config system
-- [ ] Mobile
-- [ ] Fix Links extending past name in verify and maybe in tasks
-- [ ] Fix card styling to show # easier
+
+- [x] Config system
+- [x] Fix card styling to show # easier
+- [x] Sort verify by date (oldest first)
+- [x] Fix Links extending past name in verify and maybe in tasks
 - [x] Allow people to deny their own things
 - [x] Fix filter closing when click on it
 - [x] Rename filter to show/hide
