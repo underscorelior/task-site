@@ -41,8 +41,8 @@ import {
 import { convertCategory } from '@/lib/utils';
 import TaskHoverCard from './task-hover';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card';
+import { users } from '@/config';
 
-const users = ['luke', 'lior', 'ishaan', 'soham', 'sam'];
 const baseColumns: ColumnDef<Task>[] = [
 	{
 		accessorKey: 'name',
@@ -195,7 +195,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="outline" className="ml-auto">
-								Filter Users <ChevronDown className="ml-2 h-4 w-4" />
+								Show/Hide Users <ChevronDown className="ml-2 h-4 w-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
@@ -208,6 +208,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
 											key={column.id}
 											className="capitalize"
 											checked={column.getIsVisible()}
+											onSelect={(event) => event.preventDefault()}
 											onCheckedChange={(value) =>
 												column.toggleVisibility(!!value)
 											}>

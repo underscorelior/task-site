@@ -9,6 +9,7 @@ import {
 	CardTitle,
 } from './ui/card';
 import toast from 'react-hot-toast';
+import { users } from '@/config';
 
 export default function Leaderboard({
 	user,
@@ -57,12 +58,13 @@ export default function Leaderboard({
 			<CardHeader>
 				<CardTitle>Leaderboard</CardTitle>
 				<CardDescription>
-					Day #{Math.ceil((Date.parse(Date()) - Date.parse("8/1/24"))/86400000)}
+					Day #
+					{Math.ceil((Date.parse(Date()) - Date.parse('8/1/24')) / 86400000)}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col gap-2">
 				{LBData == null
-					? [...Array(5).keys()].map((number, idx) => {
+					? [...Array(users.length).keys()].map((number, idx) => {
 							return <LoadingLBUser key={idx} index={number + 1} />;
 						})
 					: LBUsers.map((user, idx) => {

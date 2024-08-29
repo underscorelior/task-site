@@ -22,4 +22,5 @@ Simple task site for me and my friends to use to improve ourselves!
   PERMISSION_CODE = "" # Code for users to get into the website
   ```
 
+- Edit [src/config.ts](src/config.ts) to include the names and amount of players you have.
 - Start the dev server by running `vercel dev`

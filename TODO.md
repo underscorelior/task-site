@@ -1,13 +1,13 @@
 - [ ] Fix the api error of "cannot find module ../db.types"
 - [ ] Decrease the massive amount of gen_lb api requests
 - [ ] In get_tasks, remove the Task type, try and get it from the types.d.ts
-- [x] In create-select, make it such that there is at least one required button
-- [x] Fix table repaginating on task update, it should stay where it was
-- [x] In get_tasks do a secondary sort for amount of vps (higher = better)
-- [x] Add code verification for every single api route
-- [x] Add a button to be able to setup user after clicking continue
-- [x] Fix delete saying it failed, when it didn't
-- [x] Sort tasks after deleting/editing
-- [x] For single tasks that require some proof, make it such that you can put a hover card with the description for a link
-- [x] When creating and submitting tasks autosort the stuff
 - [ ] Fix verification breaking when task is deleted
+- [ ] Put point stuff inside of create FOR NOW, to make porting easier
+- [ ] Config system
+- [ ] Mobile
+- [ ] Fix Links extending past name in verify and maybe in tasks
+- [ ] Fix card styling to show # easier
+- [x] Allow people to deny their own things
+- [x] Fix filter closing when click on it
+- [x] Rename filter to show/hide
+- [x] Un-hardcode the stuff

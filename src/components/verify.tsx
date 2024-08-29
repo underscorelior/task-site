@@ -45,18 +45,17 @@ export default function Verify({
 							</div>
 						) : (
 							<div className="my-3 flex flex-col gap-3">
-								{verify
-									.filter((submission) => submission.name !== user.name)
-									.map((submission) => (
-										<Submission
-											key={submission.id}
-											submission={submission}
-											tasks={tasks}
-											setTasks={setTasks}
-											verify={verify}
-											setVerify={setVerify}
-										/>
-									))}
+								{verify.map((submission) => (
+									<Submission
+										key={submission.id}
+										submission={submission}
+										tasks={tasks}
+										setTasks={setTasks}
+										verify={verify}
+										setVerify={setVerify}
+										user={user}
+									/>
+								))}
 							</div>
 						)}
 					</ScrollArea>
@@ -72,12 +71,14 @@ function Submission({
 	setTasks,
 	verify,
 	setVerify,
+	user,
 }: {
 	submission: Verify;
 	tasks: Task[];
 	setTasks: (t: Task[]) => void;
 	verify: Verify[];
 	setVerify: (v: Verify[]) => void;
+	user: User;
 }) {
 	const task: Task = tasks.find((task) => task.id === submission.task) as Task;
 
@@ -195,9 +196,15 @@ function Submission({
 					})}
 				</p>
 				<div className="flex flex-row gap-4">
-					<Button size={'iconmd'} variant={'outline'} onClick={approve}>
+					{/* {submission.name !== user.name && ( */}
+					<Button
+						size={'iconmd'}
+						variant={'outline'}
+						onClick={approve}
+						disabled={submission.name === user.name}>
 						<MdCheck />
 					</Button>
+					{/* )} */}
 					<Separator orientation="vertical" className="w-0.5" />
 					<Button size={'iconmd'} variant={'outline'} onClick={deny}>
 						<MdClear />
