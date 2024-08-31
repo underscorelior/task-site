@@ -83,7 +83,7 @@ const formSchema = z.object({
 		.gt(0, { message: 'Task must be worth more than 0 points.' }),
 	category: z.string().min(1, { message: 'You must specify a category.' }),
 	type: z.string().min(1, { message: 'You must specify a type.' }),
-	lower: z.enum(['higher', 'lower']), // FIXME: try and make this a boolean
+	lower: z.enum(['higher', 'lower']),
 	users: z.record(
 		z.object({
 			score: z.number().optional(),
@@ -209,22 +209,22 @@ function TaskDialog({
 	}
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		// const data: Task = {
-		// 	name: values.name,
-		// 	description: values.description,
-		// 	type: values.type as Task['type'],
-		// 	points: values.points,
-		// 	category: values.category as Task['category'],
-		// 	lower: values.lower == 'lower',
-		// 	users: task ? task.users : {},
-		// };
-		// if (task) {
-		// 	await edit(data);
-		// } else {
-		// 	await add(data);
-		// }
+		const data: Task = {
+			name: values.name,
+			description: values.description,
+			type: values.type as Task['type'],
+			points: values.points,
+			category: values.category as Task['category'],
+			lower: values.lower == 'lower',
+			users: values.users,
+		};
+		if (task) {
+			await edit(data);
+		} else {
+			await add(data);
+		}
 
-		console.log(values.users);
+		console.log(values, data);
 
 		setOpen(false);
 	}
@@ -462,8 +462,8 @@ function TaskDialog({
 								<section>
 									<h1 className="pb-2 text-base font-medium">User Scores</h1>
 									<div className="grid grid-cols-3 gap-3">
-										{users.map((user) => (
-											<FormItem>
+										{users.map((user, idx) => (
+											<FormItem key={idx}>
 												<FormLabel className="text-sm font-medium capitalize">
 													{user}
 												</FormLabel>
@@ -479,10 +479,14 @@ function TaskDialog({
 														type="number"
 														id={user}
 														onChange={(event) => {
-															const v = field.value;
-															v[event.target.id].score = +event.target.value;
-															v[event.target.id].updated_at =
-																new Date().getTime();
+															let v = field.value;
+															if (v[user]) v[user].score = +event.target.value;
+															else {
+																v = {
+																	...v,
+																	[user]: { score: +event.target.value },
+																};
+															}
 															field.onChange(v);
 														}}
 													/>

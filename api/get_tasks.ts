@@ -23,6 +23,7 @@ const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
 	process.env.SUPABASE_KEY || '',
 );
+
 const allowCors = (fn) => async (req, res) => {
 	res.setHeader('Access-Control-Allow-Credentials', true);
 	res.setHeader('Access-Control-Allow-Origin', '*');

@@ -13,7 +13,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import toast from 'react-hot-toast';
-import { ModeToggle } from './mode-toggle';
+import { ModeToggle } from './ui/mode-toggle';
 
 export default function Sidebar({
 	hasCode,

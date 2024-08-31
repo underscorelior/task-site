@@ -73,7 +73,7 @@ export default function Leaderboard({
 							);
 						})}
 			</CardContent>
-			<CardFooter className="">
+			<CardFooter>
 				<h6 className="ml-auto font-mono text-xs font-light text-stone-400">
 					Updates automatically.
 				</h6>

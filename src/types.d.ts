@@ -15,11 +15,11 @@ type Task = {
 	lower: boolean;
 };
 
-interface User {
+type User = {
 	name: string;
 	avatar: string;
-	score?: number; // FIXME: Calculate this later or not at all?
-}
+	score?: number;
+};
 
 type Leaderboard = {
 	[name: string]: {

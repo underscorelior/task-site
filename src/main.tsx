@@ -21,7 +21,7 @@ import { Button } from './components/ui/button';
 import toast, { Toaster } from 'react-hot-toast';
 import { Label } from './components/ui/label';
 import Verify from './components/verify';
-import { ThemeProvider } from "./components/theme-provider";
+import { ThemeProvider } from './components/theme-provider';
 
 export async function fetchTasks(setTasks: (t: Task[]) => void) {
 	const res = await fetch(

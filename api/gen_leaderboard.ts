@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
 import { Database } from '../database.types';
+import { createClient } from '@supabase/supabase-js';
 
 type Leaderboard = {
 	[name: string]: {
@@ -8,6 +8,7 @@ type Leaderboard = {
 		score: number;
 	};
 };
+
 const supabase = createClient<Database>(
 	process.env.SUPABASE_URL || '',
 	process.env.SUPABASE_KEY || '',

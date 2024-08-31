@@ -3,8 +3,8 @@
 - [ ] In get_tasks, remove the Task type, try and get it from the types.d.ts
 - [ ] Mobile
 - [ ] Fix verification breaking when task is deleted
-- [ ] Put point stuff inside of create FOR NOW, to make porting easier
 
+- [x] Put point stuff inside of create FOR NOW, to make porting easier
 - [x] Config system
 - [x] Fix card styling to show # easier
 - [x] Sort verify by date (oldest first)
