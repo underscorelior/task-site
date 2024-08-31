@@ -43,6 +43,7 @@ import {
 	FormMessage,
 } from './ui/form';
 import { sortTaskArr } from '@/lib/utils';
+import { users } from '@/config';
 
 export function CreateSelect({
 	tasks,
@@ -83,6 +84,13 @@ const formSchema = z.object({
 	category: z.string().min(1, { message: 'You must specify a category.' }),
 	type: z.string().min(1, { message: 'You must specify a type.' }),
 	lower: z.enum(['higher', 'lower']), // FIXME: try and make this a boolean
+	users: z.record(
+		z.object({
+			score: z.number().optional(),
+			updated_at: z.number().optional(),
+			description: z.string().optional(),
+		}),
+	),
 });
 
 function TaskDialog({
@@ -110,6 +118,7 @@ function TaskDialog({
 						? 'lower'
 						: 'higher'
 					: 'higher',
+			users: task?.users || {},
 		},
 	});
 
@@ -200,20 +209,22 @@ function TaskDialog({
 	}
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
-		const data: Task = {
-			name: values.name,
-			description: values.description,
-			type: values.type as Task['type'],
-			points: values.points,
-			category: values.category as Task['category'],
-			lower: values.lower == 'lower',
-			users: task ? task.users : {},
-		};
-		if (task) {
-			await edit(data);
-		} else {
-			await add(data);
-		}
+		// const data: Task = {
+		// 	name: values.name,
+		// 	description: values.description,
+		// 	type: values.type as Task['type'],
+		// 	points: values.points,
+		// 	category: values.category as Task['category'],
+		// 	lower: values.lower == 'lower',
+		// 	users: task ? task.users : {},
+		// };
+		// if (task) {
+		// 	await edit(data);
+		// } else {
+		// 	await add(data);
+		// }
+
+		console.log(values.users);
 
 		setOpen(false);
 	}
@@ -258,7 +269,7 @@ function TaskDialog({
 					<DialogDescription></DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 						<FormField
 							name="name"
 							control={form.control}
@@ -301,142 +312,189 @@ function TaskDialog({
 								</FormItem>
 							)}
 						/>
-						<FormField
-							name="points"
-							control={form.control}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className="text-base font-medium">
-										# of VPs
-									</FormLabel>
-									<FormControl className="!mt-0.5">
-										<Input
-											defaultValue={field.value}
-											placeholder="Task VP Worth"
-											className="mb-4 w-[30%]"
-											type="number"
-											{...field}
-											onChange={(event) => field.onChange(+event.target.value)}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							name="type"
-							control={form.control}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className="text-base font-medium">Type</FormLabel>
-									<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
-										<ToggleGroup
-											type="single"
-											defaultValue={field.value}
-											variant={'outline'}
-											{...field}
-											className="mr-auto"
-											onValueChange={(type) => field.onChange(type)}>
-											<ToggleGroupItem
-												value="single"
-												disabled={field.value == 'single'}
-												className="disabled:opacity-100">
-												Single
-											</ToggleGroupItem>
-											<ToggleGroupItem
-												value="daily"
-												disabled={field.value == 'daily'}
-												className="disabled:opacity-100">
-												Daily
-											</ToggleGroupItem>
-											<ToggleGroupItem
-												value="multi"
-												disabled={field.value == 'multi'}
-												className="disabled:opacity-100">
-												Multi
-											</ToggleGroupItem>
-											<ToggleGroupItem
-												value="weekly"
-												disabled={field.value == 'weekly'}
-												className="disabled:opacity-100">
-												Weekly
-											</ToggleGroupItem>
-										</ToggleGroup>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							name="lower"
-							control={form.control}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className="text-base font-medium">
-										Priority
-										<span className="ml-2 text-xs font-light">
-											{'(not required if using single)'}
-										</span>
-									</FormLabel>
-									<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
-										<ToggleGroup
-											type="single"
-											defaultValue={field.value}
-											variant={'outline'}
-											{...field}
-											onValueChange={(prio) => field.onChange(prio)}>
-											<ToggleGroupItem
-												value="higher"
-												disabled={field.value == 'higher'}
-												className="disabled:opacity-100">
-												Higher
-											</ToggleGroupItem>
-											<ToggleGroupItem
-												value="lower"
-												disabled={field.value == 'lower'}
-												className="disabled:opacity-100">
-												Lower
-											</ToggleGroupItem>
-										</ToggleGroup>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							name="category"
-							control={form.control}
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className="text-base font-medium">
-										Category
-									</FormLabel>
-									<Select
-										onValueChange={field.onChange}
-										defaultValue={field.value}>
+						<div className="grid grid-cols-[50%,50%] gap-4">
+							<FormField
+								name="points"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-base font-medium">
+											# of VPs
+										</FormLabel>
 										<FormControl className="!mt-0.5">
-											<SelectTrigger className="w-[40%]">
-												<SelectValue placeholder="Select a category" />
-											</SelectTrigger>
+											<Input
+												defaultValue={field.value}
+												placeholder="Task VP Worth"
+												className="mb-4 w-[80%]"
+												type="number"
+												{...field}
+												onChange={(event) =>
+													field.onChange(+event.target.value)
+												}
+											/>
 										</FormControl>
-										<SelectContent>
-											<SelectGroup>
-												<SelectLabel>Category</SelectLabel>
-												<SelectItem value="health">Health</SelectItem>
-												<SelectItem value="normal">Become Normal</SelectItem>
-												<SelectItem value="cool">POV: Cool</SelectItem>
-												<SelectItem value="productivity">
-													Productivity
-												</SelectItem>
-												<SelectItem value="insane">INSANE</SelectItem>
-											</SelectGroup>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								name="lower"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-base font-medium">
+											Priority
+											<span className="ml-2 text-xs font-light">
+												{'(not required if using single)'}
+											</span>
+										</FormLabel>
+										<FormControl className="!mt-0.5 mb-4 flex flex-row items-center justify-start gap-2">
+											<ToggleGroup
+												type="single"
+												defaultValue={field.value}
+												variant={'outline'}
+												{...field}
+												onValueChange={(prio) => field.onChange(prio)}>
+												<ToggleGroupItem
+													value="higher"
+													disabled={field.value == 'higher'}
+													className="disabled:opacity-100">
+													Higher
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="lower"
+													disabled={field.value == 'lower'}
+													className="disabled:opacity-100">
+													Lower
+												</ToggleGroupItem>
+											</ToggleGroup>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+						<div className="grid grid-cols-[50%,50%] gap-4">
+							<FormField
+								name="type"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-base font-medium">
+											Type
+										</FormLabel>
+										<FormControl className="!mt-0.5 mb-4 grid w-[80%] grid-cols-2 items-center justify-start gap-2">
+											<ToggleGroup
+												type="single"
+												defaultValue={field.value}
+												variant={'outline'}
+												{...field}
+												className="mr-auto"
+												onValueChange={(type) => field.onChange(type)}>
+												<ToggleGroupItem
+													value="single"
+													disabled={field.value == 'single'}
+													className="disabled:opacity-100">
+													Single
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="daily"
+													disabled={field.value == 'daily'}
+													className="disabled:opacity-100">
+													Daily
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="multi"
+													disabled={field.value == 'multi'}
+													className="disabled:opacity-100">
+													Multi
+												</ToggleGroupItem>
+												<ToggleGroupItem
+													value="weekly"
+													disabled={field.value == 'weekly'}
+													className="disabled:opacity-100">
+													Weekly
+												</ToggleGroupItem>
+											</ToggleGroup>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								name="category"
+								control={form.control}
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-base font-medium">
+											Category
+										</FormLabel>
+										<Select
+											onValueChange={field.onChange}
+											defaultValue={field.value}>
+											<FormControl className="!mt-0.5">
+												<SelectTrigger className="w-[70%]">
+													<SelectValue placeholder="Select a category" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectGroup>
+													<SelectLabel>Category</SelectLabel>
+													<SelectItem value="health">Health</SelectItem>
+													<SelectItem value="normal">Become Normal</SelectItem>
+													<SelectItem value="cool">POV: Cool</SelectItem>
+													<SelectItem value="productivity">
+														Productivity
+													</SelectItem>
+													<SelectItem value="insane">INSANE</SelectItem>
+												</SelectGroup>
+											</SelectContent>
+										</Select>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+						<FormField
+							name="users"
+							control={form.control}
+							render={({ field }) => (
+								<section>
+									<h1 className="pb-2 text-base font-medium">User Scores</h1>
+									<div className="grid grid-cols-3 gap-3">
+										{users.map((user) => (
+											<FormItem>
+												<FormLabel className="text-sm font-medium capitalize">
+													{user}
+												</FormLabel>
+												<FormControl className="!mt-0.5">
+													<Input
+														defaultValue={
+															field.value[user] !== undefined
+																? field.value[user].score
+																: 0
+														}
+														placeholder="Score"
+														className="mb-4"
+														type="number"
+														id={user}
+														onChange={(event) => {
+															const v = field.value;
+															v[event.target.id].score = +event.target.value;
+															v[event.target.id].updated_at =
+																new Date().getTime();
+															field.onChange(v);
+														}}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										))}
+									</div>
+								</section>
 							)}
 						/>
-						<DialogFooter>
+						<DialogFooter className="pt-4">
 							<DialogClose>
 								<Button variant={'outline'}>Cancel</Button>
 							</DialogClose>
