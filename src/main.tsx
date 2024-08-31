@@ -120,13 +120,13 @@ export default function App() {
 						<TabsTrigger
 							value="submit"
 							className="w-full"
-							disabled={!hasCode || user == null}>
+							disabled={!hasCode || user == null || tasks.length == 0}>
 							Submit
 						</TabsTrigger>
 						<TabsTrigger
 							value="verify"
 							className="w-full"
-							disabled={!hasCode || user == null}>
+							disabled={!hasCode || user == null || verify.length == 0}>
 							Verify
 						</TabsTrigger>
 					</TabsList>
